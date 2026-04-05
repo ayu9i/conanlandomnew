@@ -253,7 +253,7 @@
     };
 
     let history = JSON.parse(localStorage.getItem('conan_slot_v3')) || [];
-    let currentResultHTML = ""; // เก็บค่า HTML ที่สุ่มได้
+    let currentResultHTML = "";
 
     // --- [Core Logic] ---
     function isDuplicate(text) {
@@ -263,11 +263,14 @@
 
     function startSpin(fn) {
         const wrapper = document.getElementById('slotWrapper');
+        
+        // รัน logic สุ่มก่อนเพื่อเช็คว่าเต็มหรือยัง
+        const canSpin = fn(); 
+        if (canSpin === false) return; // ถ้าเต็มแล้ว ไม่ต้องรันประตูหรือ Slot
+
         document.getElementById('doorSystem').classList.add('active');
         
         setTimeout(() => {
-            fn(); // รัน logic สุ่ม
-            
             const dummyItems = ["Detective Conan", "Searching...", "Case Closed", "Target Found", "Analyzing...", "Next Case?", "Evidence..."];
             let content = "";
             dummyItems.forEach(item => content += `<div class="slot-item">${item}</div>`);
@@ -288,48 +291,56 @@
 
     function spinSeries() {
         startSpin(() => {
-            let res = "", retry = 0;
-            while (retry < 500) {
+            let res = "", retry = 0, found = false;
+            while (retry < 1000) {
                 const ep = Math.floor(Math.random() * 1100) + 1;
                 const s = Math.ceil(ep / 52);
                 res = `ซีซั่น ${s > 22 ? 22 : s} ตอนที่ ${ep}`;
-                if (!isDuplicate(res)) break;
+                if (!isDuplicate(res)) { found = true; break; }
                 retry++;
             }
+            if (!found) { alert("สุ่มตอนทั่วไปจนครบหมดแล้วจ้า Ayu! ล้างประวัติก่อนนะ"); return false; }
             currentResultHTML = res;
             updateBadge("iQIYI / TrueID"); addH(res);
+            return true;
         });
     }
 
     function spinMovie() {
         startSpin(() => {
-            let res = "", retry = 0;
-            do {
-                const i = Math.floor(Math.random() * movieNames.length);
-                res = `Movie ${i+1}: ${movieNames[i]}`;
-                retry++;
-            } while (isDuplicate(res) && retry < 100);
+            const available = movieNames.map((n, i) => `Movie ${i+1}: ${n}`).filter(m => !isDuplicate(m));
+            if (available.length === 0) { alert("ดูมูฟวี่ครบหมดทุกภาคแล้วจ้า Ayu!"); return false; }
+            
+            let res = available[Math.floor(Math.random() * available.length)];
             currentResultHTML = `Movie ${res.split(': ')[0].split(' ')[1]} <span>${res.split(': ')[1]}</span>`;
             updateBadge("เดอะมูฟวี่"); addH(res);
+            return true;
         });
     }
 
     function spinLupin() {
         startSpin(() => {
             const pool = ["Lupin III vs Conan (TV Special 2009)", "Lupin III vs Conan (The Movie 2013)"];
-            let res = pool[Math.floor(Math.random() * pool.length)];
+            const available = pool.filter(p => !isDuplicate(p));
+            if (available.length === 0) { alert("ดูการปะทะลูแปงจนครบแล้วจ้า Ayu!"); return false; }
+            
+            let res = available[Math.floor(Math.random() * available.length)];
             currentResultHTML = res;
             updateBadge("ตอนพิเศษ"); addH(res);
+            return true;
         });
     }
 
     function spinChar() {
         startSpin(() => {
             const c = document.getElementById('charSelect').value;
-            const pool = charData[c];
-            let rawRes = pool[Math.floor(Math.random() * pool.length)];
+            const available = charData[c].filter(p => !isDuplicate(p));
+            if (available.length === 0) { alert("เก็บตอนของตัวละครนี้ครบหมดแล้วจ้า!"); return false; }
+            
+            let rawRes = available[Math.floor(Math.random() * available.length)];
             currentResultHTML = rawRes.includes('(') ? `${rawRes.split(' (')[0]} <span>(${rawRes.split(' (')[1]}</span>` : rawRes;
             updateBadge(`ตัวละคร: ${c}`); addH(rawRes);
+            return true;
         });
     }
 
