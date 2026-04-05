@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conan Hub Ultimate V3.8 | TrueVisions Seasonal Edition</title>
+    <title>Conan Hub Ultimate V3.8.5 | Detective Conan x Lupin III Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* [CSS Section - Visual Framework] */
         :root { 
             --conan-gold: #d4af37; 
             --conan-blue: #1e3a8a;
@@ -60,7 +59,6 @@
             box-shadow: 0 30px 70px rgba(0,0,0,0.6);
         }
 
-        /* --- Slot Engine UI --- */
         .slot-box {
             background: linear-gradient(to bottom, #050505, #111, #050505); 
             border: 2px solid #2a2a2a; border-radius: 25px;
@@ -94,7 +92,11 @@
             background: linear-gradient(135deg, var(--conan-gold), #b8860b); 
             color: #000; font-weight: 600; border: none;
         }
-        .btn-primary:hover { box-shadow: 0 10px 25px rgba(212, 175, 55, 0.5); }
+        .btn-lupin {
+            background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+            color: white; font-weight: 600; border: none; grid-column: span 2;
+        }
+        .btn-primary:hover, .btn-lupin:hover { box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
 
         .history-section {
             margin-top: 40px; text-align: left; background: rgba(0,0,0,0.5);
@@ -113,6 +115,7 @@
             margin-left: 12px; background: var(--conan-gold); color: #000; font-weight: 600;
         }
 
+        /* --- Chat UI --- */
         #chatBtn {
             position: fixed; bottom: 35px; right: 35px; width: 70px; height: 70px;
             background: var(--conan-gold); border-radius: 50%; display: flex;
@@ -120,19 +123,20 @@
             cursor: pointer; z-index: 1000; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
             transition: 0.3s;
         }
-        #chatBtn:hover { scale: 1.1; rotate: 10deg; }
-        
         #chatBox {
-            position: fixed; bottom: 120px; right: 35px; width: 380px; height: 550px;
+            position: fixed; bottom: 120px; right: 35px; width: 380px; height: 580px;
             background: #0f0f0f; border: 1px solid var(--conan-gold); border-radius: 25px;
             display: none; flex-direction: column; overflow: hidden; z-index: 1000;
             box-shadow: 0 25px 70px rgba(0,0,0,0.9);
         }
-        .chat-head { background: var(--conan-gold); color: #000; padding: 18px; font-weight: 600; font-size: 1.1rem; }
+        .chat-head { background: var(--conan-gold); color: #000; padding: 18px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
         .chat-content { flex: 1; padding: 20px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; gap: 15px; }
         .msg { padding: 12px 18px; border-radius: 18px; font-size: 0.9rem; max-width: 85%; line-height: 1.6; }
         .msg.bot { background: #1a1a1a; align-self: flex-start; border: 1px solid #333; border-bottom-left-radius: 2px; }
         .msg.user { background: var(--conan-gold); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 20px; background: #050505; border-top: 1px solid #1a1a1a; }
+        .reply-btn { background: #222; border: 1px solid #444; color: #ccc; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; }
 
         .curtain-wall {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -178,7 +182,7 @@
 </div>
 
 <div class="container">
-    <h1 class="main-header">CONAN HUB V3.8</h1>
+    <h1 class="main-header">CONAN HUB V3.8.5</h1>
     
     <div class="premium-card">
         <div id="statusBadge" style="font-size: 0.75rem; color:var(--conan-gold); border:1px solid var(--conan-gold); display:inline-block; padding:4px 14px; border-radius:25px; margin-bottom:15px; opacity:0; transition:0.4s; letter-spacing:1px;">SYNCING DATABASE...</div>
@@ -196,6 +200,7 @@
             <button class="action-btn btn-primary" style="grid-column: span 2;" onclick="spinProcess('all')">สุ่มทั้งหมด (ทุกแพลตฟอร์ม)</button>
             <button class="action-btn" onclick="spinProcess('series')">สุ่มทีวีซีรีส์ (True/iQIYI)</button>
             <button class="action-btn" onclick="spinProcess('movie')">เดอะมูฟวี่ (1-28)</button>
+            <button class="action-btn btn-lupin" onclick="spinProcess('lupin')">🎭 โคนัน ปะทะ ลูแปงที่ 3 (All Specials)</button>
         </div>
 
         <div style="margin-top:20px;">
@@ -203,11 +208,12 @@
                 <option value="black_org">💀 องค์กรชุดดำ (Black Org)</option>
                 <option value="kid">🎩 จอมโจรคิด (Phantom Kid)</option>
                 <option value="ai">🧪 ไฮบาระ ไอ (Haibara)</option>
+                <option value="detective_boys">🏫 แก๊งนักสืบเยาวชน (Detective Boys)</option>
                 <option value="fbi">🔫 FBI & อากาอิ (Akai)</option>
                 <option value="zero">☕ อามุโร่ (Bourbon)</option>
                 <option value="heiji">🏍️ ฮัตโตริ เฮย์จิ (Heiji)</option>
             </select>
-            <button class="action-btn btn-primary" style="width:100%; margin-top:12px;" onclick="spinProcess('char')">สุ่มคดีตัวละครสำคัญ</button>
+            <button class="action-btn btn-primary" style="width:100%; margin-top:12px;" onclick="spinProcess('char')">สุ่มคดีตามกลุ่มตัวละคร</button>
         </div>
 
         <div class="history-section">
@@ -222,9 +228,17 @@
 
 <div id="chatBtn" onclick="toggleChat()">🔍</div>
 <div id="chatBox">
-    <div class="chat-head">Assistant Detective Ayu</div>
+    <div class="chat-head">
+        <span>Assistant Detective Ayu</span>
+        <span onclick="toggleChat()" style="cursor:pointer; font-size: 1.5rem;">&times;</span>
+    </div>
     <div class="chat-content" id="chatContent">
-        <div class="msg bot">สวัสดีค่ะคุณ Ayu! ระบบ V3.8 ปรับปรุงฐานข้อมูลลูแปงและระบบสุ่มให้แม่นยำขึ้นแล้วนะคะ พร้อมเริ่มสืบคดีหรือยังคะ?</div>
+        <div class="msg bot">สวัสดีค่ะคุณ Ayu! อัปเดต V3.8.5 เพิ่มหมวดหมู่ Lupin III และแก๊งนักสืบเยาวชนแล้วนะคะ มีอะไรให้ช่วยสืบคดีไหนเป็นพิเศษไหมคะ?</div>
+    </div>
+    <div class="quick-replies">
+        <div class="reply-btn" onclick="quickChat('สุ่มตอนลูแปง')">สุ่มลูแปง</div>
+        <div class="reply-btn" onclick="quickChat('แก๊งนักสืบเยาวชนมีตอนไหนบ้าง')">ตอนเด่นแก๊งเด็ก</div>
+        <div class="reply-btn" onclick="quickChat('วิธีลบประวัติ')">วิธีลบประวัติ</div>
     </div>
     <div style="padding:15px; border-top:1px solid #222; display:flex; gap:10px; background:#0a0a0a;">
         <input type="text" id="chatInput" placeholder="พิมพ์ข้อความ..." style="flex:1; background:#1a1a1a; border:1px solid #333; border-radius:12px; color:#fff; padding:12px; font-family:'Kanit';">
@@ -233,20 +247,17 @@
 </div>
 
 <script>
-// --- 1. Master Database Structure ---
 const caseDatabase = {
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
         { ep: 2, s: 1, title: "ยอดนักสืบจิ๋วกลายเป็นยอดนักสืบชื่อดัง" },
         { ep: 11, s: 1, title: "คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์" },
-        { ep: 48, s: 1, title: "คดีฆาตกรรมนักการทูต (เฮย์จิปรากฏตัว)" },
+        { ep: 48, s: 1, title: "คดีฆาตกรรมนักการทูต" },
         { ep: 78, s: 2, title: "โคนันปะทะจอมโจรคิด" },
-        { ep: 136, s: 3, title: "ผู้หญิงที่มาจากองค์กรชุดดำ (ไฮบาระปรากฏตัว)" },
-        { ep: 538, s: 11, title: "ดำปะทะแดงเดือด (ซีรีส์ประวัติศาสตร์)" },
+        { ep: 136, s: 3, title: "ผู้หญิงที่มาจากองค์กรชุดดำ" },
+        { ep: 538, s: 11, title: "ดำปะทะแดงเดือด" },
         { ep: 753, s: 15, title: "รถด่วนทมิฬ (Mystery Train)" },
-        { ep: 993, s: 19, title: "โรงเรียนมัธยมปลายสีแดง" },
-        // [นำกลับมา] ลูแปง TV Special
-        { ep: "Special", s: "Lupin", title: "ยอดนักสืบจิ๋วโคนัน ปะทะ ลูแปงที่ 3 (2009)" }
+        { ep: 993, s: 19, title: "โรงเรียนมัธยมปลายสีแดง" }
     ],
     trueVisions: {
         s20: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 20, title: `คดีปริศนาลำดับที่ ${i + 1} (S20)` })),
@@ -255,16 +266,24 @@ const caseDatabase = {
         s23: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 23, title: `คดีปริศนาลำดับที่ ${i + 1} (S23)` })),
         s24: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 24, title: `คดีปริศนาลำดับที่ ${i + 1} (S24)` })),
         s25: Array.from({length: 12}, (_, i) => ({ ep: i + 1, s: 25, title: `คดีปริศนาลำดับที่ ${i + 1} (S25)` }))
-    }
+    },
+    lupin: [
+        "Lupin III vs Detective Conan: The Special (2009)",
+        "Lupin III vs Detective Conan: The Movie (2013)"
+    ]
 };
 
 const charCases = {
-    black_org: ["S1 ตอนที่ 1: จุดเริ่มต้น", "S11 ตอนที่ 538: ดำปะทะแดงเดือด", "S15 ตอนที่ 753: รถด่วนทมิฬ"],
-    kid: ["S2 ตอนที่ 78: โคนันปะทะจอมโจรคิด", "S22 ตอนที่ 15: คิดปะทะโคนันในวันหิมะ"],
-    ai: ["S3 ตอนที่ 136: ผู้มาจากองค์กรชุดดำ", "S21 ตอนที่ 40: ความทรงจำของไอ"],
-    fbi: ["S6 ตอนที่ 249: ผู้มาจากชิคาโก้", "S23 ตอนที่ 10: ภารกิจลับ FBI"],
-    zero: ["S15 ตอนที่ 719: เวดดิ้งอีฟ", "S23 ตอนที่ 45: ความลับของ Zero"],
-    heiji: ["S1 ตอนที่ 48: ยอดนักสืบตะวันตก", "S20 ตอนที่ 2: ทัศนศึกษาสีแดง"]
+    black_org: ["S1 Ep 1: จุดเริ่มต้น", "S3 Ep 136: ไฮบาระปรากฏตัว", "S11 Ep 538: ดำปะทะแดงเดือด", "S15 Ep 753: รถด่วนทมิฬ"],
+    kid: ["S2 Ep 78: โคนันปะทะจอมโจรคิด", "S11 Ep 562: เคล็ดลับการวาร์ป", "S16 Ep 776: คิดปะทะมาโคโตะ"],
+    ai: ["S3 Ep 136: ผู้รวบรวมข้อมูล", "S13 Ep 648: ความลับของไฮบาระ", "S21 S21-Ep 40: ความทรงจำของไอ"],
+    detective_boys: [
+        "S1 ตอนที่ 4: คดีลายแทงขุมทรัพย์", "S1 ตอนที่ 13: คดีชมรมสำรวจสืบสวน", "S4 ตอนที่ 176: ทางเดินสีคราม", 
+        "S10 ตอนที่ 473: คดีปริศนาในสวนสนุก", "S14 ตอนที่ 700: วิกฤติของแก๊งนักสืบเยาวชน"
+    ],
+    fbi: ["S6 Ep 249: ผู้มาจากชิคาโก้", "S17 Ep 833: การกลับมาของอากาอิ", "S23 S23-Ep 10: ภารกิจลับ FBI"],
+    zero: ["S15 Ep 719: เวดดิ้งอีฟ", "S17 Ep 823: เบอร์เบินเคลื่อนไหว", "S23 S23-Ep 45: ความลับของ Zero"],
+    heiji: ["S1 Ep 48: ยอดนักสืบตะวันตก", "S13 Ep 667: คัมภีร์ของโฮล์ม", "S20 S20-Ep 2: ทัศนศึกษาสีแดง"]
 };
 
 const movieNames = [
@@ -274,32 +293,24 @@ const movieNames = [
     "ปริศนานักฆ่าทรยศ", "ปริศนามรณะเหนือน่านฟ้า", "15 นาทีเฉียดตาย", "ภาคระทึกขวัญยุทธจักรลูกหนัง",
     "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "ปริศนาเงามรณะตัวสำรอง",
     "ปริศนาเพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง",
-    "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ",
-    "ลูแปงที่ 3 ปะทะ ยอดนักสืบจิ๋วโคนัน เดอะมูฟวี่ (2013)" // [นำกลับมา]
+    "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ"
 ];
 
-// --- 2. System Core State ---
 let history = JSON.parse(localStorage.getItem('conan_v38_data')) || [];
 let spinning = false;
 
-// --- 3. Core Logic Functions ---
 function clearHistory() {
-    if(confirm("ยืนยันการล้างประวัติสุ่มตอนซ้ำ?")) {
-        history = [];
-        save();
-        updateUI();
-        addBotMsg("ล้างประวัติการสืบสวนเรียบร้อยแล้วค่ะ!");
+    if(confirm("ยืนยันการล้างประวัติสุ่ม?")) {
+        history = []; save(); updateUI(); addBotMsg("ล้างประวัติเรียบร้อยแล้วค่ะ!");
     }
 }
 
 function isDup(text) {
-    const clean = text.replace(/[^a-zA-Z0-9ก-๙]/g, "").trim();
-    return history.some(item => item.text.replace(/[^a-zA-Z0-9ก-๙]/g, "").trim() === clean);
+    return history.some(item => item.text === text);
 }
 
 function changeTheme(c) {
     document.documentElement.style.setProperty('--conan-gold', c);
-    addBotMsg("เปลี่ยนธีมระบบเรียบร้อยแล้วค่ะ!");
 }
 
 function toggleUI() {
@@ -308,9 +319,9 @@ function toggleUI() {
 
 function spinProcess(type) {
     if (spinning) return;
-    let res = "", badge = "", retryLimit = 5000, found = false;
+    let res = ""; let badge = ""; let found = false; let retry = 500;
 
-    while(!found && retryLimit > 0) {
+    while(!found && retry > 0) {
         if (type === 'all' || type === 'series') {
             const isTrueV = Math.random() < 0.3;
             if(isTrueV) {
@@ -318,17 +329,17 @@ function spinProcess(type) {
                 const sKey = seasons[Math.floor(Math.random() * seasons.length)];
                 const pool = caseDatabase.trueVisions[sKey];
                 const pick = pool[Math.floor(Math.random() * pool.length)];
-                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep} (TrueVisions)`;
-                badge = "TrueVisions [Seasonal]";
+                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep} (TrueVisions)`; badge = "TrueVisions";
             } else {
                 const pick = caseDatabase.iqiyi[Math.floor(Math.random() * caseDatabase.iqiyi.length)];
-                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep}: ${pick.title}`;
-                badge = "iQIYI [Long Run]";
+                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep}: ${pick.title}`; badge = "iQIYI";
             }
         } else if (type === 'movie') {
             const idx = Math.floor(Math.random() * movieNames.length);
-            res = `The Movie ${idx + 1}: ${movieNames[idx]}`;
-            badge = "Movie Special";
+            res = `The Movie ${idx + 1}: ${movieNames[idx]}`; badge = "Movie";
+        } else if (type === 'lupin') {
+            res = caseDatabase.lupin[Math.floor(Math.random() * caseDatabase.lupin.length)];
+            badge = "Lupin III Crossover";
         } else if (type === 'char') {
             const char = document.getElementById('charSelect').value;
             const pool = charCases[char];
@@ -336,13 +347,10 @@ function spinProcess(type) {
             badge = `Target: ${char}`;
         }
         if(!isDup(res)) found = true;
-        retryLimit--;
+        retry--;
     }
 
-    if(!found) {
-        alert("คุณสุ่มจนครบฐานข้อมูลแล้ว! โปรดล้างประวัติก่อนเริ่มใหม่");
-        return;
-    }
+    if(!found) { alert("สุ่มจนครบฐานข้อมูลแล้ว!"); return; }
     executeSpin(res, badge);
 }
 
@@ -353,12 +361,7 @@ function executeSpin(txt, b) {
     curtain.classList.add('active');
     
     setTimeout(() => {
-        const dummy = [
-            {h: "ANALYZING EVIDENCE", p: "Please Wait..."},
-            {h: "DATABASE SEARCH", p: "V3.8 Engine"},
-            {h: "LOCATING CASE", p: "TrueVisions/iQIYI"},
-            {h: "IDENTIFYING CULPRIT", p: "Detective Conan"}
-        ];
+        const dummy = [{h: "LOCATING CASE", p: "V3.8.5 System"}, {h: "LUPIN/CONAN", p: "Cross-Checking"}];
         let content = dummy.map(d => `<div class="slot-unit"><h3>${d.h}</h3><p>${d.p}</p></div>`).join('');
         const parts = txt.split(': ');
         content += `<div class="slot-unit"><h3>${parts[0]}</h3><p>${parts[1] || ""}</p></div>`;
@@ -373,28 +376,20 @@ function executeSpin(txt, b) {
         
         setTimeout(() => {
             const badge = document.getElementById('statusBadge');
-            badge.style.opacity = "1";
-            badge.innerText = b;
-            addHist(txt, b);
-            spinning = false;
+            badge.style.opacity = "1"; badge.innerText = b;
+            addHist(txt, b); spinning = false;
         }, 2600);
     }, 700);
 }
 
-// --- 4. History & Persistence ---
 function addHist(t, tag) {
     history.unshift({ id: Date.now(), text: t, tag: tag });
-    if(history.length > 2000) history.pop();
-    save();
-    updateUI();
+    save(); updateUI();
 }
 
 function updateUI() {
     const list = document.getElementById('historyList');
-    if(!history.length) {
-        list.innerHTML = `<div style="text-align:center; padding:30px; opacity:0.3; font-size:0.85rem;">[ ระบบว่างเปล่า ]</div>`;
-        return;
-    }
+    if(!history.length) { list.innerHTML = `<div style="text-align:center; padding:30px; opacity:0.3;">[ ระบบว่างเปล่า ]</div>`; return; }
     list.innerHTML = history.map(h => `
         <div class="history-item">
             <span>${h.text} <span class="tag">${h.tag}</span></span>
@@ -403,18 +398,18 @@ function updateUI() {
     `).join('');
 }
 
-function delItem(id) {
-    history = history.filter(h => h.id !== id);
-    save();
-    updateUI();
-}
-
+function delItem(id) { history = history.filter(h => h.id !== id); save(); updateUI(); }
 function save() { localStorage.setItem('conan_v38_data', JSON.stringify(history)); }
 
-// --- 5. Improved Chat Q&A System ---
+// Chat Functions
 function toggleChat() {
     const b = document.getElementById('chatBox');
     b.style.display = b.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function quickChat(text) {
+    document.getElementById('chatInput').value = text;
+    sendChat();
 }
 
 function addBotMsg(t) {
@@ -425,41 +420,21 @@ function addBotMsg(t) {
 
 function sendChat() {
     const i = document.getElementById('chatInput');
-    const v = i.value.trim();
-    if(!v) return;
-
+    const v = i.value.trim(); if(!v) return;
     const c = document.getElementById('chatContent');
     c.innerHTML += `<div class="msg user">${v}</div>`;
     i.value = "";
     
     setTimeout(() => {
-        let r = "กำลังตรวจสอบฐานข้อมูลให้คุณ Ayu ค่ะ... ลองถามเรื่อง 'ลูแปง', 'ชุดดำ' หรือ 'สุ่มยังไง' ดูนะคะ";
-        const msg = v.toLowerCase();
-
-        // [Logic: Questions & Answers]
-        if(msg.includes("ลูแปง") || msg.includes("lupin")) {
-            r = "คดีปะทะลูแปงที่ 3 มี 2 ภาคหลักค่ะ คือ TV Special (2009) และ The Movie (2013) ซึ่งระบบนำกลับมาให้สุ่มได้แล้วทั้งคู่ค่ะ!";
-        } else if(msg.includes("สุ่ม") || msg.includes("เล่นยังไง")) {
-            r = "คุณ Ayu เลือกปุ่ม 'สุ่มทั้งหมด' หรือ 'สุ่มมูฟวี่' ได้เลยค่ะ ระบบจะเลือกตอนที่ไม่ซ้ำกับใน Investigation Log มาให้ค่ะ";
-        } else if(msg.includes("สวัสดี") || msg.includes("หวัดดี")) {
-            r = "สวัสดีค่ะคุณ Ayu! พร้อมจะไขคดีไปกับโคนันหรือยังคะ?";
-        } else if(msg.includes("ใครคือ") || msg.includes("รู้จัก")) {
-            if(msg.includes("ยิน")) r = "ยิน (Gin) คือสมาชิกระดับสูงขององค์กรชุดดำที่ทำร้ายชินอิจิค่ะ เยือกเย็นและอันตรายมาก!";
-            if(msg.includes("ไคโตะ")) r = "จอมโจรคิด หรือ คุโรบะ ไคโตะ คู่ปรับคนสำคัญของโคนันที่เน้นการขโมยอัญมณีค่ะ";
-            if(msg.includes("เบอร์เบิน")) r = "เบอร์เบิน หรือ อามุโร่ โทโอรุ เป็นสายลับสามหน้า (FBI/ชุดดำ/ตำรวจญี่ปุ่น) ค่ะ";
-        } else if(msg.includes("true")) {
-            r = "ระบบ V3.8 รองรับตอนซีซั่น 20-25 ของ TrueVisions (1-52 ตอน) เรียบร้อยแล้วค่ะ";
-        } else if(msg.includes("ลบประวัติ")) {
-            r = "คุณ Ayu สามารถกดคำว่า [ลบประวัติ] สีแดงในช่อง Investigation Log เพื่อเริ่มสุ่มใหม่ทั้งหมดได้ค่ะ";
-        }
-
+        let r = "กำลังวิเคราะห์ข้อมูลให้คุณ Ayu ค่ะ...";
+        if(v.includes("ลูแปง")) r = "ตอนนี้สุ่มลูแปงได้ทั้งภาคพิเศษปี 2009 และเดอะมูฟวี่ปี 2013 เลยค่ะ!";
+        if(v.includes("แก๊งนักสืบเยาวชน")) r = "เน้นตอนที่มีกลุ่มเพื่อนๆ ของโคนัน (เก็นตะ, มิซึฮิโกะ, อายูมิ) เป็นตัวหลักค่ะ มีคดีที่น่าตื่นเต้นเพียบเลย!";
+        if(v.includes("ลบประวัติ")) r = "กดปุ่ม [ลบประวัติ] สีแดงใน Investigation Log ได้เลยค่ะ";
         addBotMsg(r);
     }, 700);
 }
 
-// Start
 updateUI();
 </script>
-
 </body>
 </html>
