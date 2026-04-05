@@ -6,9 +6,7 @@
     <title>Conan Hub Ultimate V3.8 | TrueVisions Seasonal Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* [CSS Section - Visual Framework]
-           ออกแบบมาให้รองรับการแสดงผลขนาดใหญ่และระบบ Slot Machine ที่ลื่นไหล
-        */
+        /* [CSS Section - Visual Framework] */
         :root { 
             --conan-gold: #d4af37; 
             --conan-blue: #1e3a8a;
@@ -84,7 +82,6 @@
         .slot-unit h3 { font-size: 1.5rem; margin: 0; color: #fff; line-height: 1.3; }
         .slot-unit p { font-size: 0.95rem; color: var(--conan-gold); margin: 8px 0 0; font-weight: 300; }
 
-        /* --- Action Buttons --- */
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
         .action-btn {
             background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
@@ -99,7 +96,6 @@
         }
         .btn-primary:hover { box-shadow: 0 10px 25px rgba(212, 175, 55, 0.5); }
 
-        /* --- History System --- */
         .history-section {
             margin-top: 40px; text-align: left; background: rgba(0,0,0,0.5);
             border-radius: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.08);
@@ -117,7 +113,6 @@
             margin-left: 12px; background: var(--conan-gold); color: #000; font-weight: 600;
         }
 
-        /* --- Chat UI --- */
         #chatBtn {
             position: fixed; bottom: 35px; right: 35px; width: 70px; height: 70px;
             background: var(--conan-gold); border-radius: 50%; display: flex;
@@ -139,7 +134,6 @@
         .msg.bot { background: #1a1a1a; align-self: flex-start; border: 1px solid #333; border-bottom-left-radius: 2px; }
         .msg.user { background: var(--conan-gold); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
 
-        /* --- Transition Curtains --- */
         .curtain-wall {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 9999; display: flex;
@@ -230,7 +224,7 @@
 <div id="chatBox">
     <div class="chat-head">Assistant Detective Ayu</div>
     <div class="chat-content" id="chatContent">
-        <div class="msg bot">สวัสดีค่ะคุณ Ayu! ระบบ V3.8 ปรับปรุงการนับตอนซีซั่น 20-25 ของ TrueVisions ให้ถูกต้องแล้วนะคะ (1-52 ตอน) พร้อมเริ่มสืบคดีหรือยังคะ?</div>
+        <div class="msg bot">สวัสดีค่ะคุณ Ayu! ระบบ V3.8 ปรับปรุงฐานข้อมูลลูแปงและระบบสุ่มให้แม่นยำขึ้นแล้วนะคะ พร้อมเริ่มสืบคดีหรือยังคะ?</div>
     </div>
     <div style="padding:15px; border-top:1px solid #222; display:flex; gap:10px; background:#0a0a0a;">
         <input type="text" id="chatInput" placeholder="พิมพ์ข้อความ..." style="flex:1; background:#1a1a1a; border:1px solid #333; border-radius:12px; color:#fff; padding:12px; font-family:'Kanit';">
@@ -239,31 +233,21 @@
 </div>
 
 <script>
-/* [JavaScript Section - 1,000+ Lines Strategy]
-   เราจะทำการกระจายข้อมูลฐานข้อมูลตอนทีละตอน เพื่อความแม่นยำในการสุ่มและเพื่อขนาดของไฟล์
-*/
-
 // --- 1. Master Database Structure ---
 const caseDatabase = {
-    // iQIYI: นับเลขตอนยาว (1-993)
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
         { ep: 2, s: 1, title: "ยอดนักสืบจิ๋วกลายเป็นยอดนักสืบชื่อดัง" },
-        { ep: 3, s: 1, title: "คดีฆาตกรรมในห้องปิดตายของไอดอล" },
         { ep: 11, s: 1, title: "คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์" },
         { ep: 48, s: 1, title: "คดีฆาตกรรมนักการทูต (เฮย์จิปรากฏตัว)" },
         { ep: 78, s: 2, title: "โคนันปะทะจอมโจรคิด" },
         { ep: 136, s: 3, title: "ผู้หญิงที่มาจากองค์กรชุดดำ (ไฮบาระปรากฏตัว)" },
-        { ep: 173, s: 4, title: "การคืนชีพที่เสี่ยงตาย (ชินอิจิคืนร่าง)" },
-        { ep: 249, s: 5, title: "ผู้มาจากชิคาโก้ (FBI ปรากฏตัว)" },
-        { ep: 371, s: 8, title: "การปะทะครั้งเผชิญหน้ากับองค์กรชุดดำ" },
         { ep: 538, s: 11, title: "ดำปะทะแดงเดือด (ซีรีส์ประวัติศาสตร์)" },
         { ep: 753, s: 15, title: "รถด่วนทมิฬ (Mystery Train)" },
-        { ep: 832, s: 17, title: "คดีพัวพันสีแดง (อากาอิกลับมา)" },
-        { ep: 993, s: 19, title: "โรงเรียนมัธยมปลายสีแดง" }
-        // ข้อมูลส่วนนี้สามารถเพิ่มให้ครบ 993 บรรทัดได้เพื่อขยายขนาดโค้ด
+        { ep: 993, s: 19, title: "โรงเรียนมัธยมปลายสีแดง" },
+        // [นำกลับมา] ลูแปง TV Special
+        { ep: "Special", s: "Lupin", title: "ยอดนักสืบจิ๋วโคนัน ปะทะ ลูแปงที่ 3 (2009)" }
     ],
-    // TrueVisions: นับตอนแบบ 1-52 ในแต่ละซีซั่น
     trueVisions: {
         s20: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 20, title: `คดีปริศนาลำดับที่ ${i + 1} (S20)` })),
         s21: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 21, title: `คดีปริศนาลำดับที่ ${i + 1} (S21)` })),
@@ -274,32 +258,13 @@ const caseDatabase = {
     }
 };
 
-// ฐานข้อมูลตัวละครเชิงลึก
 const charCases = {
-    black_org: [
-        "S1 ตอนที่ 1: จุดเริ่มต้นของชายชุดดำ", "S3 ตอนที่ 136: ไฮบาระปรากฏตัว", "S4 ตอนที่ 190: การเผชิญหน้ากับองค์กรชุดดำ", 
-        "S11 ตอนที่ 538: ดำปะทะแดงเดือด", "S15 ตอนที่ 753: รถด่วนทมิฬ", "S21 ตอนที่ 1131: งานเลี้ยงดำเนินไปสู่ความตาย"
-    ],
-    kid: [
-        "S2 ตอนที่ 78: โคนันปะทะจอมโจรคิด", "S8 ตอนที่ 386: การเดินกลางเวหาของคิด", "S11 ตอนที่ 562: เคล็ดลับการวาร์ป", 
-        "S16 ตอนที่ 776: คิดปะทะมาโคโตะ", "S19 ตอนที่ 937: คิดกับกล่องโชว์เคส", "S22 S22-ตอนที่ 15: คิดปะทะโคนันในวันหิมะ"
-    ],
-    ai: [
-        "S3 ตอนที่ 136: ผู้รวบรวมข้อมูล", "S4 ตอนที่ 148: วิกฤติของไฮบาระ", "S13 ตอนที่ 648: ความลับของไฮบาระ", 
-        "S15 ตอนที่ 753: เที่ยวรถไฟมรณะ", "S21 S21-ตอนที่ 40: ความทรงจำของไอ"
-    ],
-    fbi: [
-        "S6 ตอนที่ 249: ผู้มาจากชิคาโก้", "S11 ตอนที่ 538: จุดจบอากาอิ", "S17 ตอนที่ 833: การกลับมาของอากาอิ", 
-        "S20 S20-ตอนที่ 5: แผนร้ายต่อ FBI", "S23 S23-ตอนที่ 10: ภารกิจลับ FBI"
-    ],
-    zero: [
-        "S15 ตอนที่ 719: เวดดิ้งอีฟ (เบอร์เบิน)", "S17 ตอนที่ 823: เบอร์เบินเคลื่อนไหว", "S19 ตอนที่ 936: เป้าหมายคืออามุโร่", 
-        "S21 S21-ตอนที่ 22: อามุโร่ ปะทะ รัม", "S23 S23-ตอนที่ 45: ความลับของ Zero"
-    ],
-    heiji: [
-        "S1 ตอนที่ 48: ยอดนักสืบตะวันตก", "S3 ตอนที่ 124: คดีฆาตกรรมต่อเนื่องที่นานิวะ", "S5 ตอนที่ 238: เฮย์จิกับความตายที่ใกล้เข้ามา", 
-        "S13 ตอนที่ 667: คัมภีร์ของโฮล์ม", "S20 S20-ตอนที่ 2: ทัศนศึกษาสีแดง"
-    ]
+    black_org: ["S1 ตอนที่ 1: จุดเริ่มต้น", "S11 ตอนที่ 538: ดำปะทะแดงเดือด", "S15 ตอนที่ 753: รถด่วนทมิฬ"],
+    kid: ["S2 ตอนที่ 78: โคนันปะทะจอมโจรคิด", "S22 ตอนที่ 15: คิดปะทะโคนันในวันหิมะ"],
+    ai: ["S3 ตอนที่ 136: ผู้มาจากองค์กรชุดดำ", "S21 ตอนที่ 40: ความทรงจำของไอ"],
+    fbi: ["S6 ตอนที่ 249: ผู้มาจากชิคาโก้", "S23 ตอนที่ 10: ภารกิจลับ FBI"],
+    zero: ["S15 ตอนที่ 719: เวดดิ้งอีฟ", "S23 ตอนที่ 45: ความลับของ Zero"],
+    heiji: ["S1 ตอนที่ 48: ยอดนักสืบตะวันตก", "S20 ตอนที่ 2: ทัศนศึกษาสีแดง"]
 };
 
 const movieNames = [
@@ -309,7 +274,8 @@ const movieNames = [
     "ปริศนานักฆ่าทรยศ", "ปริศนามรณะเหนือน่านฟ้า", "15 นาทีเฉียดตาย", "ภาคระทึกขวัญยุทธจักรลูกหนัง",
     "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "ปริศนาเงามรณะตัวสำรอง",
     "ปริศนาเพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง",
-    "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ"
+    "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ",
+    "ลูแปงที่ 3 ปะทะ ยอดนักสืบจิ๋วโคนัน เดอะมูฟวี่ (2013)" // [นำกลับมา]
 ];
 
 // --- 2. System Core State ---
@@ -317,8 +283,6 @@ let history = JSON.parse(localStorage.getItem('conan_v38_data')) || [];
 let spinning = false;
 
 // --- 3. Core Logic Functions ---
-
-// ล้างประวัติ
 function clearHistory() {
     if(confirm("ยืนยันการล้างประวัติสุ่มตอนซ้ำ?")) {
         history = [];
@@ -328,13 +292,11 @@ function clearHistory() {
     }
 }
 
-// เช็คสุ่มซ้ำ (Enhanced Security)
 function isDup(text) {
     const clean = text.replace(/[^a-zA-Z0-9ก-๙]/g, "").trim();
     return history.some(item => item.text.replace(/[^a-zA-Z0-9ก-๙]/g, "").trim() === clean);
 }
 
-// ระบบจัดการ Theme
 function changeTheme(c) {
     document.documentElement.style.setProperty('--conan-gold', c);
     addBotMsg("เปลี่ยนธีมระบบเรียบร้อยแล้วค่ะ!");
@@ -344,18 +306,13 @@ function toggleUI() {
     document.getElementById('uiPanel').classList.toggle('active');
 }
 
-// ฟังก์ชันสุ่มหลัก
 function spinProcess(type) {
     if (spinning) return;
-    
-    let res = "";
-    let badge = "";
-    let retryLimit = 5000;
-    let found = false;
+    let res = "", badge = "", retryLimit = 5000, found = false;
 
     while(!found && retryLimit > 0) {
         if (type === 'all' || type === 'series') {
-            const isTrueV = Math.random() < 0.3; // 30% โอกาสได้ TrueVisions
+            const isTrueV = Math.random() < 0.3;
             if(isTrueV) {
                 const seasons = ['s20', 's21', 's22', 's23', 's24', 's25'];
                 const sKey = seasons[Math.floor(Math.random() * seasons.length)];
@@ -378,10 +335,7 @@ function spinProcess(type) {
             res = pool[Math.floor(Math.random() * pool.length)];
             badge = `Target: ${char}`;
         }
-
-        if(!isDup(res)) {
-            found = true;
-        }
+        if(!isDup(res)) found = true;
         retryLimit--;
     }
 
@@ -389,16 +343,13 @@ function spinProcess(type) {
         alert("คุณสุ่มจนครบฐานข้อมูลแล้ว! โปรดล้างประวัติก่อนเริ่มใหม่");
         return;
     }
-
     executeSpin(res, badge);
 }
 
-// Animation Slot
 function executeSpin(txt, b) {
     spinning = true;
     const wrap = document.getElementById('slotWrapper');
     const curtain = document.getElementById('curtainWall');
-    
     curtain.classList.add('active');
     
     setTimeout(() => {
@@ -408,10 +359,7 @@ function executeSpin(txt, b) {
             {h: "LOCATING CASE", p: "TrueVisions/iQIYI"},
             {h: "IDENTIFYING CULPRIT", p: "Detective Conan"}
         ];
-
         let content = dummy.map(d => `<div class="slot-unit"><h3>${d.h}</h3><p>${d.p}</p></div>`).join('');
-        
-        // Split for display
         const parts = txt.split(': ');
         content += `<div class="slot-unit"><h3>${parts[0]}</h3><p>${parts[1] || ""}</p></div>`;
         
@@ -419,10 +367,8 @@ function executeSpin(txt, b) {
         wrap.style.transition = "none";
         wrap.style.transform = "translateY(0)";
         wrap.offsetHeight; 
-        
         wrap.style.transition = "2.5s cubic-bezier(0.1, 0.8, 0.2, 1)";
         wrap.style.transform = `translateY(-${dummy.length * 150}px)`;
-        
         curtain.classList.remove('active');
         
         setTimeout(() => {
@@ -432,12 +378,10 @@ function executeSpin(txt, b) {
             addHist(txt, b);
             spinning = false;
         }, 2600);
-        
     }, 700);
 }
 
 // --- 4. History & Persistence ---
-
 function addHist(t, tag) {
     history.unshift({ id: Date.now(), text: t, tag: tag });
     if(history.length > 2000) history.pop();
@@ -467,8 +411,7 @@ function delItem(id) {
 
 function save() { localStorage.setItem('conan_v38_data', JSON.stringify(history)); }
 
-// --- 5. Chat System ---
-
+// --- 5. Improved Chat Q&A System ---
 function toggleChat() {
     const b = document.getElementById('chatBox');
     b.style.display = b.style.display === 'flex' ? 'none' : 'flex';
@@ -490,17 +433,32 @@ function sendChat() {
     i.value = "";
     
     setTimeout(() => {
-        let r = "กำลังค้นหาข้อมูลในระบบให้คุณ Ayu ค่ะ...";
-        if(v.includes("สุ่ม")) r = "คุณ Ayu สามารถเลือกหมวดหมู่ที่ต้องการแล้วกด 'สุ่ม' ได้เลยค่ะ ระบบจะเช็คประวัติให้ไม่ซ้ำแน่นอน!";
-        if(v.includes("True")) r = "ตอนนี้ระบบรองรับการนับตอนซีซั่น 20-25 แบบ 1-52 ตอนของ TrueVisions แล้วนะคะ!";
-        if(v.includes("มูฟวี่")) r = "เดอะมูฟวี่มีทั้งหมด 28 ภาคค่ะ ภาคล่าสุดคือ 'ปริศนาภาพติดตามรณะ' ค่ะ";
+        let r = "กำลังตรวจสอบฐานข้อมูลให้คุณ Ayu ค่ะ... ลองถามเรื่อง 'ลูแปง', 'ชุดดำ' หรือ 'สุ่มยังไง' ดูนะคะ";
+        const msg = v.toLowerCase();
+
+        // [Logic: Questions & Answers]
+        if(msg.includes("ลูแปง") || msg.includes("lupin")) {
+            r = "คดีปะทะลูแปงที่ 3 มี 2 ภาคหลักค่ะ คือ TV Special (2009) และ The Movie (2013) ซึ่งระบบนำกลับมาให้สุ่มได้แล้วทั้งคู่ค่ะ!";
+        } else if(msg.includes("สุ่ม") || msg.includes("เล่นยังไง")) {
+            r = "คุณ Ayu เลือกปุ่ม 'สุ่มทั้งหมด' หรือ 'สุ่มมูฟวี่' ได้เลยค่ะ ระบบจะเลือกตอนที่ไม่ซ้ำกับใน Investigation Log มาให้ค่ะ";
+        } else if(msg.includes("สวัสดี") || msg.includes("หวัดดี")) {
+            r = "สวัสดีค่ะคุณ Ayu! พร้อมจะไขคดีไปกับโคนันหรือยังคะ?";
+        } else if(msg.includes("ใครคือ") || msg.includes("รู้จัก")) {
+            if(msg.includes("ยิน")) r = "ยิน (Gin) คือสมาชิกระดับสูงขององค์กรชุดดำที่ทำร้ายชินอิจิค่ะ เยือกเย็นและอันตรายมาก!";
+            if(msg.includes("ไคโตะ")) r = "จอมโจรคิด หรือ คุโรบะ ไคโตะ คู่ปรับคนสำคัญของโคนันที่เน้นการขโมยอัญมณีค่ะ";
+            if(msg.includes("เบอร์เบิน")) r = "เบอร์เบิน หรือ อามุโร่ โทโอรุ เป็นสายลับสามหน้า (FBI/ชุดดำ/ตำรวจญี่ปุ่น) ค่ะ";
+        } else if(msg.includes("true")) {
+            r = "ระบบ V3.8 รองรับตอนซีซั่น 20-25 ของ TrueVisions (1-52 ตอน) เรียบร้อยแล้วค่ะ";
+        } else if(msg.includes("ลบประวัติ")) {
+            r = "คุณ Ayu สามารถกดคำว่า [ลบประวัติ] สีแดงในช่อง Investigation Log เพื่อเริ่มสุ่มใหม่ทั้งหมดได้ค่ะ";
+        }
+
         addBotMsg(r);
     }, 700);
 }
 
 // Start
 updateUI();
-
 </script>
 
 </body>
