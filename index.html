@@ -14,7 +14,7 @@
         }
         body { margin: 0; font-family: 'Kanit', sans-serif; background: #000; color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; overflow-x: hidden; }
         
-        /* --- UI Customizer Panel --- */
+        /* --- UI Panels --- */
         #uiPanel { position: fixed; top: 0; left: -300px; width: 260px; height: 100%; background: #111; border-right: 2px solid var(--conan-gold); z-index: 1002; transition: 0.3s; padding: 20px; box-sizing: border-box; }
         #uiPanel.active { left: 0; }
         .config-btn { position: fixed; top: 20px; left: 20px; background: var(--conan-gold); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1001; font-size: 20px; box-shadow: 0 0 15px var(--conan-gold); }
@@ -22,7 +22,6 @@
         .setting-item { margin-bottom: 15px; text-align: left; }
         .setting-item label { display: block; font-size: 0.8rem; margin-bottom: 5px; opacity: 0.8; }
 
-        /* --- UI Styles --- */
         #updateModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-content { background: #111; border: 2px solid var(--conan-gold); border-radius: 20px; padding: 25px; max-width: 400px; width: 85%; text-align: center; }
         .update-list { text-align: left; font-size: 0.8rem; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin: 15px 0; line-height: 1.5; }
@@ -37,38 +36,13 @@
 
         .premium-card { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 24px; padding: 20px; backdrop-filter: blur(15px); }
         
-        /* --- Slot Machine Core --- */
-        .result-container { 
-            margin: 10px 0; 
-            height: 120px; 
-            overflow: hidden; 
-            position: relative;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .slot-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 1.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .slot-item {
-            height: 120px;
-            min-height: 120px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            width: 100%;
-            text-align: center;
-            color: #fff;
-        }
-        .slot-item span { color: var(--conan-gold); font-size: 0.9rem; display: block; margin-top: 5px; font-weight: 300; }
+        /* --- Slot Effect --- */
+        .result-container { margin: 10px 0; height: 120px; overflow: hidden; position: relative; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .slot-wrapper { display: flex; flex-direction: column; align-items: center; transition: transform 1.5s cubic-bezier(0.23, 1, 0.32, 1); }
+        .slot-item { height: 120px; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 600; width: 100%; text-align: center; color: #fff; padding: 0 10px; box-sizing: border-box; }
+        .slot-item span { color: var(--conan-gold); font-size: 0.85rem; display: block; margin-top: 5px; font-weight: 300; }
 
-        .info-badge { display: inline-block; padding: 4px 12px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--conan-gold); border-radius: 50px; font-size: 0.8rem; color: var(--conan-gold); margin-bottom: 5px; opacity: 0; transition: 0.3s; }
+        .info-badge { display: inline-block; padding: 4px 12px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--conan-gold); border-radius: 50px; font-size: 0.75rem; color: var(--conan-gold); margin-bottom: 5px; opacity: 0; transition: 0.3s; }
         .info-badge.show { opacity: 1; }
 
         .btn-main { width: 100%; padding: 12px; font-size: 1rem; font-weight: 600; border-radius: var(--btn-radius); border: none; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; }
@@ -77,7 +51,7 @@
         
         .history-card { margin-top: 20px; text-align: left; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
         .history-title { font-size: 0.85rem; color: var(--conan-gold); margin-bottom: 10px; display: flex; justify-content: space-between; }
-        .history-list { max-height: 250px; overflow-y: auto; font-size: 0.8rem; }
+        .history-list { max-height: 250px; overflow-y: auto; font-size: 0.75rem; }
         .history-item { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
         .history-item.checked span:first-child { text-decoration: line-through; opacity: 0.4; }
         .btn-del { color: var(--danger); cursor: pointer; font-size: 1.1rem; margin-left: 10px; }
@@ -89,28 +63,6 @@
         .door-container.active .door-right { transform: translateX(-100%); }
         
         select { background: #111; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 8px; width: 100%; font-family: 'Kanit'; }
-
-        /* --- Inventory --- */
-        .inventory-card { margin-top: 15px; text-align: left; background: rgba(212, 175, 55, 0.05); border-radius: 15px; padding: 15px; border: 1px dashed var(--conan-gold); }
-        .inventory-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .inventory-title { font-size: 0.85rem; color: var(--conan-gold); font-weight: 600; text-transform: uppercase; }
-        .inventory-list { max-height: 200px; overflow-y: auto; font-size: 0.75rem; color: #bbb; margin-top: 10px; display: none; }
-        .inventory-list.active { display: block; }
-
-        /* --- Chatbot --- */
-        #chatBtn { position: fixed; bottom: 20px; right: 20px; background: var(--conan-gold); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 1001; }
-        #chatWindow { position: fixed; bottom: 90px; right: 20px; width: 320px; height: 450px; background: #111; border: 1px solid var(--conan-gold); border-radius: 15px; display: none; flex-direction: column; overflow: hidden; z-index: 1001; }
-        .chat-header { background: var(--conan-gold); color: #000; padding: 12px; font-weight: 600; text-align: center; }
-        .chat-body { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem; background: #0a0a0a; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 80%; line-height: 1.4; }
-        .bot { background: #222; align-self: flex-start; border: 1px solid #333; }
-        .user { background: var(--conan-gold); color: #000; align-self: flex-end; }
-        .rich-menu-container { background: #111; border-top: 2px solid var(--conan-gold); }
-        .menu-tabs { display: grid; grid-template-columns: 1fr 1fr; }
-        .tab { padding: 10px; text-align: center; font-size: 0.9rem; font-weight: bold; cursor: pointer; background: #222; }
-        .tab.active { background: var(--conan-gold); color: black; }
-        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; background: #1a1a1a; max-height: 150px; overflow-y: auto; }
-        .menu-item { background: #333; padding: 8px 2px; border-radius: 5px; text-align: center; font-size: 0.7rem; cursor: pointer; }
 
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -134,13 +86,6 @@
             <option value="#37d45d">Green (Acid)</option>
         </select>
     </div>
-    <div class="setting-item" style="display:flex; justify-content: space-between; align-items: center;">
-        <label>แสดงแชท</label>
-        <label class="switch">
-            <input type="checkbox" checked onchange="toggleBotUI(this.checked)">
-            <span class="slider"></span>
-        </label>
-    </div>
     <div class="setting-item">
         <label>Button Roundness</label>
         <input type="range" min="0" max="30" value="12" oninput="updateRadius(this.value)">
@@ -150,13 +95,13 @@
 
 <div id="updateModal">
     <div class="modal-content">
-        <h3>📢 อัปเดตล่าสุด V3.6 (Slot Mode)</h3>
+        <h3>📢 อัปเดต V3.6 (S1-S25 Full)</h3>
         <div class="update-list">
-            • <b>Slot Effect:</b> ระบบสุ่มแบบเลื่อนสมจริง!<br>
-            • <b>Anti-Repeat:</b> ป้องกันการสุ่มซ้ำทำงาน 100%<br>
-            • <b>Memory:</b> จดจำประวัติแม้ปิดเบราว์เซอร์
+            • <b>iQIYI:</b> รองรับซีซั่น 1-19 (ตอนที่ 1-993)<br>
+            • <b>TrueVisions:</b> รองรับซีซั่น 20-25 (ตอนที่ 994-1280+)<br>
+            • <b>Character Guide:</b> สุ่มตามตัวละครพร้อมชื่อตอน
         </div>
-        <button class="btn-main btn-gold" onclick="closeModal()">เข้าสู่หน้าหลัก!</button>
+        <button class="btn-main btn-gold" onclick="closeModal()">เริ่มสืบคดี!</button>
     </div>
 </div>
 
@@ -169,13 +114,13 @@
         
         <div class="result-container">
             <div id="slotWrapper" class="slot-wrapper">
-                <div class="slot-item">สุ่มตอนที่ไม่เคยดูได้เลย!</div>
+                <div class="slot-item">เลือกระบบสุ่มด้านล่าง</div>
             </div>
         </div>
         
         <div class="btn-group-grid">
             <button class="btn-main btn-gold" style="grid-column: span 2;" onclick="spinEverything()">สุ่มทุกอย่าง (All In)</button>
-            <button class="btn-main btn-dark" style="grid-column: span 2;" onclick="spinSeries()">สุ่มตอนทั่วไป (TV)</button>
+            <button class="btn-main btn-dark" style="grid-column: span 2;" onclick="spinSeries()">สุ่มตอนทั่วไป (S1-25)</button>
         </div>
 
         <div class="btn-group-grid">
@@ -191,71 +136,51 @@
                     <option value="ai">ไฮบาระ ไอ 🧪</option>
                     <option value="amuro">อามุโร่ ☕</option>
                     <option value="akai">อากาอิ 🔫</option>
-                    <option value="detective_boys">แก๊งนักสืบเยาวชน 🔍</option>
                     <option value="shinichi">คุโด้ ชินอิจิ ⚽</option>
                     <option value="makoto">เคียวโกกุ มาโคโตะ 🥋</option>
                 </select>
             </div>
-            <button class="btn-main" style="background:none; border:1px solid var(--conan-gold); color:white; grid-column: span 2;" onclick="spinChar()">สุ่มตามตัวละคร</button>
+            <button class="btn-main" style="background:none; border:1px solid var(--conan-gold); color:white; grid-column: span 2;" onclick="spinChar()">สุ่มคดีตัวละคร</button>
         </div>
 
         <div class="history-card">
-            <div class="history-title">ประวัติ (ห้ามสุ่มซ้ำ) <span onclick="clearAllHistory()" style="cursor:pointer; opacity:0.6;">[ล้างทั้งหมด]</span></div>
+            <div class="history-title">ประวัติการดู <span onclick="clearAllHistory()" style="cursor:pointer; opacity:0.6;">[ล้างประวัติ]</span></div>
             <div id="historyList" class="history-list"></div>
-        </div>
-
-        <div class="inventory-card">
-            <div class="inventory-header" onclick="toggleInventory()">
-                <div class="inventory-title">📂 คลังรายชื่อคดี</div>
-                <div id="invArrow">▼</div>
-            </div>
-            <div id="inventoryList" class="inventory-list"></div>
-        </div>
-    </div>
-</div>
-
-<div id="chatBtn" onclick="toggleChat()">🔍</div>
-<div id="chatWindow">
-    <div class="chat-header">ผู้ช่วยนักสืบ (V3.6)</div>
-    <div class="chat-body" id="chatBody">
-        <div class="msg bot">สวัสดีค่ะ Ayu! พร้อมช่วยสืบคดีแล้วนะ!</div>
-    </div>
-    <div class="rich-menu-container">
-        <div class="menu-tabs">
-            <div class="tab active" id="tabMain" onclick="switchTab('main')">ข้อมูล</div>
-            <div class="tab" id="tabPromo" onclick="switchTab('promo')">FAQ</div>
-        </div>
-        <div id="gridMain" class="menu-grid">
-            <div class="menu-item" onclick="botReply('สุ่มยังไง')">สุ่มยังไง</div>
-            <div class="menu-item" onclick="botReply('ล้างประวัติ')">ล้างประวัติ</div>
-            <div class="menu-item" onclick="botReply('ตอนแนะนำ')">ตอนแนะนำ</div>
-        </div>
-        <div id="gridPromo" class="menu-grid" style="display:none;">
-            <div class="menu-item" onclick="botReply('รัมคือใคร')">เผยตัวจริง RUM</div>
-            <div class="menu-item" onclick="botReply('ไฮบาระชอบโคนัน?')">ไอจังชอบโคนัน?</div>
-            <div class="menu-item" onclick="botReply('ทำไมโคนันไม่โต')">ทำไมไม่โตสักที?</div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- [Data] ---
+    // --- [Data & Logic] ---
     const movieNames = ["คดีปริศนาระเบิดระฟ้า", "คดีฆาตกรรมไพ่ปริศนา", "ปริศนาพ่อมดคนสุดท้ายแห่งศตวรรษ", "คดีฆาตกรรมนัยน์ตาปริศนา", "คดีปริศนาเส้นตายสู่สวรรค์", "ปริศนาบนถนนสายมรณะ", "คดีฆาตกรรมแห่งเมืองปริศนา", "มนตราแห่งรัตติกาลสีเงิน", "ยุทธการเหนือห้วงทะเลลึก", "บทเพลงมรณะแด่เหล่าเหล่านักสืบ", "ปริศนามหาขุมทรัพย์โจรสลัด", "บทเพลงแห่งความตาย", "ปริศนานักฆ่าทรยศ", "ปริศนามรณะเหนือน่านฟ้า", "15 นาทีเฉียดตายไขปริศนามรณะ", "ภาคระทึกขวัญยุทธจักรลูกหนัง", "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "ปริศนาเงามรณะตัวสำรอง", "ปริศนาเพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง", "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ"];
+    
     const charData = { 
-        black_org: ["ซีซั่น 1 ตอนที่ 1 (จุดเริ่มต้น)", "ซีซั่น 3 ตอนที่ 136 (ไฮบาระปรากฏตัว)", "ซีซั่น 11 ตอนที่ 459 (ดำปะทะแดง)", "ซีซั่น 15 ตอนที่ 753 (รถด่วนทมิฬ)", "ซีซั่น 21 ตอนที่ 1131 (จุดเริ่มต้นรัม)"],
-        kid: ["ซีซั่น 2 ตอนที่ 78 (โคนันปะทะคิด)", "ซีซั่น 8 ตอนที่ 386 (มหัศจรรย์กลางเวหา)", "ซีซั่น 16 ตอนที่ 776 (คิดปะทะมาโคโตะ)"],
-        ai: ["ซีซั่น 3 ตอนที่ 136 (ไฮบาระ)", "ซีซั่น 4 ตอนที่ 148 (วิกฤติของไอ)", "ซีซั่น 13 ตอนที่ 648 (ความลับของไอจัง)"],
-        amuro: ["ซีซั่น 15 ตอนที่ 719 (พิธีวิวาห์อันตราย)", "ซีซั่น 17 ตอนที่ 823 (เบอร์เบินเคลื่อนไหว)", "ซีซั่น 21 ตอนที่ 1110 (อามุโร่ ปะทะ รัม)"],
-        akai: ["ซีซั่น 7 ตอนที่ 309 (รอยยิ้มอากาอิ)", "ซีซั่น 11 ตอนที่ 459 (ดำปะทะแดงเดือด)", "ซีซั่น 17 ตอนที่ 832 (ความจริงของสีแดง)"],
-        detective_boys: ["ซีซั่น 1 ตอนที่ 4 (รหัสลับบนแผนที่)", "ซีซั่น 5 ตอนที่ 203 (เห็ดกับแก๊งนักสืบ)", "ซีซั่น 19 ตอนที่ 951 (โคมไฟสีแดง)"],
-        shinichi: ["ซีซั่น 1 ตอนที่ 1 (คดีรถไฟเหาะ)", "ซีซั่น 4 ตอนที่ 173 (การฟื้นคืนชีพ)", "ซีซั่น 20 ตอนที่ 982 (ทัศนศึกษาสีแดง)"],
-        makoto: ["ซีซั่น 4 ตอนที่ 163 (มาโคโตะ ปรากฏตัว)", "ซีซั่น 10 ตอนที่ 504 (มาโคโตะปะทะคาราเต้)", "ซีซั่น 19 ตอนที่ 962 (หมัดที่แกร่งที่สุด)"]
+        black_org: [
+            "S1 ตอนที่ 1: คดีรถไฟเหาะ (ยีน/ว็อดก้า)", "S3 ตอนที่ 135: คดีฆาตกรรมศาสตราจารย์มหาวิทยาลัย (ไฮบาระปรากฏตัว)", "S4 ตอนที่ 190: การคืนชีพที่เสี่ยงตาย", "S6 ตอนที่ 249: ผู้มาจากชิคาโก้", "S8 ตอนที่ 371: การปะทะครั้งเผชิญหน้ากับองค์กรชุดดำ", "S11 ตอนที่ 538: ดำปะทะแดงเดือด", "S15 ตอนที่ 753: รถด่วนสีดำ (Mystery Train)", "S17 ตอนที่ 832: ความจริงของสีแดง", "S21 ตอนที่ 1131: งานเลี้ยงดำเนินไปสู่ความตาย (รัมเคลื่อนไหว)"
+        ],
+        kid: [
+            "S2 ตอนที่ 78: จอมโจรคิดปะทะโคนัน", "S3 ตอนที่ 142: คดีฆาตกรรมคนรักมายากล", "S5 ตอนที่ 235: รวมพลยอดนักสืบ", "S8 ตอนที่ 386: การเดินกลางเวหาของจอมโจรคิด", "S11 ตอนที่ 562: เคล็ดลับการวาร์ป", "S16 ตอนที่ 776: จอมโจรคิดปะทะเคียวโกกุ มาโคโตะ", "S20 ตอนที่ 1039: จอมโจรคิดกับกล่องโชว์เคส"
+        ],
+        ai: [
+            "S3 ตอนที่ 136: ผู้หญิงที่มาจากองค์กรชุดดำ", "S4 ตอนที่ 148: คดีฆาตกรรมในสนามแข่งรถ", "S7 ตอนที่ 301: ขบวนพาเหรดของความชั่วร้าย", "S13 ตอนที่ 648: ความลับของไฮบาระ ไอ", "S18 ตอนที่ 899: แก๊งนักสืบเยาวชนในความมืด", "S22 ตอนที่ 1145: ความแค้นของไฮบาระ"
+        ],
+        amuro: [
+            "S15 ตอนที่ 719: เวดดิ้งอีฟ", "S15 ตอนที่ 753: รถด่วนทมิฬ", "S17 ตอนที่ 823: เบอร์เบินเคลื่อนไหว", "S17 ตอนที่ 832: คดีพัวพันสีแดง", "S19 ตอนที่ 936: เป้าหมายคืออามุโร่", "S21 ตอนที่ 1110: ตัวตนที่แท้จริงของอามุโร่"
+        ],
+        akai: [
+            "S6 ตอนที่ 249: ชายผู้อยู่เบื้องหลัง", "S7 ตอนที่ 309: คดีรอยยิ้มอากาอิ", "S11 ตอนที่ 538: จุดจบของอากาอิ", "S17 ตอนที่ 833: การกลับมาของอากาอิ", "S21 ตอนที่ 1092: กระสุนที่เป็นหนึ่งเดียว"
+        ],
+        shinichi: [
+            "S1 ตอนที่ 1: คดีรถไฟเหาะ", "S4 ตอนที่ 174: การคืนชีพที่สิ้นหวัง", "S6 ตอนที่ 312: คุโด้ ชินอิจิ กับคดีที่นิวยอร์ก", "S13 ตอนที่ 667: คัมภีร์ของโฮล์ม", "S20 ตอนที่ 982: ทัศนศึกษาสีแดง (ภาคคนรัก)"
+        ],
+        makoto: [
+            "S4 ตอนที่ 163: คดีหน้าร้อนอันตรายของโซโนโกะ", "S10 ตอนที่ 504: มาโคโตะปะทะคาราเต้", "S16 ตอนที่ 776: คิดปะทะมาโคโตะ", "S21 ตอนที่ 1044: มาโคโตะผู้ตกอยู่ในอันตราย"
+        ]
     };
 
     let history = JSON.parse(localStorage.getItem('conan_slot_v3')) || [];
     let currentResultHTML = "";
 
-    // --- [Core Logic] ---
     function isDuplicate(text) {
         const cleanTarget = text.replace(/<[^>]*>?/gm, '').trim();
         return history.some(item => item.text.replace(/<[^>]*>?/gm, '').trim() === cleanTarget);
@@ -263,15 +188,12 @@
 
     function startSpin(fn) {
         const wrapper = document.getElementById('slotWrapper');
-        
-        // รัน logic สุ่มก่อนเพื่อเช็คว่าเต็มหรือยัง
         const canSpin = fn(); 
-        if (canSpin === false) return; // ถ้าเต็มแล้ว ไม่ต้องรันประตูหรือ Slot
+        if (canSpin === false) return;
 
         document.getElementById('doorSystem').classList.add('active');
-        
         setTimeout(() => {
-            const dummyItems = ["Detective Conan", "Searching...", "Case Closed", "Target Found", "Analyzing...", "Next Case?", "Evidence..."];
+            const dummyItems = ["Detective Conan", "Searching...", "Found Evidence", "S1-S19 iQIYI", "S20-S25 True"];
             let content = "";
             dummyItems.forEach(item => content += `<div class="slot-item">${item}</div>`);
             content += `<div class="slot-item">${currentResultHTML}</div>`;
@@ -291,17 +213,42 @@
 
     function spinSeries() {
         startSpin(() => {
-            let res = "", retry = 0, found = false;
-            while (retry < 1000) {
-                const ep = Math.floor(Math.random() * 1100) + 1;
-                const s = Math.ceil(ep / 52);
-                res = `ซีซั่น ${s > 22 ? 22 : s} ตอนที่ ${ep}`;
+            let res = "", platform = "", retry = 0, found = false;
+            while (retry < 2000) {
+                const ep = Math.floor(Math.random() * 1280) + 1; // สุ่มได้ถึงตอนปัจจุบัน
+                let s = Math.ceil(ep / 52); 
+                if (s > 25) s = 25;
+
+                if (ep <= 993) {
+                    platform = "iQIYI (S1-19)";
+                    res = `ซีซั่น ${s} ตอนที่ ${ep} [iQIYI]`;
+                } else {
+                    platform = "TrueVisions (S20-25)";
+                    res = `ซีซั่น ${s} ตอนที่ ${ep} [TrueVisions]`;
+                }
+
                 if (!isDuplicate(res)) { found = true; break; }
                 retry++;
             }
-            if (!found) { alert("สุ่มตอนทั่วไปจนครบหมดแล้วจ้า Ayu! ล้างประวัติก่อนนะ"); return false; }
+            if (!found) { alert("สุ่มจนครบ 1200+ ตอนแล้วจ้า Ayu! ล้างประวัติก่อนนะ"); return false; }
             currentResultHTML = res;
-            updateBadge("iQIYI / TrueID"); addH(res);
+            updateBadge(platform); addH(res);
+            return true;
+        });
+    }
+
+    function spinChar() {
+        startSpin(() => {
+            const c = document.getElementById('charSelect').value;
+            const available = charData[c].filter(p => !isDuplicate(p));
+            if (available.length === 0) { alert("ดูตอนของตัวละครนี้ครบหมดแล้ว!"); return false; }
+            
+            let rawRes = available[Math.floor(Math.random() * available.length)];
+            let platform = rawRes.includes("S20") || rawRes.includes("S21") || rawRes.includes("S22") || rawRes.includes("S23") || rawRes.includes("S24") || rawRes.includes("S25") ? "TrueVisions" : "iQIYI";
+            
+            let resWithPlat = `${rawRes} [${platform}]`;
+            currentResultHTML = `${rawRes.split(': ')[0]} <span>${rawRes.split(': ')[1]} [${platform}]</span>`;
+            updateBadge(`ตัวละคร: ${c}`); addH(resWithPlat);
             return true;
         });
     }
@@ -309,8 +256,7 @@
     function spinMovie() {
         startSpin(() => {
             const available = movieNames.map((n, i) => `Movie ${i+1}: ${n}`).filter(m => !isDuplicate(m));
-            if (available.length === 0) { alert("ดูมูฟวี่ครบหมดทุกภาคแล้วจ้า Ayu!"); return false; }
-            
+            if (available.length === 0) { alert("ดูมูฟวี่ครบหมดทุกภาคแล้ว!"); return false; }
             let res = available[Math.floor(Math.random() * available.length)];
             currentResultHTML = `Movie ${res.split(': ')[0].split(' ')[1]} <span>${res.split(': ')[1]}</span>`;
             updateBadge("เดอะมูฟวี่"); addH(res);
@@ -322,34 +268,18 @@
         startSpin(() => {
             const pool = ["Lupin III vs Conan (TV Special 2009)", "Lupin III vs Conan (The Movie 2013)"];
             const available = pool.filter(p => !isDuplicate(p));
-            if (available.length === 0) { alert("ดูการปะทะลูแปงจนครบแล้วจ้า Ayu!"); return false; }
-            
+            if (available.length === 0) { alert("ดูการปะทะลูแปงครบแล้ว!"); return false; }
             let res = available[Math.floor(Math.random() * available.length)];
-            currentResultHTML = res;
-            updateBadge("ตอนพิเศษ"); addH(res);
-            return true;
-        });
-    }
-
-    function spinChar() {
-        startSpin(() => {
-            const c = document.getElementById('charSelect').value;
-            const available = charData[c].filter(p => !isDuplicate(p));
-            if (available.length === 0) { alert("เก็บตอนของตัวละครนี้ครบหมดแล้วจ้า!"); return false; }
-            
-            let rawRes = available[Math.floor(Math.random() * available.length)];
-            currentResultHTML = rawRes.includes('(') ? `${rawRes.split(' (')[0]} <span>(${rawRes.split(' (')[1]}</span>` : rawRes;
-            updateBadge(`ตัวละคร: ${c}`); addH(rawRes);
+            currentResultHTML = res; updateBadge("ตอนพิเศษ"); addH(res);
             return true;
         });
     }
 
     function spinEverything() {
         const r = Math.random();
-        if (r < 0.6) spinSeries(); else if (r < 0.85) spinMovie(); else spinLupin();
+        if (r < 0.6) spinSeries(); else if (r < 0.85) spinMovie(); else spinChar();
     }
 
-    // --- [UI Helpers] ---
     function updateBadge(b) { document.getElementById('badge').innerHTML = b; }
     function addH(t) { 
         const cleanText = t.replace(/<[^>]*>?/gm, '').trim();
@@ -364,32 +294,12 @@
     }
     function toggleC(id) { const i = history.find(h => h.id === id); if(i) i.checked = !i.checked; save(); }
     function delI(id, e) { e.stopPropagation(); history = history.filter(h => h.id !== id); save(); }
-    function clearAllHistory() { if(confirm("ล้างทั้งหมด?")) { history = []; save(); } }
-    
+    function clearAllHistory() { if(confirm("ล้างประวัติทั้งหมด?")) { history = []; save(); } }
     function toggleUIPanel() { document.getElementById('uiPanel').classList.toggle('active'); }
     function updateTheme(color) { document.documentElement.style.setProperty('--conan-gold', color); }
     function updateRadius(val) { document.documentElement.style.setProperty('--btn-radius', val + 'px'); }
     function closeModal() { document.getElementById('updateModal').style.display = 'none'; }
-    function toggleInventory() { document.getElementById('inventoryList').classList.toggle('active'); }
-    function toggleChat() { const win = document.getElementById('chatWindow'); win.style.display = win.style.display === 'flex' ? 'none' : 'flex'; }
-    function toggleBotUI(show) { document.getElementById('chatBtn').style.display = show ? 'flex' : 'none'; }
-
-    function botReply(cmd) {
-        const b = document.getElementById('chatBody');
-        b.innerHTML += `<div class="msg user">${cmd}</div>`;
-        setTimeout(() => {
-            const r = cmd === 'สุ่มยังไง' ? 'เลือกหมวดแล้วกดปุ่ม ระบบจะเลื่อนหาตอนใหม่ที่ไม่เคยดูให้แบบ Slot Machine ค่ะ!' : 'คดีนี้อยู่ในระหว่างสืบสวน ลองดูตอนอื่นๆ ก่อนนะ!';
-            b.innerHTML += `<div class="msg bot">${r}</div>`;
-            b.scrollTop = b.scrollHeight;
-        }, 500);
-    }
-    function switchTab(t) {
-        document.getElementById('tabMain').classList.toggle('active', t==='main');
-        document.getElementById('tabPromo').classList.toggle('active', t==='promo');
-        document.getElementById('gridMain').style.display = t==='main' ? 'grid':'none';
-        document.getElementById('gridPromo').style.display = t==='promo' ? 'grid':'none';
-    }
-
+    
     save();
 </script>
 </body>
