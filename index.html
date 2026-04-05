@@ -148,6 +148,22 @@
         .curtain-wall.active .curtain-left { transform: translateX(0); }
         .curtain-wall.active .curtain-right { transform: translateX(0); }
 
+        /* --- New: Patch Notes UI --- */
+        #patchNotesOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 5000; animation: fadeIn 0.4s ease;
+        }
+        .patch-card {
+            background: #0d0d0d; border: 2px solid var(--conan-gold);
+            width: 90%; max-width: 450px; border-radius: 30px; padding: 35px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2); text-align: left;
+        }
+        .patch-card h2 { color: var(--conan-gold); margin-top: 0; letter-spacing: 2px; }
+        .patch-list { margin: 20px 0; padding-left: 20px; color: #ccc; }
+        .patch-list li { margin-bottom: 12px; font-size: 0.95rem; }
+
         @media (max-width: 600px) {
             .main-header { font-size: 1.8rem; letter-spacing: 2px; }
             #chatBox { width: 92%; right: 4%; bottom: 100px; }
@@ -156,6 +172,20 @@
     </style>
 </head>
 <body>
+
+<div id="patchNotesOverlay">
+    <div class="patch-card">
+        <h2>NEW PATCH V3.8.5</h2>
+        <p style="color:var(--conan-gold); font-size: 0.8rem; margin-bottom: 20px;">LUPIN III CROSSOVER UPDATE</p>
+        <ul class="patch-list">
+            <li>เพิ่มหมวดหมู่ <b>Lupin III vs Detective Conan</b> (2009/2013)</li>
+            <li>เพิ่มการสุ่มคดีตามกลุ่มตัวละคร <b>"แก๊งนักสืบเยาวชน"</b></li>
+            <li>ปรับปรุงระบบ <b>Database Syncing</b> ให้ลื่นไหลขึ้น</li>
+            <li>เพิ่ม UI Curtain Effect ขณะคำนวณผล</li>
+        </ul>
+        <button class="action-btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="closePatch()">รับทราบการอัปเดต</button>
+    </div>
+</div>
 
 <div class="config-btn" onclick="toggleUI()">⚙️</div>
 <div id="uiPanel">
@@ -298,6 +328,10 @@ const movieNames = [
 
 let history = JSON.parse(localStorage.getItem('conan_v38_data')) || [];
 let spinning = false;
+
+function closePatch() {
+    document.getElementById('patchNotesOverlay').style.display = 'none';
+}
 
 function clearHistory() {
     if(confirm("ยืนยันการล้างประวัติสุ่ม?")) {
