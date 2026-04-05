@@ -148,7 +148,6 @@
         .curtain-wall.active .curtain-left { transform: translateX(0); }
         .curtain-wall.active .curtain-right { transform: translateX(0); }
 
-        /* --- New: Patch Notes UI --- */
         #patchNotesOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
@@ -163,6 +162,23 @@
         .patch-card h2 { color: var(--conan-gold); margin-top: 0; letter-spacing: 2px; }
         .patch-list { margin: 20px 0; padding-left: 20px; color: #ccc; }
         .patch-list li { margin-bottom: 12px; font-size: 0.95rem; }
+
+        /* --- NEW: Database Viewer Page --- */
+        #dbViewer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 6000; display: none; flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+        .db-header {
+            padding: 25px; border-bottom: 1px solid var(--conan-gold);
+            display: flex; justify-content: space-between; align-items: center;
+            background: #0d0d0d;
+        }
+        .db-content { flex: 1; overflow-y: auto; padding: 25px; }
+        .db-section { margin-bottom: 40px; }
+        .db-section h4 { color: var(--conan-gold); border-left: 4px solid var(--conan-gold); padding-left: 15px; margin-bottom: 15px; }
+        .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+        .db-item { background: #111; padding: 12px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #222; }
 
         @media (max-width: 600px) {
             .main-header { font-size: 1.8rem; letter-spacing: 2px; }
@@ -181,10 +197,19 @@
             <li>เพิ่มหมวดหมู่ <b>Lupin III vs Detective Conan</b> (2009/2013)</li>
             <li>เพิ่มการสุ่มคดีตามกลุ่มตัวละคร <b>"แก๊งนักสืบเยาวชน"</b></li>
             <li>ปรับปรุงระบบ <b>Database Syncing</b> ให้ลื่นไหลขึ้น</li>
-            <li>เพิ่ม UI Curtain Effect ขณะคำนวณผล</li>
+            <li>เพิ่มหน้า <b>Database Viewer</b> ตรวจสอบรายชื่อตอนทั้งหมด</li>
         </ul>
         <button class="action-btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="closePatch()">รับทราบการอัปเดต</button>
     </div>
+</div>
+
+<div id="dbViewer">
+    <div class="db-header">
+        <h2 style="margin:0; color:var(--conan-gold);">DATABASE ARCHIVE</h2>
+        <button class="action-btn" onclick="toggleDB()" style="padding: 8px 20px;">กลับหน้าหลัก</button>
+    </div>
+    <div class="db-content" id="dbContent">
+        </div>
 </div>
 
 <div class="config-btn" onclick="toggleUI()">⚙️</div>
@@ -202,7 +227,8 @@
         </select>
     </div>
     <div style="margin-top:30px">
-        <button class="action-btn btn-primary" style="width:100%" onclick="toggleUI()">SAVE & EXIT</button>
+        <button class="action-btn btn-primary" style="width:100%; margin-bottom:10px;" onclick="toggleDB()">OPEN DATABASE VIEWER</button>
+        <button class="action-btn" style="width:100%" onclick="toggleUI()">SAVE & EXIT</button>
     </div>
 </div>
 
@@ -349,6 +375,48 @@ function changeTheme(c) {
 
 function toggleUI() {
     document.getElementById('uiPanel').classList.toggle('active');
+}
+
+/* --- NEW: Function to View All Episodes --- */
+function toggleDB() {
+    const db = document.getElementById('dbViewer');
+    if(db.style.display === 'flex') {
+        db.style.display = 'none';
+    } else {
+        renderDatabase();
+        db.style.display = 'flex';
+        toggleUI(); // Close sidebar
+    }
+}
+
+function renderDatabase() {
+    const cont = document.getElementById('dbContent');
+    let html = "";
+
+    // Render Lupin
+    html += `<div class="db-section"><h4>🎭 LUPIN III VS CONAN</h4><div class="db-grid">`;
+    caseDatabase.lupin.forEach(l => html += `<div class="db-item">${l}</div>`);
+    html += `</div></div>`;
+
+    // Render Movies
+    html += `<div class="db-section"><h4>🎬 THE MOVIES (1-28)</h4><div class="db-grid">`;
+    movieNames.forEach((m, i) => html += `<div class="db-item">Movie ${i+1}: ${m}</div>`);
+    html += `</div></div>`;
+
+    // Render Character Highlight
+    html += `<div class="db-section"><h4>👥 CHARACTER HIGHLIGHTS</h4><div class="db-grid">`;
+    for(let char in charCases) {
+        charCases[char].forEach(c => html += `<div class="db-item"><b>[${char}]</b> ${c}</div>`);
+    }
+    html += `</div></div>`;
+
+    // Render TV Series
+    html += `<div class="db-section"><h4>📺 TV SERIES (iQIYI/TRUE)</h4><div class="db-grid">`;
+    caseDatabase.iqiyi.forEach(c => html += `<div class="db-item">S${c.s} Ep${c.ep}: ${c.title}</div>`);
+    html += `<div class="db-item">...และซีรีส์ TrueVisions ซีซั่น 20-25 (รวมกว่า 200 ตอน)</div>`;
+    html += `</div></div>`;
+
+    cont.innerHTML = html;
 }
 
 function spinProcess(type) {
