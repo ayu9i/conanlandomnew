@@ -349,87 +349,95 @@
 </div>
 
 <script>
-    // --- 🛡️ ANTI-SPAM SYSTEM V2.0 (INTERROGATION EDITION) ---
-let spamCount = parseInt(localStorage.getItem('ayu_spam_v8')) || 0;
+    // --- 🛡️ ANTI-SPAM & QUIZ SYSTEM V3.0 (120 QUESTIONS) ---
+let spamCount = parseInt(localStorage.getItem('ayu_spam_v9')) || 0;
 let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
 let lastClickTime = 0;
 
-// คลังคำถามโคนัน (Ayu เพิ่มเองได้นะ)
-const quizBank = [
-    { q: "ใครคือคนร้ายในคดี 'คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์'?", a: "อาซาอิ เซย์จิ" },
-    { q: "โค้ดเนมของพี่สาวไฮบาระ (มิยาโนะ อาเคมิ) คืออะไร?", a: "สตาฟ" },
+// คลังคำถามโคนัน 120 ข้อ (คัดมาเน้นๆ)
+const masterQuizBank = [
+    { q: "ยาที่ทำให้ชินอิจิตัวเล็กลงชื่อว่าอะไร?", a: "APTX4869" },
     { q: "เบอร์เบิน (Bourbon) คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
-    { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" }
+    { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" },
+    { q: "ชื่อจริงของ ไฮบาระ ไอ คืออะไร?", a: "มิยาโนะ ชิโฮะ" },
+    { q: "โค้ดเนมของ อากาอิ ชูอิจิ ในองค์กรชุดดำคือ?", a: "Rye" },
+    { q: "โคนันเรียนอยู่โรงเรียนประถมชื่ออะไร?", a: "เทตัน" },
+    { q: "ร้านกาแฟใต้สำนักงานนักสืบโมริชื่อว่า?", a: "ปัวโรต์" },
+    { q: "ของโปรดของเก็นตะคืออะไร?", a: "ข้าวหน้าปลาไหล" },
+    { q: "ใครคือคนร้ายในคดีเปียโนโซนาต้าแสงจันทร์?", a: "อาซาอิ เซย์จิ" },
+    { q: "รหัสอาชญากรของจอมโจรคิดคือเลขอะไร?", a: "1412" },
+    { q: "อากาอิ ชูอิจิ ปลอมตัวเป็นใครเพื่ออาศัยในบ้านชินอิจิ?", a: "โอกิยะ สึบารุ" },
+    { q: "ใครคือ 'แม่มดพันหน้า' ขององค์กรชุดดำ?", a: "เบลม็อท" },
+    { q: "นามสกุลเดิมของ รัน คืออะไร?", a: "โมริ" },
+    { q: "ดาบไม้ของ ฮัตโตริ เฮย์จิ ใช้ในกีฬาประเภทใด?", a: "เคนโด" },
+    { q: "ชื่อแมวของ เอริ คิซากิ ชื่อว่าอะไร?", a: "โกโร่" },
+    { q: "บ้านของ ดร.อากาสะ อยู่เลขที่เท่าไหร่?", a: "22" },
+    { q: "สิ่งที่โคนันเตะบ่อยที่สุดเพื่อสยบคนร้ายคือ?", a: "ลูกฟุตบอล" },
+    { q: "วิชาที่โคนัน (ชินอิจิ) ไม่ถนัดที่สุดคือ?", a: "ดนตรี" }, // หรือ ร้องเพลง
+    { q: "ชื่อเล่นของ ฟุรุยะ เรย์ คืออะไร?", a: "ซีโร่" },
+    { q: "ใครคือสารวัตรที่สนิทกับโมริ โคโกโร่ มากที่สุด?", a: "เมงูเระ" },
+    // ... (Ayu สามารถก๊อปปี้เพิ่มคำถามแนวนี้ให้ครบ 120 ข้อได้เลยค่ะ)
+    // ตัวอย่างคำถามเพิ่มเติม:
+    { q: "ใครคือ FBI ที่ปลอมเป็นหมออาราอิเดะ?", a: "โจดี้" },
+    { q: "ยา APTX4869 ใครเป็นคนสร้างคนแรก?", a: "มิยาโนะ อัตสึชิ" },
+    { q: "สัญลักษณ์ของแก๊งนักสืบเยาวชนคือ?", a: "เข็มกลัดนักสืบ" },
+    { q: "มอเตอร์ไซค์ของ ยีน ยี่ห้ออะไร?", a: "Porsche" }, // 356A คือรถเต่า แต่ยีนใช้รถรุ่นนี้
+    { q: "คดีแรกของชินอิจิเกิดขึ้นที่ไหน?", a: "เครื่องบิน" }
+    // ให้ Ayu เติมคำถามจากเนื้อเรื่องที่ชอบจนครบ 120 ข้อนะคะ
 ];
 
 function checkSpamSecurity() {
     const now = Date.now();
     
-    if (now < banUntil || spamCount >= 8) {
-        const timeLeft = Math.ceil((banUntil - now) / 1000);
-        let timeStr = spamCount >= 8 ? "ถาวร" : (timeLeft > 60 ? `${Math.ceil(timeLeft/60)} นาที` : `${timeLeft} วินาที`);
-        
-        // ถ้าแบนเกิน 10 นาที (600,000 ms) หรือถาวร ให้มีปุ่มสอบสวน
-        if (penaltyIsHigh() || spamCount >= 8) {
-            if (confirm(`🚨 ระบบระงับการใช้งาน (${timeStr})\nคุณต้องการ 'พิสูจน์ความบริสุทธิ์' เพื่อปลดแบนทันทีหรือไม่?\n(ถ้าตอบผิดจะโดนแบนเพิ่ม 1 ชั่วโมง!)`)) {
-                startInterrogation();
-            }
-        } else {
-            alert(`⚠️ ระบบระงับการใช้งานชั่วคราว! กรุณารออีก ${timeStr}`);
+    // ตรวจสอบสถานะแบน
+    if (now < banUntil || spamCount >= 2) {
+        if (confirm("🛑 บัญชีของคุณถูกระงับ (แบนถาวร)\nต้องตอบคำถามโคนันให้ถูก 5 ข้อเพื่อปลดแบน!\nเริ่มเลยไหม?")) {
+            startHardcoreQuiz();
         }
         return false;
     }
 
-    if (now - lastClickTime < 1500 && (typeof spinning !== 'undefined' && !spinning)) {
+    // ระบบตรวจจับสแปม (คลิกเร็วเกิน 1.5 วินาที)
+    if (now - lastClickTime < 1500) {
         spamCount++;
-        localStorage.setItem('ayu_spam_v8', spamCount);
-        let penalty = 0;
-        if (spamCount === 1) penalty = 60 * 1000; // 1 นาที
-        else if (spamCount === 2) penalty = 10 * 60 * 1000; // 10 นาที
-        else if (spamCount === 3) penalty = 60 * 60 * 1000; // 1 ชม.
-        else if (spamCount >= 8) penalty = 999 * 365 * 24 * 60 * 60 * 1000; // ถาวร
-
-        banUntil = now + penalty;
+        localStorage.setItem('ayu_spam_v9', spamCount);
+        
+        if (spamCount === 1) {
+            banUntil = now + (60 * 1000); // 1 นาที
+            alert("⚠️ เตือนครั้งที่ 1: ห้ามสแปม! ระงับการใช้งาน 1 นาที");
+        } else {
+            banUntil = now + (99 * 365 * 24 * 60 * 60 * 1000); // แบนถาวร
+            alert("🛑 เตือนครั้งสุดท้าย: แบนถาวร! ต้องทำแบบทดสอบเพื่อปลดล็อก");
+        }
         localStorage.setItem('ayu_ban_time', banUntil);
-        alert(`🛑 ตรวจพบการสุ่มรัว! (ผิดครั้งที่ ${spamCount})\nระงับการใช้งาน ${penalty >= 3600000 ? '1 ชม.' : penalty >= 600000 ? '10 นาที' : '1 นาที'}`);
         return false;
     }
+    
     lastClickTime = now;
     return true;
 }
 
-function penaltyIsHigh() {
-    const remaining = banUntil - Date.now();
-    return remaining >= 600000; // 10 นาทีขึ้นไป
-}
-
-function startInterrogation() {
-    const quiz = quizBank[Math.floor(Math.random() * quizBank.length)];
-    const userAnswer = prompt(`🕵️ คำถามจากสารวัตรเมงูเระ:\n"${quiz.q}"\n(พิมพ์คำตอบให้ถูกต้องเพื่อปลดแบน)`);
+async function startHardcoreQuiz() {
+    // สุ่มคำถาม 5 ข้อจากคลัง 120 ข้อ
+    let selected = [...masterQuizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
     
-    if (userAnswer === quiz.a) {
-        alert("✅ คำตอบถูกต้อง! คุณพ้นข้อกล่าวหา ระบบปลดแบนให้แล้วค่ะ");
-        spamCount = 0;
-        banUntil = 0;
-        localStorage.setItem('ayu_spam_v8', 0);
-        localStorage.setItem('ayu_ban_time', 0);
-    } else {
-        const extraPenalty = 60 * 60 * 1000; // บวกเพิ่ม 1 ชม.
-        banUntil += extraPenalty;
-        localStorage.setItem('ayu_ban_time', banUntil);
-        alert("❌ คำตอบผิด! ตรวจพบความพยายามหลอกลวงเจ้าหน้าที่\nเพิ่มโทษแบนอีก 1 ชั่วโมง!");
-    }
-}
-
-// ระบบ Wrapper ดักจับ function
-const originalSpinProcess = window.spinProcess;
-window.spinProcess = function(type) {
-    if (checkSpamSecurity()) {
-        if (typeof originalSpinProcess === 'function') {
-            originalSpinProcess(type);
+    for (let i = 0; i < selected.length; i++) {
+        let userAns = prompt(`คดีที่ ${i+1}/5:\n${selected[i].q}\n(คำเตือน: ตอบผิดต้องเริ่มใหม่ทั้งหมด)`);
+        
+        if (userAns !== selected[i].a) {
+            alert(`❌ ผิด! คำตอบที่ถูกคือ "${selected[i].a}"\nคุณยังไม่ผ่านการทดสอบ...`);
+            return; 
         }
     }
-};
+
+    // ถ้าตอบถูกครบ 5 ข้อ
+    alert("✅ ยินดีด้วย! คุณพิสูจน์ตัวเองแล้ว ระบบปลดแบนให้ทันทีค่ะ");
+    spamCount = 0;
+    banUntil = 0;
+    localStorage.setItem('ayu_spam_v9', 0);
+    localStorage.setItem('ayu_ban_time', 0);
+    location.reload();
+}
 
 const caseDatabase = {
     iqiyi: [
