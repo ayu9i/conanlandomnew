@@ -349,6 +349,59 @@
 </div>
 
 <script>
+    // --- 🛡️ ANTI-SPAM SYSTEM V1.0 (AYU EDITION) ---
+let spamCount = parseInt(localStorage.getItem('ayu_spam_v8')) || 0;
+let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
+let lastClickTime = 0;
+
+function checkSpamSecurity() {
+    const now = Date.now();
+    if (spamCount >= 8) {
+        alert("🚨 ACCESS DENIED: คุณถูกระงับการใช้งานถาวรเนื่องจากพยายามสแปมระบบ!");
+        return false;
+    }
+    if (now < banUntil) {
+        const timeLeft = Math.ceil((banUntil - now) / 1000);
+        let timeStr = timeLeft > 3600 ? `${Math.ceil(timeLeft/3600)} ชม.` : 
+                      timeLeft > 60 ? `${Math.ceil(timeLeft/60)} นาที` : `${timeLeft} วินาที`;
+        alert(`⚠️ ระบบระงับการใช้งานชั่วคราว! กรุณารออีก ${timeStr}`);
+        return false;
+    }
+    if (now - lastClickTime < 1500 && (typeof spinning !== 'undefined' && !spinning)) {
+        spamCount++;
+        localStorage.setItem('ayu_spam_v8', spamCount);
+        let penalty = 0;
+        if (spamCount === 1) penalty = 60 * 1000;
+        else if (spamCount === 2) penalty = 10 * 60 * 1000;
+        else if (spamCount === 3) penalty = 60 * 60 * 1000;
+        else if (spamCount >= 8) penalty = 999 * 365 * 24 * 60 * 60 * 1000;
+
+        if (penalty > 0) {
+            banUntil = now + penalty;
+            localStorage.setItem('ayu_ban_time', banUntil);
+            alert(`🛑 ตรวจพบการสุ่มรัว! (ผิดครั้งที่ ${spamCount})\nระงับการใช้งาน ${penalty >= 3600000 ? '1 ชม.' : penalty >= 600000 ? '10 นาที' : '1 นาที'}`);
+            return false;
+        }
+    }
+    lastClickTime = now;
+    return true;
+}
+
+// ระบบ Wrapper ดักจับ function
+const originalSpinProcess = window.spinProcess;
+window.spinProcess = function(type) {
+    if (checkSpamSecurity()) {
+        if (typeof originalSpinProcess === 'function') {
+            originalSpinProcess(type);
+        } else {
+            // กรณีฟังก์ชันจริงอยู่ข้างล่าง โค้ดจะเรียกชื่อตรงๆ
+            if (typeof spinProcess === 'function') {
+                // ระบบจะใช้ spinProcess ตัวจริงที่อยู่ด้านล่างไฟล์
+            }
+        }
+    }
+};
+
 const caseDatabase = {
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
