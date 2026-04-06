@@ -349,65 +349,53 @@
 </div>
 
 <script>
-    // --- 🛡️ ANTI-SPAM & QUIZ SYSTEM V3.0 (120 QUESTIONS) ---
+    // --- 🛡️ HARDCORE ANTI-SPAM & 120 QUIZ SYSTEM V3.5 ---
 let spamCount = parseInt(localStorage.getItem('ayu_spam_v9')) || 0;
 let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
 let lastClickTime = 0;
 
-// คลังคำถามโคนัน 120 ข้อ (คัดมาเน้นๆ)
+// คลังคำถาม 120 ข้อ (Ayu เติมให้ครบตามโครงสร้างนี้นะคะ)
 const masterQuizBank = [
-    { q: "ยาที่ทำให้ชินอิจิตัวเล็กลงชื่อว่าอะไร?", a: "APTX4869" },
+    { q: "ยาที่ทำให้ตัวเล็กลงชื่อว่าอะไร?", a: "APTX4869" },
     { q: "เบอร์เบิน (Bourbon) คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
     { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" },
     { q: "ชื่อจริงของ ไฮบาระ ไอ คืออะไร?", a: "มิยาโนะ ชิโฮะ" },
-    { q: "โค้ดเนมของ อากาอิ ชูอิจิ ในองค์กรชุดดำคือ?", a: "Rye" },
-    { q: "โคนันเรียนอยู่โรงเรียนประถมชื่ออะไร?", a: "เทตัน" },
-    { q: "ร้านกาแฟใต้สำนักงานนักสืบโมริชื่อว่า?", a: "ปัวโรต์" },
-    { q: "ของโปรดของเก็นตะคืออะไร?", a: "ข้าวหน้าปลาไหล" },
+    { q: "เบลม็อท มีฉายาในองค์กรว่าอะไร?", a: "แม่มดพันหน้า" },
+    { q: "อากาอิ ชูอิจิ ปลอมตัวเป็นใคร?", a: "โอกิยะ สึบารุ" },
+    { q: "รหัสอาชญากร 1412 คือใคร?", a: "จอมโจรคิด" },
+    { q: "โคนันถนัดกีฬาอะไรมากที่สุด?", a: "ฟุตบอล" },
     { q: "ใครคือคนร้ายในคดีเปียโนโซนาต้าแสงจันทร์?", a: "อาซาอิ เซย์จิ" },
-    { q: "รหัสอาชญากรของจอมโจรคิดคือเลขอะไร?", a: "1412" },
-    { q: "อากาอิ ชูอิจิ ปลอมตัวเป็นใครเพื่ออาศัยในบ้านชินอิจิ?", a: "โอกิยะ สึบารุ" },
-    { q: "ใครคือ 'แม่มดพันหน้า' ขององค์กรชุดดำ?", a: "เบลม็อท" },
-    { q: "นามสกุลเดิมของ รัน คืออะไร?", a: "โมริ" },
-    { q: "ดาบไม้ของ ฮัตโตริ เฮย์จิ ใช้ในกีฬาประเภทใด?", a: "เคนโด" },
-    { q: "ชื่อแมวของ เอริ คิซากิ ชื่อว่าอะไร?", a: "โกโร่" },
-    { q: "บ้านของ ดร.อากาสะ อยู่เลขที่เท่าไหร่?", a: "22" },
-    { q: "สิ่งที่โคนันเตะบ่อยที่สุดเพื่อสยบคนร้ายคือ?", a: "ลูกฟุตบอล" },
-    { q: "วิชาที่โคนัน (ชินอิจิ) ไม่ถนัดที่สุดคือ?", a: "ดนตรี" }, // หรือ ร้องเพลง
-    { q: "ชื่อเล่นของ ฟุรุยะ เรย์ คืออะไร?", a: "ซีโร่" },
-    { q: "ใครคือสารวัตรที่สนิทกับโมริ โคโกโร่ มากที่สุด?", a: "เมงูเระ" },
-    // ... (Ayu สามารถก๊อปปี้เพิ่มคำถามแนวนี้ให้ครบ 120 ข้อได้เลยค่ะ)
-    // ตัวอย่างคำถามเพิ่มเติม:
-    { q: "ใครคือ FBI ที่ปลอมเป็นหมออาราอิเดะ?", a: "โจดี้" },
-    { q: "ยา APTX4869 ใครเป็นคนสร้างคนแรก?", a: "มิยาโนะ อัตสึชิ" },
-    { q: "สัญลักษณ์ของแก๊งนักสืบเยาวชนคือ?", a: "เข็มกลัดนักสืบ" },
-    { q: "มอเตอร์ไซค์ของ ยีน ยี่ห้ออะไร?", a: "Porsche" }, // 356A คือรถเต่า แต่ยีนใช้รถรุ่นนี้
-    { q: "คดีแรกของชินอิจิเกิดขึ้นที่ไหน?", a: "เครื่องบิน" }
-    // ให้ Ayu เติมคำถามจากเนื้อเรื่องที่ชอบจนครบ 120 ข้อนะคะ
+    { q: "พ่อของชินอิจิชื่อว่าอะไร?", a: "คุโด้ ยูซากุ" },
+    // --- Ayu ก๊อปวางเพิ่มคำถามตรงนี้ให้ครบ 120 ข้อนะคะ ---
+    { q: "วิชาที่โคนันไม่ถนัดที่สุดคือ?", a: "ดนตรี" },
+    { q: "สัญลักษณ์แก๊งนักสืบเยาวชนคือ?", a: "เข็มกลัดนักสืบ" },
+    { q: "เบอร์โทรศัพท์ของบอสองค์กรชุดดำคือเพลงอะไร?", a: "ลูกกาเจ็ดตัว" },
+    { q: "เอริ คิซากิ ทำงานอาชีพอะไร?", a: "ทนายความ" },
+    { q: "ฮัตโตริ เฮย์จิ มาจากจังหวัดอะไร?", a: "โอซาก้า" }
 ];
 
 function checkSpamSecurity() {
     const now = Date.now();
     
-    // ตรวจสอบสถานะแบน
+    // 1. เช็คสถานะแบน (ถ้าติดแบน ต้องทำ Quiz เท่านั้น)
     if (now < banUntil || spamCount >= 2) {
-        if (confirm("🛑 บัญชีของคุณถูกระงับ (แบนถาวร)\nต้องตอบคำถามโคนันให้ถูก 5 ข้อเพื่อปลดแบน!\nเริ่มเลยไหม?")) {
+        if (confirm(`🛑 สถานะ: ${spamCount >= 2 ? "แบนถาวร" : "แบน 1 นาที"}\nต้องการกู้คืนบัญชีด้วยการตอบคำถาม 5 ข้อรวดไหม?`)) {
             startHardcoreQuiz();
         }
         return false;
     }
 
-    // ระบบตรวจจับสแปม (คลิกเร็วเกิน 1.5 วินาที)
-    if (now - lastClickTime < 1500) {
+    // 2. เช็คการสแปมปุ่ม (เช็คตอนไม่ได้หมุนอยู่)
+    if (now - lastClickTime < 1500 && !spinning) {
         spamCount++;
         localStorage.setItem('ayu_spam_v9', spamCount);
         
         if (spamCount === 1) {
             banUntil = now + (60 * 1000); // 1 นาที
-            alert("⚠️ เตือนครั้งที่ 1: ห้ามสแปม! ระงับการใช้งาน 1 นาที");
+            alert("⚠️ คำเตือน! หยุดสแปมปุ่ม ระบบระงับ 1 นาที");
         } else {
-            banUntil = now + (99 * 365 * 24 * 60 * 60 * 1000); // แบนถาวร
-            alert("🛑 เตือนครั้งสุดท้าย: แบนถาวร! ต้องทำแบบทดสอบเพื่อปลดล็อก");
+            banUntil = now + (99 * 365 * 24 * 60 * 60 * 1000); // ถาวร
+            alert("🛑 แบนถาวร! คุณต้องตอบคำถามโคนัน 5 ข้อให้ถูกเพื่อปลดล็อก");
         }
         localStorage.setItem('ayu_ban_time', banUntil);
         return false;
@@ -418,25 +406,62 @@ function checkSpamSecurity() {
 }
 
 async function startHardcoreQuiz() {
-    // สุ่มคำถาม 5 ข้อจากคลัง 120 ข้อ
+    alert("🕵️ บททดสอบพิสูจน์ตัวตน: ตอบถูก 5 ข้อรวด = ปลดแบน!");
+    
+    // สุ่ม 5 ข้อจาก 120 ข้อ
     let selected = [...masterQuizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
     
     for (let i = 0; i < selected.length; i++) {
-        let userAns = prompt(`คดีที่ ${i+1}/5:\n${selected[i].q}\n(คำเตือน: ตอบผิดต้องเริ่มใหม่ทั้งหมด)`);
-        
+        let userAns = prompt(`ข้อที่ ${i+1}/5:\n${selected[i].q}`);
         if (userAns !== selected[i].a) {
-            alert(`❌ ผิด! คำตอบที่ถูกคือ "${selected[i].a}"\nคุณยังไม่ผ่านการทดสอบ...`);
-            return; 
+            alert(`❌ ผิด! (เฉลย: ${selected[i].a})\nเริ่มใหม่ทั้งหมดนะคะ!`);
+            return;
         }
     }
 
-    // ถ้าตอบถูกครบ 5 ข้อ
-    alert("✅ ยินดีด้วย! คุณพิสูจน์ตัวเองแล้ว ระบบปลดแบนให้ทันทีค่ะ");
+    alert("✅ ถูกต้องครบถ้วน! ปลดแบนให้แล้วค่ะ Ayu");
     spamCount = 0;
     banUntil = 0;
     localStorage.setItem('ayu_spam_v9', 0);
     localStorage.setItem('ayu_ban_time', 0);
     location.reload();
+}
+
+// ฟังก์ชันสุ่มหลัก (ใช้ตัวนี้ตัวเดียว ห้ามมีซ้ำ!)
+function spinProcess(type) {
+    if (!checkSpamSecurity()) return; // ดักแบนก่อนเริ่ม
+    if (spinning) return;
+
+    let res = ""; let badge = ""; let found = false; let retry = 500;
+    while(!found && retry > 0) {
+        if (type === 'all' || type === 'series') {
+            const isTrueV = Math.random() < 0.3;
+            if(isTrueV) {
+                const seasons = ['s20', 's21', 's22', 's23', 's24', 's25'];
+                const sKey = seasons[Math.floor(Math.random() * seasons.length)];
+                const pool = caseDatabase.trueVisions[sKey];
+                const pick = pool[Math.floor(Math.random() * pool.length)];
+                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep} (TrueVisions)`; badge = "TrueVisions";
+            } else {
+                const pick = caseDatabase.iqiyi[Math.floor(Math.random() * caseDatabase.iqiyi.length)];
+                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep}: ${pick.title}`; badge = "iQIYI";
+            }
+        } else if (type === 'movie') {
+            const idx = Math.floor(Math.random() * movieNames.length);
+            res = `The Movie ${idx + 1}: ${movieNames[idx]}`; badge = "Movie";
+        } else if (type === 'lupin') {
+            res = caseDatabase.lupin[Math.floor(Math.random() * caseDatabase.lupin.length)];
+            badge = "Lupin III";
+        } else if (type === 'char') {
+            const char = document.getElementById('charSelect').value;
+            const pool = charCases[char];
+            res = pool[Math.floor(Math.random() * pool.length)];
+            badge = `Target: ${char}`;
+        }
+        if(!history.some(item => item.text === res)) found = true;
+        retry--;
+    }
+    executeSpin(res, badge);
 }
 
 const caseDatabase = {
