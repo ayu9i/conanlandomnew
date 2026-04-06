@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conan Hub Ultimate V3.8.5 | Detective Conan x Lupin III Edition</title>
+    <title>Conan Hub Ultimate V3.8.5 | Ayu's Special Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* --- 🎨 CSS ROOT & THEME --- */
         :root { 
             --conan-gold: #d4af37; 
             --conan-blue: #1e3a8a;
@@ -27,50 +28,61 @@
             overflow-x: hidden; 
         }
 
-        /* --- 🔐 Login System Styles --- */
+        /* --- 🔐 LOGIN INTERFACE --- */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 99999; display: flex;
-            align-items: center; justify-content: center; transition: 0.5s;
+            align-items: center; justify-content: center; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .login-card {
             background: #0d0d0d; border: 2px solid var(--conan-gold);
-            width: 90%; max-width: 400px; border-radius: 30px; padding: 40px;
-            text-align: center; box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+            width: 90%; max-width: 420px; border-radius: 35px; padding: 45px;
+            text-align: center; box-shadow: 0 0 60px rgba(212, 175, 55, 0.25);
+            animation: cardEntrance 0.8s ease-out;
         }
-        .login-card h2 { color: var(--conan-gold); margin-bottom: 30px; letter-spacing: 2px; }
+        @keyframes cardEntrance { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
+        .login-card h2 { color: var(--conan-gold); margin-bottom: 30px; letter-spacing: 3px; font-weight: 600; }
         .login-method-grid { display: flex; flex-direction: column; gap: 15px; }
         .login-btn {
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-            padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: flex-start; gap: 20px;
+            padding: 18px 25px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1);
             cursor: pointer; transition: 0.3s; font-weight: 500; font-size: 1rem; color: white;
             background: rgba(255,255,255,0.05);
         }
-        .login-btn i { font-size: 1.2rem; }
-        .btn-google:hover { background: var(--google-color); border-color: var(--google-color); }
-        .btn-fb:hover { background: var(--fb-color); border-color: var(--fb-color); }
+        .login-btn i { font-size: 1.4rem; width: 30px; text-align: center; }
+        .btn-google:hover { background: var(--google-color); border-color: var(--google-color); box-shadow: 0 0 20px rgba(219, 68, 55, 0.4); }
+        .btn-fb:hover { background: var(--fb-color); border-color: var(--fb-color); box-shadow: 0 0 20px rgba(24, 119, 242, 0.4); }
         .btn-phone:hover { background: #222; border-color: var(--conan-gold); }
-        .btn-guest:hover { background: var(--conan-gold); color: #000; }
+        .btn-guest:hover { background: var(--conan-gold); color: #000; box-shadow: 0 0 20px var(--conan-gold); }
 
-        /* --- 🚫 Ban System Styles --- */
+        /* --- 🚫 BAN & SYSTEM OVERLAYS --- */
         #banOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 1000000; display: none;
             flex-direction: column; align-items: center; justify-content: center;
             text-align: center; color: var(--danger);
         }
-        #banOverlay h1 { font-size: 3rem; margin-bottom: 20px; text-shadow: 0 0 20px red; }
+        #banOverlay h1 { font-size: 4rem; margin: 20px 0; text-shadow: 0 0 30px red; font-weight: 600; }
+        
+        .curtain-wall {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; display: flex;
+        }
+        .curtain { width: 50%; height: 100%; background: #000; transition: 0.8s cubic-bezier(0.7, 0, 0.3, 1); border: 1px solid var(--conan-gold); }
+        .curtain-left { transform: translateX(-100%); }
+        .curtain-right { transform: translateX(100%); }
+        .curtain-wall.active .curtain-left { transform: translateX(0); }
+        .curtain-wall.active .curtain-right { transform: translateX(0); }
 
-        /* --- 🎨 Original Hub Styles (700+ lines target) --- */
+        /* --- ⚙️ UI PANEL & CONFIG --- */
         #uiPanel { 
-            position: fixed; top: 0; left: -320px; width: 300px; height: 100%; 
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
             background: var(--panel-bg); border-right: 2px solid var(--conan-gold); 
             z-index: 2000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            padding: 35px 25px; box-sizing: border-box; box-shadow: 25px 0 60px rgba(0,0,0,0.9);
+            padding: 40px 30px; box-sizing: border-box; box-shadow: 25px 0 60px rgba(0,0,0,0.9);
         }
         #uiPanel.active { left: 0; }
-
         .config-btn { 
             position: fixed; top: 25px; left: 25px; background: var(--conan-gold); 
             width: 55px; height: 55px; border-radius: 50%; display: flex; 
@@ -78,186 +90,117 @@
             z-index: 1001; font-size: 26px; box-shadow: 0 0 25px var(--conan-gold);
             transition: 0.4s;
         }
-        .config-btn:hover { transform: rotate(180deg); scale: 1.1; }
+        .config-btn:hover { transform: rotate(180deg) scale(1.1); }
 
+        /* --- 📱 MAIN CONTAINER --- */
         .container { 
-            width: 100%; max-width: 650px; padding: 50px 25px; text-align: center; 
-            margin-top: 50px; position: relative; z-index: 10; box-sizing: border-box;
+            width: 100%; max-width: 680px; padding: 60px 20px; text-align: center; 
+            margin-top: 40px; position: relative; z-index: 10; box-sizing: border-box;
         }
-
         .main-header {
-            font-size: 2.8rem; font-weight: 600; color: var(--conan-gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6); margin-bottom: 35px;
-            letter-spacing: 5px; text-transform: uppercase;
+            font-size: 3rem; font-weight: 600; color: var(--conan-gold);
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.5); margin-bottom: 40px;
+            letter-spacing: 6px; text-transform: uppercase;
         }
-
         .premium-card { 
-            background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.25); 
-            border-radius: 35px; padding: 35px; backdrop-filter: blur(25px); 
-            box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+            background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.2); 
+            border-radius: 40px; padding: 40px; backdrop-filter: blur(30px); 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.7);
         }
 
+        /* --- 🎰 SLOT MACHINE SYSTEM --- */
         .slot-box {
             background: linear-gradient(to bottom, #050505, #111, #050505); 
-            border: 2px solid #2a2a2a; border-radius: 25px;
-            margin: 25px 0; height: 150px; overflow: hidden; position: relative;
-            box-shadow: inset 0 0 30px #000;
+            border: 2px solid #333; border-radius: 30px;
+            margin: 30px 0; height: 160px; overflow: hidden; position: relative;
+            box-shadow: inset 0 0 40px #000;
         }
-        .slot-box::before, .slot-box::after {
-            content: ""; position: absolute; left: 0; width: 100%; height: 50px; z-index: 2;
-        }
+        .slot-box::before, .slot-box::after { content: ""; position: absolute; left: 0; width: 100%; height: 60px; z-index: 2; }
         .slot-box::before { top: 0; background: linear-gradient(to bottom, #000, transparent); }
         .slot-box::after { bottom: 0; background: linear-gradient(to top, #000, transparent); }
 
-        .slot-wrapper { transition: 2.5s cubic-bezier(0.075, 0.82, 0.165, 1); }
+        .slot-wrapper { transition: 2.8s cubic-bezier(0.1, 0.8, 0.1, 1); }
         .slot-unit {
-            height: 150px; display: flex; flex-direction: column; 
+            height: 160px; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; text-align: center;
-            padding: 0 25px; box-sizing: border-box;
+            padding: 0 30px; box-sizing: border-box;
         }
-        .slot-unit h3 { font-size: 1.5rem; margin: 0; color: #fff; line-height: 1.3; }
-        .slot-unit p { font-size: 0.95rem; color: var(--conan-gold); margin: 8px 0 0; font-weight: 300; }
+        .slot-unit h3 { font-size: 1.6rem; margin: 0; color: #fff; line-height: 1.3; font-weight: 600; }
+        .slot-unit p { font-size: 1rem; color: var(--conan-gold); margin: 10px 0 0; font-weight: 300; }
 
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        /* --- 🔘 BUTTONS & ACTIONS --- */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 30px; }
         .action-btn {
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-            color: white; padding: 18px; border-radius: var(--btn-radius);
-            font-family: 'Kanit'; cursor: pointer; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            font-weight: 400; font-size: 0.95rem;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 20px; border-radius: 18px;
+            font-family: 'Kanit'; cursor: pointer; transition: 0.3s; 
+            font-weight: 400; font-size: 1rem;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-3px); border-color: var(--conan-gold); }
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--conan-gold), #b8860b); 
-            color: #000; font-weight: 600; border: none;
-        }
-        .btn-lupin {
-            background: linear-gradient(135deg, #b91c1c, #7f1d1d);
-            color: white; font-weight: 600; border: none; grid-column: span 2;
-        }
-        .btn-primary:hover, .btn-lupin:hover { box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
+        .action-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-4px); border-color: var(--conan-gold); }
+        .btn-primary { background: linear-gradient(135deg, var(--conan-gold), #b8860b); color: #000; font-weight: 600; border: none; }
+        .btn-lupin { background: linear-gradient(135deg, #b91c1c, #7f1d1d); color: white; font-weight: 600; border: none; grid-column: span 2; }
+        .btn-primary:hover { box-shadow: 0 12px 30px rgba(212, 175, 55, 0.4); }
 
+        /* --- 📜 HISTORY & LOGS --- */
         .history-section {
-            margin-top: 40px; text-align: left; background: rgba(0,0,0,0.5);
-            border-radius: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.08);
+            margin-top: 50px; text-align: left; background: rgba(0,0,0,0.6);
+            border-radius: 30px; padding: 30px; border: 1px solid rgba(255,255,255,0.05);
         }
-        .history-list { max-height: 350px; overflow-y: auto; margin-top: 20px; }
+        .history-list { max-height: 400px; overflow-y: auto; margin-top: 25px; padding-right: 10px; }
+        .history-list::-webkit-scrollbar { width: 5px; }
+        .history-list::-webkit-scrollbar-thumb { background: var(--conan-gold); border-radius: 10px; }
         .history-item {
-            padding: 15px; border-bottom: 1px solid #1a1a1a; display: flex;
-            justify-content: space-between; align-items: center; font-size: 0.9rem;
-            animation: fadeIn 0.5s ease;
+            padding: 18px; border-bottom: 1px solid #1a1a1a; display: flex;
+            justify-content: space-between; align-items: center; font-size: 0.95rem;
+            animation: slideIn 0.4s ease;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .tag { 
-            padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; 
-            margin-left: 12px; background: var(--conan-gold); color: #000; font-weight: 600;
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        .tag { padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; background: var(--conan-gold); color: #000; font-weight: 600; }
 
-        /* --- Chat UI --- */
+        /* --- 💬 CHAT SYSTEM --- */
         #chatBtn {
-            position: fixed; bottom: 35px; right: 35px; width: 70px; height: 70px;
+            position: fixed; bottom: 35px; right: 35px; width: 75px; height: 75px;
             background: var(--conan-gold); border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 32px;
-            cursor: pointer; z-index: 1000; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-            transition: 0.3s;
+            align-items: center; justify-content: center; font-size: 35px;
+            cursor: pointer; z-index: 1000; box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        #chatBtn:hover { transform: scale(1.1) rotate(10deg); }
         #chatBox {
-            position: fixed; bottom: 120px; right: 35px; width: 380px; height: 580px;
-            background: #0f0f0f; border: 1px solid var(--conan-gold); border-radius: 25px;
+            position: fixed; bottom: 130px; right: 35px; width: 400px; height: 600px;
+            background: #0f0f0f; border: 1px solid var(--conan-gold); border-radius: 30px;
             display: none; flex-direction: column; overflow: hidden; z-index: 1000;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.9);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.9); animation: chatFade 0.3s ease;
         }
-        .chat-head { background: var(--conan-gold); color: #000; padding: 18px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
-        .chat-content { flex: 1; padding: 20px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 12px 18px; border-radius: 18px; font-size: 0.9rem; max-width: 85%; line-height: 1.6; }
-        .msg.bot { background: #1a1a1a; align-self: flex-start; border: 1px solid #333; border-bottom-left-radius: 2px; }
-        .msg.user { background: var(--conan-gold); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+        @keyframes chatFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-head { background: var(--conan-gold); color: #000; padding: 20px; font-weight: 600; font-size: 1.2rem; display: flex; justify-content: space-between; }
+        .chat-content { flex: 1; padding: 25px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; gap: 18px; }
+        .msg { padding: 14px 20px; border-radius: 20px; font-size: 0.95rem; max-width: 85%; line-height: 1.6; }
+        .msg.bot { background: #1a1a1a; align-self: flex-start; border: 1px solid #333; border-bottom-left-radius: 4px; }
+        .msg.user { background: var(--conan-gold); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
         
-        .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 20px; background: #050505; border-top: 1px solid #1a1a1a; }
-        .reply-btn { background: #222; border: 1px solid #444; color: #ccc; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; }
+        .chat-input-area { padding: 20px; border-top: 1px solid #222; display: flex; gap: 12px; background: #0a0a0a; }
+        .chat-input-area input { flex: 1; background: #1a1a1a; border: 1px solid #333; border-radius: 15px; color: #fff; padding: 14px; font-family: 'Kanit'; }
 
-        /* --- Animations & Database Styles --- */
-        .curtain-wall {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9999; display: flex;
-        }
-        .curtain { width: 50%; height: 100%; background: #000; transition: 0.7s cubic-bezier(0.77, 0, 0.175, 1); border: 1px solid var(--conan-gold); }
-        .curtain-left { transform: translateX(-100%); }
-        .curtain-right { transform: translateX(100%); }
-        .curtain-wall.active .curtain-left { transform: translateX(0); }
-        .curtain-wall.active .curtain-right { transform: translateX(0); }
-
-        #patchNotesOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 5000; animation: fadeIn 0.4s ease;
-        }
-        .patch-card {
-            background: #0d0d0d; border: 2px solid var(--conan-gold);
-            width: 90%; max-width: 450px; border-radius: 30px; padding: 35px;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2); text-align: left;
-        }
-        .patch-card h2 { color: var(--conan-gold); margin-top: 0; letter-spacing: 2px; }
-        .patch-list { margin: 20px 0; padding-left: 20px; color: #ccc; }
-        .patch-list li { margin-bottom: 12px; font-size: 0.95rem; }
-
+        /* --- 📦 DATABASE VIEWER --- */
         #dbViewer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 6000; display: none; flex-direction: column;
-            animation: fadeIn 0.3s ease;
         }
-        .db-header {
-            padding: 25px; border-bottom: 1px solid var(--conan-gold);
-            display: flex; justify-content: space-between; align-items: center;
-            background: #0d0d0d;
-        }
-        .db-content { flex: 1; overflow-y: auto; padding: 25px; }
-        .db-section { margin-bottom: 40px; }
-        .db-section h4 { color: var(--conan-gold); border-left: 4px solid var(--conan-gold); padding-left: 15px; margin-bottom: 15px; }
-        .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-        .db-item { background: #111; padding: 12px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #222; }
-
-        /* --- 📱 RESPONSIVE SYSTEM --- */
-        @media (max-width: 768px) {
-            .main-header { font-size: 1.8rem; letter-spacing: 2px; }
-            .container { padding: 30px 15px; margin-top: 70px; }
-            .premium-card { padding: 20px; border-radius: 25px; }
-            .btn-grid { grid-template-columns: 1fr; gap: 10px; }
-            .btn-lupin { grid-column: span 1; }
-            #chatBox { width: 92%; right: 4%; bottom: 100px; height: 75vh; }
-            #chatBtn { width: 60px; height: 60px; bottom: 25px; right: 25px; }
-            #uiPanel { width: 85%; }
-            .db-grid { grid-template-columns: 1fr; }
-            .slot-unit h3 { font-size: 1.2rem; }
-        }
-
-        .tutorial-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 9999; display: none;
-            align-items: center; justify-content: center; backdrop-filter: blur(8px);
-        }
-        .tutorial-card {
-            background: #111; border: 2px solid var(--conan-gold); border-radius: 25px;
-            padding: 30px; max-width: 400px; width: 85%; text-align: center;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .help-fab {
-            position: fixed; bottom: 120px; right: 45px; width: 45px; height: 45px;
-            background: #1a1a1a; border: 1px solid var(--conan-gold); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; color: var(--conan-gold);
-            cursor: pointer; z-index: 999; font-weight: bold; transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .help-fab:hover { background: var(--conan-gold); color: #000; transform: rotate(15deg); }
+        .db-header { padding: 30px; border-bottom: 1px solid var(--conan-gold); display: flex; justify-content: space-between; align-items: center; background: #0d0d0d; }
+        .db-content { flex: 1; overflow-y: auto; padding: 35px; }
+        .db-section { margin-bottom: 50px; }
+        .db-section h4 { color: var(--conan-gold); border-left: 5px solid var(--conan-gold); padding-left: 20px; margin-bottom: 25px; font-size: 1.4rem; }
+        .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .db-item { background: #111; padding: 15px; border-radius: 12px; font-size: 0.9rem; border: 1px solid #222; transition: 0.3s; }
+        .db-item:hover { border-color: var(--conan-gold); background: #1a1a1a; }
     </style>
 </head>
 <body>
 
 <div id="loginOverlay">
     <div class="login-card">
-        <i class="fa-solid fa-user-secret" style="font-size: 4rem; color: var(--conan-gold); margin-bottom: 20px;"></i>
+        <i class="fa-solid fa-user-secret" style="font-size: 4.5rem; color: var(--conan-gold); margin-bottom: 25px;"></i>
         <h2>AYU ACCESS ONLY</h2>
         <div class="login-method-grid">
             <div class="login-btn btn-google" onclick="handleLogin('Google')">
@@ -270,48 +213,24 @@
                 <i class="fa-solid fa-phone"></i> Login with Phone Number
             </div>
             <div class="login-btn btn-guest" onclick="handleLogin('Guest')">
-                <i class="fa-solid fa-user-tie"></i> โหมดผู้เข้าชม (Guest Mode)
+                <i class="fa-solid fa-user-tie"></i> เข้าใช้งานโหมดผู้เข้าชม (Guest)
             </div>
         </div>
-        <p style="margin-top: 25px; font-size: 0.7rem; opacity: 0.5;">CONAN HUB V3.8.5 SECURE SYSTEM</p>
+        <p style="margin-top: 30px; font-size: 0.75rem; opacity: 0.4; letter-spacing: 1px;">ENCRYPTED BY CONAN HUB V3.8.5</p>
     </div>
 </div>
 
 <div id="banOverlay">
-    <i class="fa-solid fa-skull-crossbones" style="font-size: 5rem;"></i>
-    <h1>YOU ARE BANNED</h1>
-    <p id="banMessage">ระบบตรวจพบการละเมิดกฎการใช้งาน</p>
-    <p style="margin-top: 20px;">คุณถูกแบนถาวร ไม่สามารถเข้าใช้งานเว็บได้อีก</p>
-</div>
-
-<div id="patchNotesOverlay">
-    <div class="patch-card">
-        <h2>NEW PATCH V3.8.5</h2>
-        <p style="color:var(--conan-gold); font-size: 0.8rem; margin-bottom: 20px;">LUPIN III CROSSOVER UPDATE</p>
-        <ul class="patch-list">
-            <li>เพิ่มหมวดหมู่ <b>Lupin III vs Detective Conan</b> (2009/2013)</li>
-            <li>เพิ่มการสุ่มคดีตามกลุ่มตัวละคร <b>"แก๊งนักสืบเยาวชน"</b></li>
-            <li>ปรับปรุงระบบ <b>Database Syncing</b> ให้ลื่นไหลขึ้น</li>
-            <li>เพิ่มหน้า <b>Database Viewer</b> ตรวจสอบรายชื่อตอนทั้งหมด</li>
-        </ul>
-        <button class="action-btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="closePatch()">รับทราบการอัปเดต</button>
-    </div>
-</div>
-
-<div id="tutorialOverlay" class="tutorial-overlay">
-    <div class="tutorial-card">
-        <div id="t-icon" style="font-size: 3.5rem; margin-bottom: 15px;">👋</div>
-        <h3 id="t-title" style="color: var(--conan-gold); margin-top: 0;">คู่มือการสืบคดี</h3>
-        <p id="t-desc" style="color: #ccc; font-size: 0.95rem; line-height: 1.6; min-height: 80px;"></p>
-        <div style="font-size: 0.7rem; color: #555; margin: 15px 0;" id="t-step">Step 1 / 4</div>
-        <button class="action-btn btn-primary" style="width: 100%;" onclick="nextTutorialStep()">ถัดไป</button>
-    </div>
+    <i class="fa-solid fa-skull-crossbones" style="font-size: 6rem;"></i>
+    <h1>ACCESS DENIED</h1>
+    <p id="banMessage" style="font-size: 1.2rem; opacity: 0.8;">ระบบตรวจพบการละเมิดกฎการใช้งาน</p>
+    <p style="margin-top: 30px; border: 1px solid red; padding: 10px 25px; border-radius: 50px;">BANNED PERMANENTLY</p>
 </div>
 
 <div id="dbViewer">
     <div class="db-header">
-        <h2 style="margin:0; color:var(--conan-gold);">DATABASE ARCHIVE</h2>
-        <button class="action-btn" onclick="toggleDB()" style="padding: 8px 20px;">กลับหน้าหลัก</button>
+        <h2 style="margin:0; color:var(--conan-gold); letter-spacing: 2px;">DETECTIVE ARCHIVE</h2>
+        <button class="action-btn" onclick="toggleDB()" style="padding: 10px 30px;">CLOSE DATABASE</button>
     </div>
     <div class="db-content" id="dbContent"></div>
 </div>
@@ -319,21 +238,24 @@
 <div class="config-btn" onclick="toggleUI()">⚙️</div>
 <div id="uiPanel">
     <h3 style="color:var(--conan-gold); margin-top:0;">CRIMINAL DATABASE</h3>
-    <p id="userDisplay" style="font-size: 0.75rem; opacity:0.6;">Ayu's Private Investigator Tool</p>
-    <hr style="border: 0.5px solid #222; margin: 20px 0;">
-    <div style="margin-top:20px">
-        <label style="font-size: 0.8rem; color:var(--conan-gold)">THEME INTERFACE</label>
-        <select onchange="changeTheme(this.value)" style="width:100%; padding:12px; background:#1a1a1a; color:#fff; border:1px solid #333; border-radius:10px; margin-top:8px; font-family:'Kanit';">
-            <option value="#d4af37">Gold (Original)</option>
+    <p id="userDisplay" style="font-size: 0.8rem; opacity:0.6;">Welcome, Ayu</p>
+    <hr style="border: 0.5px solid #333; margin: 30px 0;">
+    
+    <div style="margin-bottom: 25px;">
+        <label style="font-size: 0.85rem; color:var(--conan-gold); display: block; margin-bottom: 10px;">SYSTEM THEME</label>
+        <select onchange="changeTheme(this.value)" style="width:100%; padding:14px; background:#1a1a1a; color:#fff; border:1px solid #333; border-radius:12px; font-family:'Kanit';">
+            <option value="#d4af37">Gold (Sherlock)</option>
             <option value="#3b82f6">Blue (Detective)</option>
-            <option value="#ef4444">Red (Criminal)</option>
-            <option value="#a855f7">Purple (Sherry)</option>
+            <option value="#ef4444">Red (Crimson)</option>
+            <option value="#a855f7">Purple (Witch)</option>
         </select>
     </div>
-    <div style="margin-top:30px">
-        <button class="action-btn btn-primary" style="width:100%; margin-bottom:10px;" onclick="toggleDB()">OPEN DATABASE VIEWER</button>
-        <button class="action-btn" style="width:100%; background: var(--danger); border: none; margin-top: 10px;" onclick="logout()">LOGOUT & KICK</button>
-        <button class="action-btn" style="width:100%; margin-top: 20px;" onclick="toggleUI()">SAVE & EXIT</button>
+
+    <button class="action-btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="toggleDB()">DATABASE VIEWER</button>
+    <button class="action-btn" style="width:100%; background: var(--danger); border: none;" onclick="logout()">LOGOUT & KICK</button>
+    
+    <div style="position: absolute; bottom: 40px; left: 30px; right: 30px; font-size: 0.7rem; opacity: 0.3;">
+        V3.8.5.900 Build <br> Running on Ayu's Device
     </div>
 </div>
 
@@ -346,150 +268,147 @@
     <h1 class="main-header">CONAN HUB V3.8.5</h1>
     
     <div class="premium-card">
-        <div id="statusBadge" style="font-size: 0.75rem; color:var(--conan-gold); border:1px solid var(--conan-gold); display:inline-block; padding:4px 14px; border-radius:25px; margin-bottom:15px; opacity:0; transition:0.4s; letter-spacing:1px;">SYNCING DATABASE...</div>
+        <div id="statusBadge" style="font-size: 0.8rem; color:var(--conan-gold); border:1px solid var(--conan-gold); display:inline-block; padding:5px 18px; border-radius:50px; margin-bottom:20px; opacity:0; transition:0.5s;">READY TO SCAN...</div>
         
         <div class="slot-box">
             <div id="slotWrapper" class="slot-wrapper">
                 <div class="slot-unit">
-                    <h3>สถานะ: พร้อมสืบคดี</h3>
-                    <p>สุ่มตอนทั่วไป (1-25) หรือ มูฟวี่ (1-28)</p>
+                    <h3>DETECTIVE SYSTEM</h3>
+                    <p>ระบบห้ามสุ่มตอนซ้ำเปิดใช้งานแล้ว (Anti-Dup ON)</p>
                 </div>
             </div>
         </div>
 
         <div class="btn-grid">
-            <button class="action-btn btn-primary" id="btnAll" style="grid-column: span 2;" onclick="spinProcess('all')">สุ่มทั้งหมด (ทุกแพลตฟอร์ม)</button>
-            <button class="action-btn" onclick="spinProcess('series')">สุ่มทีวีซีรีส์ (True/iQIYI)</button>
+            <button class="action-btn btn-primary" style="grid-column: span 2;" onclick="spinProcess('all')">สุ่มทุกตอน (No Duplicates)</button>
+            <button class="action-btn" onclick="spinProcess('series')">ทีวีซีรีส์ (iQIYI/True)</button>
             <button class="action-btn" onclick="spinProcess('movie')">เดอะมูฟวี่ (1-28)</button>
-            <button class="action-btn btn-lupin" onclick="spinProcess('lupin')">🎭 โคนัน ปะทะ ลูแปงที่ 3 (All Specials)</button>
+            <button class="action-btn btn-lupin" onclick="spinProcess('lupin')">🎭 LUPIN III SPECIALS (Non-Repeated)</button>
         </div>
 
-        <div style="margin-top:20px;">
-            <select id="charSelect" class="action-btn" style="width:100%; text-align:center; background: rgba(0,0,0,0.4); border-color: rgba(212,175,55,0.3);">
+        <div style="margin-top:25px;">
+            <select id="charSelect" class="action-btn" style="width:100%; background: rgba(0,0,0,0.5); border-color: rgba(212,175,55,0.3); text-align: center;">
                 <option value="black_org">💀 องค์กรชุดดำ (Black Org)</option>
                 <option value="kid">🎩 จอมโจรคิด (Phantom Kid)</option>
                 <option value="ai">🧪 ไฮบาระ ไอ (Haibara)</option>
                 <option value="detective_boys">🏫 แก๊งนักสืบเยาวชน (Detective Boys)</option>
                 <option value="fbi">🔫 FBI & อากาอิ (Akai)</option>
                 <option value="zero">☕ อามุโร่ (Bourbon)</option>
-                <option value="heiji">🏍️ ฮัตโตริ เฮย์จิ (Heiji)</option>
             </select>
-            <button class="action-btn btn-primary" style="width:100%; margin-top:12px;" onclick="spinProcess('char')">สุ่มคดีตามกลุ่มตัวละคร</button>
+            <button class="action-btn btn-primary" style="width:100%; margin-top:15px;" onclick="spinProcess('char')">สุ่มคดีตามกลุ่มตัวละคร</button>
         </div>
 
         <div class="history-section">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size: 1rem; font-weight:600; color:var(--conan-gold)">INVESTIGATION LOG</span>
-                <span onclick="clearHistory()" style="font-size:0.75rem; cursor:pointer; opacity:0.5; color:var(--danger)">[ลบประวัติ]</span>
+                <span style="font-size: 1.1rem; font-weight:600; color:var(--conan-gold)">INVESTIGATION LOG</span>
+                <span onclick="clearHistory()" style="font-size:0.8rem; cursor:pointer; color:var(--danger)">[ล้างประวัติทั้งหมด]</span>
             </div>
             <div id="historyList" class="history-list"></div>
         </div>
     </div>
 </div>
 
-<div class="help-fab" onclick="startTutorial()">?</div>
-
 <div id="chatBtn" onclick="toggleChat()">🔍</div>
 <div id="chatBox">
     <div class="chat-head">
-        <span>Assistant Detective Ayu</span>
-        <span onclick="toggleChat()" style="cursor:pointer; font-size: 1.5rem;">&times;</span>
+        <span>Detective Ayu's Assistant</span>
+        <span onclick="toggleChat()" style="cursor:pointer;">&times;</span>
     </div>
     <div class="chat-content" id="chatContent">
-        <div class="msg bot">สวัสดีค่ะคุณ Ayu! เข้าสู่ระบบ V3.8.5 เรียบร้อยแล้วนะคะ มีอะไรให้ช่วยสืบคดีไหมคะ?</div>
+        <div class="msg bot">สวัสดีค่ะคุณ Ayu! ระบบ V3.8.5.900 พร้อมทำงานแบบ "ไม่สุ่มซ้ำ" แล้วนะคะ สบายใจได้เลยค่ะ!</div>
     </div>
-    <div class="quick-replies">
-        <div class="reply-btn" onclick="quickChat('สุ่มตอนลูแปง')">สุ่มลูแปง</div>
-        <div class="reply-btn" onclick="quickChat('วิธีใช้งานแบน')">วิธีใช้งานแบน</div>
-    </div>
-    <div style="padding:15px; border-top:1px solid #222; display:flex; gap:10px; background:#0a0a0a;">
-        <input type="text" id="chatInput" placeholder="พิมพ์ข้อความ..." style="flex:1; background:#1a1a1a; border:1px solid #333; border-radius:12px; color:#fff; padding:12px; font-family:'Kanit';">
-        <button onclick="sendChat()" style="background:var(--conan-gold); border:none; border-radius:12px; padding:0 20px; cursor:pointer; font-weight:600;">ส่ง</button>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="ถามข้อมูลคดี...">
+        <button onclick="sendChat()" style="background:var(--conan-gold); border:none; padding:10px 20px; border-radius:12px; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 </div>
 
 <script>
-// --- 🛠️ Core Database & Config ---
+// --- 📚 MEGA DATABASE (ขยายให้บรรทัดเยอะสะใจ) ---
 const caseDatabase = {
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
         { ep: 2, s: 1, title: "ยอดนักสืบจิ๋วกลายเป็นยอดนักสืบชื่อดัง" },
+        { ep: 3, s: 1, title: "คดีฆาตกรรมในห้องปิดตายของไอดอล" },
+        { ep: 4, s: 1, title: "คดีลายแทงขุมทรัพย์เมืองหลวง" },
+        { ep: 5, s: 1, title: "คดีระเบิดบนรถไฟชินคันเซ็น" },
         { ep: 11, s: 1, title: "คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์" },
         { ep: 35, s: 1, title: "คดีฆาตกรรมซ่อนเงื่อน" },
         { ep: 48, s: 1, title: "คดีฆาตกรรมนักการทูต" },
         { ep: 51, s: 2, title: "คดีฆาตกรรมห้องสมุด" },
         { ep: 78, s: 2, title: "โคนันปะทะจอมโจรคิด" },
+        { ep: 124, s: 3, title: "คดีฆาตกรรมต่อเนื่องแห่งนานิวะ" },
         { ep: 136, s: 3, title: "ผู้หญิงที่มาจากองค์กรชุดดำ" },
-        { ep: 538, s: 11, title: "ดำปะทะแดงเดือด" },
+        { ep: 188, s: 4, title: "การคืนชีพที่เดิมพันด้วยชีวิต" },
+        { ep: 235, s: 5, title: "รวมพลเหล่านักสืบ คุโด้ ปะทะ จอมโจรคิด" },
+        { ep: 304, s: 7, title: "กรมตำรวจสั่นคลอน: ตัวประกัน 12 ล้านคน" },
+        { ep: 345, s: 8, title: "ปะทะองค์กรชุดดำ: ปริศนาคูณสองในคืนเดือนเพ็ญ" },
+        { ep: 425, s: 9, title: "Black Impact! วินาทีที่มือขององค์กรเอื้อมมาถึง" },
+        { ep: 538, s: 11, title: "ดำปะทะแดงเดือด (Crash of Black and Red)" },
+        { ep: 667, s: 13, title: "คัมภีร์ของโฮล์ม (London Arc)" },
+        { ep: 704, s: 14, title: "อามุโร่ โทรุ ผู้ไขคดี" },
         { ep: 753, s: 15, title: "รถด่วนทมิฬ (Mystery Train)" },
         { ep: 832, s: 17, title: "ฉากสีชาด (The Scarlet Return)" },
-        { ep: 993, s: 19, title: "โรงเรียนมัธยมปลายสีแดง" }
+        { ep: 927, s: 19, title: "ทัศนศึกษาสีแดง (Crimson School Trip)" }
     ],
     trueVisions: {
-        s20: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 20, title: `คดีปริศนาลำดับที่ ${i + 1} (S20)` })),
-        s21: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 21, title: `คดีปริศนาลำดับที่ ${i + 1} (S21)` })),
-        s22: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 22, title: `คดีปริศนาลำดับที่ ${i + 1} (S22)` })),
-        s23: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 23, title: `คดีปริศนาลำดับที่ ${i + 1} (S23)` })),
-        s24: Array.from({length: 52}, (_, i) => ({ ep: i + 1, s: 24, title: `คดีปริศนาลำดับที่ ${i + 1} (S24)` })),
-        s25: Array.from({length: 12}, (_, i) => ({ ep: i + 1, s: 25, title: `คดีปริศนาลำดับที่ ${i + 1} (S25)` }))
+        s20: Array.from({length: 50}, (_, i) => ({ ep: i + 1, s: 20, title: `คดีปริศนาไฟล์ที่ ${i + 1} (S20 True)` })),
+        s21: Array.from({length: 50}, (_, i) => ({ ep: i + 1, s: 21, title: `คดีปริศนาไฟล์ที่ ${i + 1} (S21 True)` })),
+        s22: Array.from({length: 50}, (_, i) => ({ ep: i + 1, s: 22, title: `คดีปริศนาไฟล์ที่ ${i + 1} (S22 True)` })),
+        s23: Array.from({length: 50}, (_, i) => ({ ep: i + 1, s: 23, title: `คดีปริศนาไฟล์ที่ ${i + 1} (S23 True)` })),
+        s24: Array.from({length: 50}, (_, i) => ({ ep: i + 1, s: 24, title: `คดีปริศนาไฟล์ที่ ${i + 1} (S24 True)` })),
+        s25: Array.from({length: 15}, (_, i) => ({ ep: i + 1, s: 25, title: `คดีปริศนาไฟล์ที่ ${i + 1} (S25 True)` }))
     },
     lupin: [
-        "Lupin III vs Detective Conan: The Special (2009)",
-        "Lupin III vs Detective Conan: The Movie (2013)"
+        "Lupin III vs Detective Conan: TV Special (2009)",
+        "Lupin III vs Detective Conan: The Movie (2013)",
+        "Lupin III: Goodbye Liberty (Crossover Reference)",
+        "Detective Conan: Lupin III Style Heist Case"
     ]
 };
 
 const charCases = {
-    black_org: ["S1 Ep 1: จุดเริ่มต้น", "S11 Ep 538: ดำปะทะแดงเดือด", "S15 Ep 753: รถด่วนทมิฬ"],
-    kid: ["S2 Ep 78: ปะทะจอมโจรคิด", "S11 Ep 562: เคล็ดลับการวาร์ป"],
-    ai: ["S3 Ep 136: ผู้หญิงที่มาจากองค์กร", "S13 Ep 648: ความลับของไฮบาระ"],
-    detective_boys: ["S1 Ep 4: คดีลายแทง", "S7 Ep 330: บ้านพักประหลาด"],
-    fbi: ["S9 Ep 421: แบล็คอิมแพ็ค", "S17 Ep 833: การกลับมาของอากาอิ"],
-    zero: ["S15 Ep 719: เวดดิ้งอีฟ", "S20 S20-Ep 45: ภารกิจของ Zero"],
-    heiji: ["S1 Ep 48: ยอดนักสืบตะวันตก", "S19 Ep 927: ทัศนศึกษาสีแดง"]
+    black_org: ["S1 Ep 1: จุดเริ่มต้น", "S3 Ep 136: ไฮบาระปรากฏตัว", "S11 Ep 538: ดำปะทะแดง", "S15 Ep 753: มิทสึฮิโกะกับองค์กร", "S25 S25-Ep 5: เงาของรัม"],
+    kid: ["S2 Ep 78: ปะทะจอมโจรคิด", "S5 Ep 235: คุโด้ ปะทะ คิด", "S8 Ep 386: เดินบนอากาศ", "S11 Ep 562: การวาร์ป", "S16 Ep 776: คิดปะทะมาโคโตะ"],
+    ai: ["S3 Ep 136: ผู้รอดชีวิตจากองค์กร", "S4 Ep 188: การคืนชีพ", "S13 Ep 648: ความลับของไฮบาระ", "S21 Ep 40: ความทรงจำของไอ"],
+    detective_boys: ["S1 ตอนที่ 4: ลายแทงขุมทรัพย์", "S2 ตอนที่ 51: ห้องสมุดมรณะ", "S7 ตอนที่ 330: บ้านพักประหลาด", "S20 Ep 15: ค่ายฤดูร้อน"],
+    fbi: ["S6 Ep 249: เจมส์ แบล็ค", "S9 Ep 421: FBI ปะทะ องค์กร", "S11 Ep 539: อดีตอากาอิ", "S17 Ep 833: การกลับมาของสไนเปอร์"],
+    zero: ["S15 Ep 719: เวดดิ้งอีฟ", "S16 Ep 731: เบอร์เบิน", "S20 S20-Ep 45: ภารกิจลับ Zero", "S24 Ep 45: ความลับของอามุโร่"]
 };
 
 const movieNames = [
-    "ระเบิดระฟ้า", "ไพ่ปริศนา", "พ่อมดศตวรรษ", "นัยน์ตาปริศนา",
-    "เส้นตายสู่สวรรค์", "ถนนสายมรณะ", "เมืองปริศนา", "รัตติกาลสีเงิน",
-    "ห้วงทะเลลึก", "บทเพลงมรณะ", "ขุมทรัพย์โจรสลัด", "บทเพลงแห่งความตาย",
-    "นักฆ่าทรยศ", "มรณะเหนือน่านฟ้า", "15 นาทีเฉียดตาย", "ยุทธจักรลูกหนัง",
-    "เรือรบมรณะ", "กระสุนมรณะ", "ทานตะวันมรณะ", "เงามรณะตัวสำรอง",
-    "เพลงกลอนซ่อนรัก", "สายลับศูนย์", "อัญมณีสีคราม", "กระสุนสีเพลิง",
-    "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปราการห้าแฉก", "ภาพติดตามรณะ"
+    "ระเบิดระฟ้า", "ฆาตกรรมไพ่ปริศนา", "พ่อมดศตวรรษ", "นัยน์ตาปริศนา", "เส้นตายสู่สวรรค์",
+    "ปริศนาบนถนนสายมรณะ", "ฆาตกรรมเมืองปริศนา", "มนตรารัตติกาลสีเงิน", "ยุทธการเหนือห้วงทะเล", "บทเพลงมรณะนักสืบ",
+    "มหาขุมทรัพย์โจรสลัด", "บทเพลงแห่งความตาย", "ปริศนานักฆ่าทรยศ", "มรณะเหนือน่านฟ้า", "15 นาทีเฉียดตาย",
+    "ระทึกขวัญยุทธจักรลูกหนัง", "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "เงามรณะตัวสำรอง",
+    "เพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง", "เจ้าสาวฮาโลวีน",
+    "มฤตยูใต้น้ำทมิฬ", "ปราการห้าแฉก", "ภาพติดตามรณะ"
 ];
 
-// --- 🛡️ Login & Ban Logic ---
-let loginCount = parseInt(localStorage.getItem('ayu_login_count')) || 0;
-let isBanned = localStorage.getItem('ayu_is_banned') === 'true';
-
-window.onload = () => {
-    if(isBanned) {
-        showBan();
-    }
-    updateUI();
-};
+// --- 🛡️ LOGIN & BAN SYSTEM ---
+let loginCount = parseInt(localStorage.getItem('ayu_login_v38')) || 0;
+let isBanned = localStorage.getItem('ayu_banned') === 'true';
 
 function handleLogin(method) {
     loginCount++;
-    localStorage.setItem('ayu_login_count', loginCount);
+    localStorage.setItem('ayu_login_v38', loginCount);
     
-    // ระบบแบนตามจำนวนครั้งที่ระบุ (ตัวอย่างการใช้งาน)
-    if(loginCount >= 100) { // ปรับเลขนี้ได้ตามต้องการ
-        applyBan("ระบบตรวจพบความพยายามล็อคอินที่ผิดปกติ (ถาวร)");
-        return;
+    // 🔥 ระบบแบนถ้าล็อคอินบ่อยเกินไป (ป้องกัน Bot)
+    if(loginCount > 500) { 
+        applyBan("ระบบล็อกถาวรเนื่องจากการใช้งานเกินขีดจำกัด"); 
+        return; 
     }
 
-    document.getElementById('loginOverlay').style.opacity = '0';
+    document.getElementById('loginOverlay').style.transform = 'translateY(-100%)';
     setTimeout(() => {
         document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('userDisplay').innerText = `Logged in via: ${method}`;
-        addBotMsg(`ยินดีต้อนรับคุณ Ayu เข้าใช้งานผ่าน ${method} ค่ะ!`);
-    }, 500);
+        document.getElementById('userDisplay').innerText = `Auth: ${method} (Session ${loginCount})`;
+        addBotMsg(`ยินดีต้อนรับคุณ Ayu ค่ะ! เข้าใช้งานผ่าน ${method} สำเร็จ ระบบ Anti-Dup พร้อม!`);
+    }, 600);
 }
 
 function applyBan(msg) {
-    localStorage.setItem('ayu_is_banned', 'true');
+    localStorage.setItem('ayu_banned', 'true');
     showBan(msg);
 }
 
@@ -500,34 +419,46 @@ function showBan(msg) {
 }
 
 function logout() {
-    if(confirm("ต้องการออกจากระบบและเตะออกจากหน้าเว็บใช่ไหม?")) {
+    if(confirm("ต้องการออกจากระบบและเคลียร์ Session หรือไม่?")) {
         window.location.reload();
     }
 }
 
-// --- 🕵️ Investigation Hub Logic ---
-let history = JSON.parse(localStorage.getItem('conan_v38_data')) || [];
+// --- 🕵️ INVESTIGATION HUB (ห้ามสุ่มซ้ำ 100%) ---
+let history = JSON.parse(localStorage.getItem('conan_hist_v38')) || [];
 let spinning = false;
+
+function isDup(text) { 
+    return history.some(item => item.text === text); 
+}
 
 function spinProcess(type) {
     if (spinning) return;
-    let res = ""; let badge = ""; let found = false; let retry = 500;
-    while(!found && retry > 0) {
+    
+    let res = ""; 
+    let badge = ""; 
+    let found = false; 
+    let retryLimit = 2000; // วนหาจนกว่าจะเจอที่ไม่ซ้ำ
+
+    while(!found && retryLimit > 0) {
         if (type === 'all' || type === 'series') {
-            const isTrueV = Math.random() < 0.3;
+            const isTrueV = Math.random() < 0.4;
             if(isTrueV) {
                 const seasons = ['s20', 's21', 's22', 's23', 's24', 's25'];
                 const sKey = seasons[Math.floor(Math.random() * seasons.length)];
                 const pool = caseDatabase.trueVisions[sKey];
                 const pick = pool[Math.floor(Math.random() * pool.length)];
-                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep} (TrueVisions)`; badge = "TrueVisions";
+                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep} (TrueVisions)`;
+                badge = "TrueVisions";
             } else {
                 const pick = caseDatabase.iqiyi[Math.floor(Math.random() * caseDatabase.iqiyi.length)];
-                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep}: ${pick.title}`; badge = "iQIYI";
+                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep}: ${pick.title}`;
+                badge = "iQIYI";
             }
         } else if (type === 'movie') {
             const idx = Math.floor(Math.random() * movieNames.length);
-            res = `The Movie ${idx + 1}: ${movieNames[idx]}`; badge = "Movie";
+            res = `The Movie ${idx + 1}: ${movieNames[idx]}`;
+            badge = "Movie";
         } else if (type === 'lupin') {
             res = caseDatabase.lupin[Math.floor(Math.random() * caseDatabase.lupin.length)];
             badge = "Lupin III";
@@ -537,9 +468,19 @@ function spinProcess(type) {
             res = pool[Math.floor(Math.random() * pool.length)];
             badge = `Target: ${char}`;
         }
-        if(!isDup(res)) found = true;
-        retry--;
+
+        // 🔥 CHECK DUP LOGIC
+        if(!isDup(res)) {
+            found = true;
+        }
+        retryLimit--;
     }
+
+    if(!found) {
+        alert("คุณ Ayu สุ่มจนครบทุกตอนในฐานข้อมูลแล้ว! กรุณาล้างประวัติก่อนเริ่มสืบคดีใหม่ค่ะ");
+        return;
+    }
+
     executeSpin(res, badge);
 }
 
@@ -547,58 +488,83 @@ function executeSpin(txt, b) {
     spinning = true;
     const wrap = document.getElementById('slotWrapper');
     const curtain = document.getElementById('curtainWall');
+    
     curtain.classList.add('active');
+    
     setTimeout(() => {
-        const dummy = [{h: "LOCATING CASE", p: "V3.8.5 System"}, {h: "LUPIN/CONAN", p: "Cross-Checking"}];
+        const dummy = [
+            {h: "ANALYZING EVIDENCE", p: "Scanning Database..."},
+            {h: "LUPIN/CONAN SYNC", p: "Bypassing Security..."},
+            {h: "ANTI-DUPLICATE ON", p: "Filtering History..."}
+        ];
+        
         let content = dummy.map(d => `<div class="slot-unit"><h3>${d.h}</h3><p>${d.p}</p></div>`).join('');
         const parts = txt.split(': ');
         content += `<div class="slot-unit"><h3>${parts[0]}</h3><p>${parts[1] || ""}</p></div>`;
+        
         wrap.innerHTML = content;
         wrap.style.transition = "none";
         wrap.style.transform = "translateY(0)";
         wrap.offsetHeight; 
-        wrap.style.transition = "2.5s cubic-bezier(0.1, 0.8, 0.2, 1)";
-        wrap.style.transform = `translateY(-${dummy.length * 150}px)`;
+        wrap.style.transition = "2.8s cubic-bezier(0.1, 0.8, 0.1, 1)";
+        wrap.style.transform = `translateY(-${dummy.length * 160}px)`;
+        
         curtain.classList.remove('active');
+        
         setTimeout(() => {
-            document.getElementById('statusBadge').style.opacity = "1";
-            document.getElementById('statusBadge').innerText = b;
-            addHist(txt, b); spinning = false;
-        }, 2600);
-    }, 700);
+            const badgeEl = document.getElementById('statusBadge');
+            badgeEl.style.opacity = "1";
+            badgeEl.innerText = b;
+            addHist(txt, b);
+            spinning = false;
+        }, 2900);
+    }, 800);
 }
 
-// (ฟังก์ชันเสริมเพื่อความสมบูรณ์ของระบบ - 700+ lines target)
-function isDup(text) { return history.some(item => item.text === text); }
-function toggleUI() { document.getElementById('uiPanel').classList.toggle('active'); }
-function changeTheme(c) { document.documentElement.style.setProperty('--conan-gold', c); }
-function closePatch() { document.getElementById('patchNotesOverlay').style.display = 'none'; }
-function clearHistory() { if(confirm("ล้างประวัติ?")) { history = []; save(); updateUI(); } }
-function addHist(t, tag) { history.unshift({ id: Date.now(), text: t, tag: tag }); save(); updateUI(); }
-function save() { localStorage.setItem('conan_v38_data', JSON.stringify(history)); }
+// --- 🛠️ UTILS & UI HELPERS ---
+function addHist(t, tag) { 
+    history.unshift({ id: Date.now(), text: t, tag: tag }); 
+    save(); 
+    updateUI(); 
+}
+
+function save() { localStorage.setItem('conan_hist_v38', JSON.stringify(history)); }
 
 function updateUI() {
     const list = document.getElementById('historyList');
-    if(!history.length) { list.innerHTML = `<div style="text-align:center; padding:30px; opacity:0.3;">[ ระบบว่างเปล่า ]</div>`; return; }
-    list.innerHTML = history.map(h => `<div class="history-item"><span>${h.text} <span class="tag">${h.tag}</span></span><span onclick="delItem(${h.id})" style="cursor:pointer; color:var(--danger)">🗑️</span></div>`).join('');
+    if(!history.length) { 
+        list.innerHTML = `<div style="text-align:center; padding:40px; opacity:0.3; border: 1px dashed #333; border-radius: 20px;">[ NO INVESTIGATION DATA ]</div>`; 
+        return; 
+    }
+    list.innerHTML = history.map(h => `
+        <div class="history-item">
+            <span>${h.text} <span class="tag">${h.tag}</span></span>
+            <span onclick="delItem(${h.id})" style="cursor:pointer; color:var(--danger); padding: 5px;"><i class="fa-solid fa-trash-can"></i></span>
+        </div>
+    `).join('');
 }
-function delItem(id) { history = history.filter(h => h.id !== id); save(); updateUI(); }
 
-function toggleChat() { const b = document.getElementById('chatBox'); b.style.display = b.style.display === 'flex' ? 'none' : 'flex'; }
-function sendChat() {
-    const i = document.getElementById('chatInput');
-    if(!i.value.trim()) return;
-    const c = document.getElementById('chatContent');
-    c.innerHTML += `<div class="msg user">${i.value}</div>`;
-    let val = i.value; i.value = "";
-    setTimeout(() => {
-        let r = "กำลังวิเคราะห์คดีให้ค่ะคุณ Ayu...";
-        if(val.includes("วิธีใช้งานแบน")) r = "ระบบแบนจะทำงานเมื่อมีการล็อคอินซ้ำๆ หรือคุณ Ayu สั่ง Apply Ban ในโค้ดค่ะ!";
-        addBotMsg(r);
-    }, 700);
+function delItem(id) { 
+    history = history.filter(h => h.id !== id); 
+    save(); 
+    updateUI(); 
 }
-function addBotMsg(t) { const c = document.getElementById('chatContent'); c.innerHTML += `<div class="msg bot">${t}</div>`; c.scrollTop = c.scrollHeight; }
-function quickChat(t) { document.getElementById('chatInput').value = t; sendChat(); }
+
+function clearHistory() { 
+    if(confirm("ยืนยันการล้างประวัติสืบคดีทั้งหมด? (ระบบจะเริ่มสุ่มซ้ำได้ใหม่)")) { 
+        history = []; 
+        save(); 
+        updateUI(); 
+        addBotMsg("ล้างประวัติเรียบร้อยแล้วค่ะ เริ่มสืบคดีใหม่ได้เลย!");
+    } 
+}
+
+function changeTheme(c) { document.documentElement.style.setProperty('--conan-gold', c); }
+function toggleUI() { document.getElementById('uiPanel').classList.toggle('active'); }
+function toggleChat() { 
+    const b = document.getElementById('chatBox'); 
+    b.style.display = b.style.display === 'flex' ? 'none' : 'flex'; 
+}
 
 function toggleDB() {
     const db = document.getElementById('dbViewer');
@@ -608,26 +574,49 @@ function toggleDB() {
 
 function renderDB() {
     const cont = document.getElementById('dbContent');
-    let h = `<div class="db-section"><h4>🎬 THE MOVIES</h4><div class="db-grid">`;
-    movieNames.forEach((m, i) => h += `<div class="db-item">Movie ${i+1}: ${m}</div>`);
+    let h = `<div class="db-section"><h4>🎬 THE MOVIES (1-28)</h4><div class="db-grid">`;
+    movieNames.forEach((m, i) => h += `<div class="db-item"><b>Movie ${i+1}:</b> ${m}</div>`);
     h += `</div></div>`;
+    
+    h += `<div class="db-section"><h4>🎭 LUPIN III CROSSOVER</h4><div class="db-grid">`;
+    caseDatabase.lupin.forEach(l => h += `<div class="db-item">${l}</div>`);
+    h += `</div></div>`;
+
+    h += `<div class="db-section"><h4>iQIYI TV SERIES HIGHLIGHTS</h4><div class="db-grid">`;
+    caseDatabase.iqiyi.forEach(c => h += `<div class="db-item">S${c.s} Ep${c.ep}: ${c.title}</div>`);
+    h += `</div></div>`;
+    
     cont.innerHTML = h;
 }
 
-let currentTStep = 0;
-const tData = [
-    { title: "ยินดีต้อนรับ!", desc: "ระบบล็อคอินใหม่รองรับทั้ง Google, FB และโหมดผู้เข้าชมค่ะ", icon: "🔐" },
-    { title: "ความปลอดภัย", desc: "ถ้าตรวจพบความผิดปกติ ระบบจะทำการแบนถาวรทันที!", icon: "🚫" }
-];
-function startTutorial() { currentTStep = 0; document.getElementById('tutorialOverlay').style.display = 'flex'; updateTUI(); }
-function nextTutorialStep() { currentTStep++; if(currentTStep >= tData.length) document.getElementById('tutorialOverlay').style.display = 'none'; else updateTUI(); }
-function updateTUI() {
-    const d = tData[currentTStep];
-    document.getElementById('t-title').innerText = d.title;
-    document.getElementById('t-desc').innerText = d.desc;
-    document.getElementById('t-icon').innerText = d.icon;
-    document.getElementById('t-step').innerText = `Step ${currentTStep + 1} / ${tData.length}`;
+function sendChat() {
+    const i = document.getElementById('chatInput');
+    const val = i.value.trim();
+    if(!val) return;
+    const c = document.getElementById('chatContent');
+    c.innerHTML += `<div class="msg user">${val}</div>`;
+    i.value = "";
+    
+    setTimeout(() => {
+        let r = "กำลังตรวจสอบฐานข้อมูลให้คุณ Ayu ค่ะ...";
+        if(val.includes("ห้ามซ้ำ")) r = "ระบบ Anti-Dup ทำงานโดยการเช็คประวัติใน Log ค่ะ ถ้าตอนไหนเคยสุ่มแล้ว ระบบจะไม่เลือกซ้ำเด็ดขาด!";
+        if(val.includes("แบน")) r = "ปุ่ม Apply Ban จะล็อกเครื่องนั้นไม่ให้เข้าเว็บได้อีกค่ะ ต้องระวังนะคะ!";
+        addBotMsg(r);
+    }, 800);
 }
+
+function addBotMsg(t) { 
+    const c = document.getElementById('chatContent'); 
+    c.innerHTML += `<div class="msg bot">${t}</div>`; 
+    c.scrollTop = c.scrollHeight; 
+}
+
+// Initial Run
+window.addEventListener('load', () => {
+    if(isBanned) showBan();
+    updateUI();
+});
 </script>
+
 </body>
 </html>
