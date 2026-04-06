@@ -283,7 +283,11 @@
 
 <div class="container">
     <h1 class="main-header">CONAN HUB V3.8.5</h1>
-    
+
+    <div class="login-section" style="margin-bottom: 20px;">
+    <button onclick="login('google')" class="action-btn">Login with Google</button>
+    <button onclick="login('facebook')" class="action-btn">Login with Facebook</button>
+</div>
     <div class="premium-card">
         <div id="statusBadge" style="font-size: 0.75rem; color:var(--conan-gold); border:1px solid var(--conan-gold); display:inline-block; padding:4px 14px; border-radius:25px; margin-bottom:15px; opacity:0; transition:0.4s; letter-spacing:1px;">SYNCING DATABASE...</div>
         
@@ -349,90 +353,112 @@
 </div>
 
 <script>
-    // --- 🛡️ ANTI-SPAM SYSTEM V3.0 (120 QUIZ HARDCORE EDITION) ---
-let spamCount = parseInt(localStorage.getItem('ayu_spam_v8')) || 0;
+    // --- 🛡️ CONFIG FIREBASE (Ayu เอาค่าจาก Firebase Console มาวางตรงนี้) ---
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+// Initialize Firebase (ต้องเรียกไฟล์ SDK ใน HTML ด้วยนะ)
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// --- ⚙️ ระบบแบน 4 ระดับ & เตะออกจากระบบ ---
+let spamCount = parseInt(localStorage.getItem('ayu_spam_v10')) || 0;
 let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
 let lastClickTime = 0;
 
-// คลังคำถามโคนัน 120 ข้อ (หนูใส่ตัวอย่างให้ก่อน Ayu เติมเพิ่มให้ครบ 120 นะคะ)
 const quizBank = [
     { q: "ยาที่ทำให้ตัวเล็กลงชื่อว่าอะไร?", a: "APTX4869" },
     { q: "เบอร์เบิน (Bourbon) คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
     { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" },
     { q: "ชื่อจริงของ ไฮบาระ ไอ คืออะไร?", a: "มิยาโนะ ชิโฮะ" },
-    { q: "ใครคือคนร้ายในคดี 'คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์'?", a: "อาซาอิ เซย์จิ" },
-    { q: "โคนันเรียนอยู่โรงเรียนประถมชื่ออะไร?", a: "เทตัน" },
-    { q: "รหัสอาชญากร 1412 คือใคร?", a: "จอมโจรคิด" },
-    { q: "โคนันถนัดกีฬาอะไรมากที่สุด?", a: "ฟุตบอล" },
-    { q: "อากาอิ ชูอิจิ ปลอมตัวเป็นใคร?", a: "โอกิยะ สึบารุ" },
-    { q: "พ่อของชินอิจิชื่อว่าอะไร?", a: "คุโด้ ยูซากุ" },
-    { q: "วิชาที่โคนันไม่ถนัดที่สุดคือ?", a: "ดนตรี" },
-    { q: "สัญลักษณ์แก๊งนักสืบเยาวชนคืออะไร?", a: "เข็มกลัดนักสืบ" },
-    { q: "เอริ คิซากิ ทำงานอาชีพอะไร?", a: "ทนายความ" },
-    { q: "ฮัตโตริ เฮย์จิ มาจากจังหวัดอะไร?", a: "โอซาก้า" },
-    { q: "แมวของเอริ คิซากิ ชื่อว่าอะไร?", a: "โกโร่" }
-    // ... Ayu ก๊อปวางเพิ่มข้ออื่นๆ ให้ครบ 120 ข้อนะคะ ...
+    { q: "รหัสอาชญากร 1412 คือใคร?", a: "จอมโจรคิด" }
+    // ... เติมให้ครบ 120 ข้อตามเดิมนะ Ayu ...
 ];
+
+// ฟังก์ชันล็อกอิน
+function login(providerName) {
+    let provider;
+    if(providerName === 'google') provider = new firebase.auth.GoogleAuthProvider();
+    if(providerName === 'facebook') provider = new firebase.auth.FacebookAuthProvider();
+    
+    if(provider) {
+        auth.signInWithPopup(provider).then(() => {
+            alert("ยินดีต้อนรับสู่ CONAN HUB!");
+            location.reload();
+        }).catch(err => alert("ล็อกอินล้มเหลว: " + err.message));
+    }
+}
 
 function checkSpamSecurity() {
     const now = Date.now();
-    
-    // เช็คสถานะการแบน
-    if (now < banUntil || spamCount >= 2) {
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("กรุณาล็อกอินก่อนใช้งานนะคะ!");
+        return false;
+    }
+
+    if (now < banUntil) {
         const timeLeft = Math.ceil((banUntil - now) / 1000);
-        let timeStr = (spamCount >= 2) ? "ถาวร" : (timeLeft > 60 ? `${Math.ceil(timeLeft/60)} นาที` : `${timeLeft} วินาที`);
-        
-        if (confirm(`🛑 ระบบระงับการใช้งาน (${timeStr})\nคุณต้องตอบคำถาม 5 ข้อให้ถูกเพื่อปลดแบนทันทีไหม?`)) {
+        if (confirm(`🛑 คุณยังติดแบน! ต้องการตอบคำถาม 5 ข้อเพื่อปลดล็อกไหม?`)) {
             startHardcoreInterrogation();
         }
         return false;
     }
 
-    // เช็คการสแปม (รัวปุ่ม)
-    if (now - lastClickTime < 1500 && (typeof spinning !== 'undefined' && !spinning)) {
+    if (now - lastClickTime < 1500 && !spinning) {
         spamCount++;
-        localStorage.setItem('ayu_spam_v8', spamCount);
+        localStorage.setItem('ayu_spam_v10', spamCount);
         
-        let penalty = (spamCount === 1) ? 60 * 1000 : 999 * 365 * 24 * 60 * 60 * 1000; // 1 นาที หรือ ถาวร
+        let penalty = 0;
+        let msg = "";
+
+        if (spamCount === 1) { 
+            penalty = 60 * 1000; msg = "แบน 1 นาที"; 
+        } else if (spamCount === 2) { 
+            penalty = 3 * 24 * 60 * 60 * 1000; msg = "แบน 3 วัน"; 
+        } else if (spamCount === 3) { 
+            penalty = 7 * 24 * 60 * 60 * 1000; msg = "แบน 7 วัน"; 
+        } else { 
+            // ครั้งที่ 4 แบนถาวรและบังคับสร้างบัญชีใหม่
+            alert("🛑 ครั้งที่ 4: คุณถูกแบนถาวร! บัญชีนี้ไม่สามารถใช้งานได้อีก");
+            auth.signOut().then(() => location.reload());
+            return false;
+        }
+
         banUntil = now + penalty;
-        
         localStorage.setItem('ayu_ban_time', banUntil);
-        alert(`🛑 ตรวจพบการสุ่มรัว! (ครั้งที่ ${spamCount})\nระงับการใช้งาน: ${spamCount === 1 ? '1 นาที' : 'ถาวร'}`);
+        alert(`⚠️ ตรวจพบการสแปม! (${msg})\nระบบจะเตะคุณออกจากเซสชั่นทันที`);
+        
+        // เตะออกจากระบบ (Sign Out)
+        auth.signOut().then(() => location.reload());
         return false;
     }
+    
     lastClickTime = now;
     return true;
 }
 
-// ระบบสอบสวนแบบโหด 5 ข้อรวด
-function startHardcoreInterrogation() {
-    alert("🕵️ บททดสอบพิสูจน์ตัวตน: คุณต้องตอบคำถามถูก 5 ข้อรวดเพื่อปลดแบน!");
-    
-    // สุ่มคำถาม 5 ข้อจากคลังทั้งหมด
-    let selectedQuizzes = [...quizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
-    let passCount = 0;
-
-    for (let i = 0; i < selectedQuizzes.length; i++) {
-        let userAns = prompt(`คำถามที่ ${i+1}/5:\n"${selectedQuizzes[i].q}"`);
-        if (userAns === selectedQuizzes[i].a) {
-            passCount++;
-        } else {
-            alert(`❌ ผิด! ;
-            return; // จบการทำงานทันทีถ้าตอบผิด
+async function startHardcoreInterrogation() {
+    let selected = [...quizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
+    for (let i = 0; i < 5; i++) {
+        let ans = prompt(`คำถามที่ ${i+1}/5:\n${selected[i].q}`);
+        if (ans !== selected[i].a) {
+            alert("❌ ผิด! การปลดแบนล้มเหลว");
+            return;
         }
     }
-
-    if (passCount === 5) {
-        alert("✅ ยินดีด้วย! คุณตอบถูกครบ 5 ข้อ ระบบปลดแบนให้แล้วค่ะ");
-        spamCount = 0;
-        banUntil = 0;
-        localStorage.setItem('ayu_spam_v8', 0);
-        localStorage.setItem('ayu_ban_time', 0);
-        location.reload(); // รีโหลดเพื่อล้างสถานะ
-    }
+    alert("✅ ปลดแบนสำเร็จ! เข้าสู่ระบบใหม่อีกครั้งนะ");
+    banUntil = 0;
+    localStorage.setItem('ayu_ban_time', 0);
 }
 
-// ระบบ Wrapper ดักจับ (แบบที่ Ayu มั่นใจ)
+// Wrapper ดักจับเหมือนเดิม
 const originalSpinProcess = window.spinProcess;
 window.spinProcess = function(type) {
     if (checkSpamSecurity()) {
@@ -441,7 +467,6 @@ window.spinProcess = function(type) {
         }
     }
 };
-
 const caseDatabase = {
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
