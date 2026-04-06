@@ -284,10 +284,15 @@
 <div class="container">
     <h1 class="main-header">CONAN HUB V3.8.5</h1>
 
-    <div class="login-section" style="margin-bottom: 20px;">
-    <button onclick="login('google')" class="action-btn">Login with Google</button>
-    <button onclick="login('facebook')" class="action-btn">Login with Facebook</button>
+    <div class="login-section" style="margin: 20px 0; display: flex; flex-direction: column; gap: 10px; align-items: center; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 15px; border: 1px solid var(--conan-gold);">
+    <span style="color: var(--conan-gold); font-weight: bold; margin-bottom: 5px;">🔑 เข้าสู่ระบบเพื่อเริ่มสืบคดี</span>
+    <div style="display: flex; gap: 10px; width: 100%; justify-content: center;">
+        <button onclick="login('google')" class="action-btn" style="flex: 1; background: #ea4335; color: white; border: none;">Google</button>
+        <button onclick="login('facebook')" class="action-btn" style="flex: 1; background: #1877f2; color: white; border: none;">Facebook</button>
+    </div>
+    <button onclick="login('phone')" class="action-btn" style="width: 100%; margin-top: 5px; background: #34b7f1; color: white; border: none;">📞 Login with Phone Number</button>
 </div>
+    
     <div class="premium-card">
         <div id="statusBadge" style="font-size: 0.75rem; color:var(--conan-gold); border:1px solid var(--conan-gold); display:inline-block; padding:4px 14px; border-radius:25px; margin-bottom:15px; opacity:0; transition:0.4s; letter-spacing:1px;">SYNCING DATABASE...</div>
         
@@ -353,90 +358,58 @@
 </div>
 
 <script>
-    // --- 🛡️ CONFIG FIREBASE (Ayu เอาค่าจาก Firebase Console มาวางตรงนี้) ---
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-// Initialize Firebase (ต้องเรียกไฟล์ SDK ใน HTML ด้วยนะ)
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-// --- ⚙️ ระบบแบน 4 ระดับ & เตะออกจากระบบ ---
+    // --- 🛡️ SUPER FIX: ระบบแบน & ล็อกอิน V4.0 ---
 let spamCount = parseInt(localStorage.getItem('ayu_spam_v10')) || 0;
 let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
 let lastClickTime = 0;
 
-const quizBank = [
-    { q: "ยาที่ทำให้ตัวเล็กลงชื่อว่าอะไร?", a: "APTX4869" },
-    { q: "เบอร์เบิน (Bourbon) คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
-    { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" },
-    { q: "ชื่อจริงของ ไฮบาระ ไอ คืออะไร?", a: "มิยาโนะ ชิโฮะ" },
-    { q: "รหัสอาชญากร 1412 คือใคร?", a: "จอมโจรคิด" }
-    // ... เติมให้ครบ 120 ข้อตามเดิมนะ Ayu ...
-];
-
-// ฟังก์ชันล็อกอิน
-function login(providerName) {
-    let provider;
-    if(providerName === 'google') provider = new firebase.auth.GoogleAuthProvider();
-    if(providerName === 'facebook') provider = new firebase.auth.FacebookAuthProvider();
-    
-    if(provider) {
-        auth.signInWithPopup(provider).then(() => {
-            alert("ยินดีต้อนรับสู่ CONAN HUB!");
-            location.reload();
-        }).catch(err => alert("ล็อกอินล้มเหลว: " + err.message));
+// ตรวจสอบสถานะการเข้าใช้งานทันทีที่โหลดหน้า
+window.onload = () => {
+    const now = Date.now();
+    if (now < banUntil) {
+        alert("🛑 คุณยังติดสถานะระงับการใช้งาน! กรุณาตอบคำถามเพื่อปลดล็อก");
+        startHardcoreInterrogation();
     }
+};
+
+// ฟังก์ชันล็อกอิน (ใส่รองรับไว้ก่อนเพื่อไม่ให้ปุ่มพัง)
+function login(type) {
+    alert(`กำลังเชื่อมต่อระบบล็อกอิน ${type}... (กรุณาตั้งค่า Firebase Config)`);
 }
 
 function checkSpamSecurity() {
     const now = Date.now();
-    const user = auth.currentUser;
-
-    if (!user) {
-        alert("กรุณาล็อกอินก่อนใช้งานนะคะ!");
-        return false;
-    }
-
-    if (now < banUntil) {
-        const timeLeft = Math.ceil((banUntil - now) / 1000);
-        if (confirm(`🛑 คุณยังติดแบน! ต้องการตอบคำถาม 5 ข้อเพื่อปลดล็อกไหม?`)) {
-            startHardcoreInterrogation();
+    
+    // 1. เช็คว่าติดแบนอยู่ไหม
+    if (now < banUntil || spamCount >= 4) {
+        if (spamCount >= 4) {
+            alert("🛑 บัญชีนี้ถูกแบนถาวร! ระบบจะเตะคุณออกเพื่อให้สร้างบัญชีใหม่");
+            localStorage.clear(); // ล้างข้อมูลเพื่อบังคับสมัครใหม่
+            location.reload();
+            return false;
         }
+        startHardcoreInterrogation();
         return false;
     }
 
-    if (now - lastClickTime < 1500 && !spinning) {
+    // 2. เช็คการกดรัว (Anti-Spam)
+    if (now - lastClickTime < 1500) {
+        if (typeof spinning !== 'undefined' && spinning) return false; // ถ้ากำลังหมุนอยู่ ไม่นับเป็นสแปม
+
         spamCount++;
         localStorage.setItem('ayu_spam_v10', spamCount);
         
         let penalty = 0;
         let msg = "";
-
-        if (spamCount === 1) { 
-            penalty = 60 * 1000; msg = "แบน 1 นาที"; 
-        } else if (spamCount === 2) { 
-            penalty = 3 * 24 * 60 * 60 * 1000; msg = "แบน 3 วัน"; 
-        } else if (spamCount === 3) { 
-            penalty = 7 * 24 * 60 * 60 * 1000; msg = "แบน 7 วัน"; 
-        } else { 
-            // ครั้งที่ 4 แบนถาวรและบังคับสร้างบัญชีใหม่
-            alert("🛑 ครั้งที่ 4: คุณถูกแบนถาวร! บัญชีนี้ไม่สามารถใช้งานได้อีก");
-            auth.signOut().then(() => location.reload());
-            return false;
-        }
-
+        if (spamCount === 1) { penalty = 60 * 1000; msg = "1 นาที"; }
+        else if (spamCount === 2) { penalty = 3 * 24 * 60 * 60 * 1000; msg = "3 วัน"; }
+        else if (spamCount === 3) { penalty = 7 * 24 * 60 * 60 * 1000; msg = "7 วัน"; }
+        
         banUntil = now + penalty;
         localStorage.setItem('ayu_ban_time', banUntil);
-        alert(`⚠️ ตรวจพบการสแปม! (${msg})\nระบบจะเตะคุณออกจากเซสชั่นทันที`);
         
-        // เตะออกจากระบบ (Sign Out)
-        auth.signOut().then(() => location.reload());
+        alert(`⚠️ ตรวจพบการสแปม! โดนแบน ${msg}\nระบบจะทำการรีโหลดหน้าเว็บใหม่`);
+        location.reload(); 
         return false;
     }
     
@@ -444,29 +417,41 @@ function checkSpamSecurity() {
     return true;
 }
 
+// ฟังก์ชันปลดแบน (Ayu เติมคำถามเพิ่มเองได้น้า)
 async function startHardcoreInterrogation() {
-    let selected = [...quizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
+    const quizBank = [
+        { q: "ยา APTX4869 ใครเป็นคนสร้าง?", a: "มิยาโนะ ชิโฮะ" },
+        { q: "เบอร์เบิน คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
+        { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" },
+        { q: "โคนันเรียนอยู่โรงเรียนอะไร?", a: "เทตัน" },
+        { q: "รันเก่งกีฬาอะไร?", a: "คาราเต้" }
+    ];
+    
+    let selected = quizBank.sort(() => 0.5 - Math.random()).slice(0, 5);
     for (let i = 0; i < 5; i++) {
-        let ans = prompt(`คำถามที่ ${i+1}/5:\n${selected[i].q}`);
+        let ans = prompt(`คำถามปลดแบนที่ ${i+1}/5:\n${selected[i].q}`);
         if (ans !== selected[i].a) {
             alert("❌ ผิด! การปลดแบนล้มเหลว");
             return;
         }
     }
-    alert("✅ ปลดแบนสำเร็จ! เข้าสู่ระบบใหม่อีกครั้งนะ");
+    
+    alert("✅ ปลดแบนสำเร็จ!");
     banUntil = 0;
     localStorage.setItem('ayu_ban_time', 0);
+    location.reload();
 }
 
-// Wrapper ดักจับเหมือนเดิม
-const originalSpinProcess = window.spinProcess;
-window.spinProcess = function(type) {
+// --- 🛑 จุดสำคัญ: ย้ายคำสั่ง Wrapper มาไว้ล่างสุดของสคริปต์ หรือเรียกใช้งานแบบนี้แทน ---
+function safeSpin(type) {
     if (checkSpamSecurity()) {
-        if (typeof originalSpinProcess === 'function') {
-            originalSpinProcess(type);
+        if (typeof spinProcess === 'function') {
+            spinProcess(type);
+        } else {
+            console.error("หาฟังก์ชัน spinProcess ไม่เจอ!");
         }
     }
-};
+}
 const caseDatabase = {
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
