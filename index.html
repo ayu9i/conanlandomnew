@@ -431,6 +431,88 @@ window.spinProcess = function(type) {
     }
 };
 
+    // --- 🛡️ ANTI-SPAM SYSTEM V2.0 (INTERROGATION EDITION) ---
+let spamCount = parseInt(localStorage.getItem('ayu_spam_v8')) || 0;
+let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
+let lastClickTime = 0;
+
+// คลังคำถามโคนัน (Ayu เพิ่มเองได้นะ)
+const quizBank = [
+    { q: "ใครคือคนร้ายในคดี 'คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์'?", a: "อาซาอิ เซย์จิ" },
+    { q: "โค้ดเนมของพี่สาวไฮบาระ (มิยาโนะ อาเคมิ) คืออะไร?", a: "สตาฟ" },
+    { q: "เบอร์เบิน (Bourbon) คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
+    { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" }
+];
+
+function checkSpamSecurity() {
+    const now = Date.now();
+    
+    if (now < banUntil || spamCount >= 8) {
+        const timeLeft = Math.ceil((banUntil - now) / 1000);
+        let timeStr = spamCount >= 8 ? "ถาวร" : (timeLeft > 60 ? `${Math.ceil(timeLeft/60)} นาที` : `${timeLeft} วินาที`);
+        
+        // ถ้าแบนเกิน 10 นาที (600,000 ms) หรือถาวร ให้มีปุ่มสอบสวน
+        if (penaltyIsHigh() || spamCount >= 8) {
+            if (confirm(`🚨 ระบบระงับการใช้งาน (${timeStr})\nคุณต้องการ 'พิสูจน์ความบริสุทธิ์' เพื่อปลดแบนทันทีหรือไม่?\n(ถ้าตอบผิดจะโดนแบนเพิ่ม 1 ชั่วโมง!)`)) {
+                startInterrogation();
+            }
+        } else {
+            alert(`⚠️ ระบบระงับการใช้งานชั่วคราว! กรุณารออีก ${timeStr}`);
+        }
+        return false;
+    }
+
+    if (now - lastClickTime < 1500 && (typeof spinning !== 'undefined' && !spinning)) {
+        spamCount++;
+        localStorage.setItem('ayu_spam_v8', spamCount);
+        let penalty = 0;
+        if (spamCount === 1) penalty = 60 * 1000; // 1 นาที
+        else if (spamCount === 2) penalty = 10 * 60 * 1000; // 10 นาที
+        else if (spamCount === 3) penalty = 60 * 60 * 1000; // 1 ชม.
+        else if (spamCount >= 8) penalty = 999 * 365 * 24 * 60 * 60 * 1000; // ถาวร
+
+        banUntil = now + penalty;
+        localStorage.setItem('ayu_ban_time', banUntil);
+        alert(`🛑 ตรวจพบการสุ่มรัว! (ผิดครั้งที่ ${spamCount})\nระงับการใช้งาน ${penalty >= 3600000 ? '1 ชม.' : penalty >= 600000 ? '10 นาที' : '1 นาที'}`);
+        return false;
+    }
+    lastClickTime = now;
+    return true;
+}
+
+function penaltyIsHigh() {
+    const remaining = banUntil - Date.now();
+    return remaining >= 600000; // 10 นาทีขึ้นไป
+}
+
+function startInterrogation() {
+    const quiz = quizBank[Math.floor(Math.random() * quizBank.length)];
+    const userAnswer = prompt(`🕵️ คำถามจากสารวัตรเมงูเระ:\n"${quiz.q}"\n(พิมพ์คำตอบให้ถูกต้องเพื่อปลดแบน)`);
+    
+    if (userAnswer === quiz.a) {
+        alert("✅ คำตอบถูกต้อง! คุณพ้นข้อกล่าวหา ระบบปลดแบนให้แล้วค่ะ");
+        spamCount = 0;
+        banUntil = 0;
+        localStorage.setItem('ayu_spam_v8', 0);
+        localStorage.setItem('ayu_ban_time', 0);
+    } else {
+        const extraPenalty = 60 * 60 * 1000; // บวกเพิ่ม 1 ชม.
+        banUntil += extraPenalty;
+        localStorage.setItem('ayu_ban_time', banUntil);
+        alert("❌ คำตอบผิด! ตรวจพบความพยายามหลอกลวงเจ้าหน้าที่\nเพิ่มโทษแบนอีก 1 ชั่วโมง!");
+    }
+}
+
+// ระบบ Wrapper ดักจับ function
+const originalSpinProcess = window.spinProcess;
+window.spinProcess = function(type) {
+    if (checkSpamSecurity()) {
+        if (typeof originalSpinProcess === 'function') {
+            originalSpinProcess(type);
+        }
+    }
+};
+
 const caseDatabase = {
     iqiyi: [
         { ep: 1, s: 1, title: "คดีฆาตกรรมบนรถไฟเหาะ" },
