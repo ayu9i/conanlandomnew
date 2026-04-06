@@ -349,120 +349,98 @@
 </div>
 
 <script>
-    // --- 🛡️ HARDCORE ANTI-SPAM & 120 QUIZ SYSTEM V3.5 ---
-let spamCount = parseInt(localStorage.getItem('ayu_spam_v9')) || 0;
+    // --- 🛡️ ANTI-SPAM SYSTEM V3.0 (120 QUIZ HARDCORE EDITION) ---
+let spamCount = parseInt(localStorage.getItem('ayu_spam_v8')) || 0;
 let banUntil = parseInt(localStorage.getItem('ayu_ban_time')) || 0;
 let lastClickTime = 0;
 
-// คลังคำถาม 120 ข้อ (Ayu เติมให้ครบตามโครงสร้างนี้นะคะ)
-const masterQuizBank = [
+// คลังคำถามโคนัน 120 ข้อ (หนูใส่ตัวอย่างให้ก่อน Ayu เติมเพิ่มให้ครบ 120 นะคะ)
+const quizBank = [
     { q: "ยาที่ทำให้ตัวเล็กลงชื่อว่าอะไร?", a: "APTX4869" },
     { q: "เบอร์เบิน (Bourbon) คือชื่อปลอมของใคร?", a: "อามุโร่ โทรุ" },
     { q: "จอมโจรคิด มีชื่อจริงว่าอะไร?", a: "คุโรบะ ไคโตะ" },
     { q: "ชื่อจริงของ ไฮบาระ ไอ คืออะไร?", a: "มิยาโนะ ชิโฮะ" },
-    { q: "เบลม็อท มีฉายาในองค์กรว่าอะไร?", a: "แม่มดพันหน้า" },
-    { q: "อากาอิ ชูอิจิ ปลอมตัวเป็นใคร?", a: "โอกิยะ สึบารุ" },
+    { q: "ใครคือคนร้ายในคดี 'คดีฆาตกรรมเปียโนโซนาต้าแสงจันทร์'?", a: "อาซาอิ เซย์จิ" },
+    { q: "โคนันเรียนอยู่โรงเรียนประถมชื่ออะไร?", a: "เทตัน" },
     { q: "รหัสอาชญากร 1412 คือใคร?", a: "จอมโจรคิด" },
     { q: "โคนันถนัดกีฬาอะไรมากที่สุด?", a: "ฟุตบอล" },
-    { q: "ใครคือคนร้ายในคดีเปียโนโซนาต้าแสงจันทร์?", a: "อาซาอิ เซย์จิ" },
+    { q: "อากาอิ ชูอิจิ ปลอมตัวเป็นใคร?", a: "โอกิยะ สึบารุ" },
     { q: "พ่อของชินอิจิชื่อว่าอะไร?", a: "คุโด้ ยูซากุ" },
-    // --- Ayu ก๊อปวางเพิ่มคำถามตรงนี้ให้ครบ 120 ข้อนะคะ ---
     { q: "วิชาที่โคนันไม่ถนัดที่สุดคือ?", a: "ดนตรี" },
-    { q: "สัญลักษณ์แก๊งนักสืบเยาวชนคือ?", a: "เข็มกลัดนักสืบ" },
-    { q: "เบอร์โทรศัพท์ของบอสองค์กรชุดดำคือเพลงอะไร?", a: "ลูกกาเจ็ดตัว" },
+    { q: "สัญลักษณ์แก๊งนักสืบเยาวชนคืออะไร?", a: "เข็มกลัดนักสืบ" },
     { q: "เอริ คิซากิ ทำงานอาชีพอะไร?", a: "ทนายความ" },
-    { q: "ฮัตโตริ เฮย์จิ มาจากจังหวัดอะไร?", a: "โอซาก้า" }
+    { q: "ฮัตโตริ เฮย์จิ มาจากจังหวัดอะไร?", a: "โอซาก้า" },
+    { q: "แมวของเอริ คิซากิ ชื่อว่าอะไร?", a: "โกโร่" }
+    // ... Ayu ก๊อปวางเพิ่มข้ออื่นๆ ให้ครบ 120 ข้อนะคะ ...
 ];
 
 function checkSpamSecurity() {
     const now = Date.now();
     
-    // 1. เช็คสถานะแบน (ถ้าติดแบน ต้องทำ Quiz เท่านั้น)
+    // เช็คสถานะการแบน
     if (now < banUntil || spamCount >= 2) {
-        if (confirm(`🛑 สถานะ: ${spamCount >= 2 ? "แบนถาวร" : "แบน 1 นาที"}\nต้องการกู้คืนบัญชีด้วยการตอบคำถาม 5 ข้อรวดไหม?`)) {
-            startHardcoreQuiz();
+        const timeLeft = Math.ceil((banUntil - now) / 1000);
+        let timeStr = (spamCount >= 2) ? "ถาวร" : (timeLeft > 60 ? `${Math.ceil(timeLeft/60)} นาที` : `${timeLeft} วินาที`);
+        
+        if (confirm(`🛑 ระบบระงับการใช้งาน (${timeStr})\nคุณต้องตอบคำถาม 5 ข้อให้ถูกเพื่อปลดแบนทันทีไหม?`)) {
+            startHardcoreInterrogation();
         }
         return false;
     }
 
-    // 2. เช็คการสแปมปุ่ม (เช็คตอนไม่ได้หมุนอยู่)
-    if (now - lastClickTime < 1500 && !spinning) {
+    // เช็คการสแปม (รัวปุ่ม)
+    if (now - lastClickTime < 1500 && (typeof spinning !== 'undefined' && !spinning)) {
         spamCount++;
-        localStorage.setItem('ayu_spam_v9', spamCount);
+        localStorage.setItem('ayu_spam_v8', spamCount);
         
-        if (spamCount === 1) {
-            banUntil = now + (60 * 1000); // 1 นาที
-            alert("⚠️ คำเตือน! หยุดสแปมปุ่ม ระบบระงับ 1 นาที");
-        } else {
-            banUntil = now + (99 * 365 * 24 * 60 * 60 * 1000); // ถาวร
-            alert("🛑 แบนถาวร! คุณต้องตอบคำถามโคนัน 5 ข้อให้ถูกเพื่อปลดล็อก");
-        }
+        let penalty = (spamCount === 1) ? 60 * 1000 : 999 * 365 * 24 * 60 * 60 * 1000; // 1 นาที หรือ ถาวร
+        banUntil = now + penalty;
+        
         localStorage.setItem('ayu_ban_time', banUntil);
+        alert(`🛑 ตรวจพบการสุ่มรัว! (ครั้งที่ ${spamCount})\nระงับการใช้งาน: ${spamCount === 1 ? '1 นาที' : 'ถาวร'}`);
         return false;
     }
-    
     lastClickTime = now;
     return true;
 }
 
-async function startHardcoreQuiz() {
-    alert("🕵️ บททดสอบพิสูจน์ตัวตน: ตอบถูก 5 ข้อรวด = ปลดแบน!");
+// ระบบสอบสวนแบบโหด 5 ข้อรวด
+function startHardcoreInterrogation() {
+    alert("🕵️ บททดสอบพิสูจน์ตัวตน: คุณต้องตอบคำถามถูก 5 ข้อรวดเพื่อปลดแบน!");
     
-    // สุ่ม 5 ข้อจาก 120 ข้อ
-    let selected = [...masterQuizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
-    
-    for (let i = 0; i < selected.length; i++) {
-        let userAns = prompt(`ข้อที่ ${i+1}/5:\n${selected[i].q}`);
-        if (userAns !== selected[i].a) {
-            alert(`❌ ผิด! (เฉลย: ${selected[i].a})\nเริ่มใหม่ทั้งหมดนะคะ!`);
-            return;
+    // สุ่มคำถาม 5 ข้อจากคลังทั้งหมด
+    let selectedQuizzes = [...quizBank].sort(() => 0.5 - Math.random()).slice(0, 5);
+    let passCount = 0;
+
+    for (let i = 0; i < selectedQuizzes.length; i++) {
+        let userAns = prompt(`คำถามที่ ${i+1}/5:\n"${selectedQuizzes[i].q}"`);
+        if (userAns === selectedQuizzes[i].a) {
+            passCount++;
+        } else {
+            alert(`❌ ผิด! (คำตอบที่ถูกคือ: ${selectedQuizzes[i].a})\nการสอบสวนล้มเหลว คุณยังติดแบนอยู่!`);
+            return; // จบการทำงานทันทีถ้าตอบผิด
         }
     }
 
-    alert("✅ ถูกต้องครบถ้วน! ปลดแบนให้แล้วค่ะ Ayu");
-    spamCount = 0;
-    banUntil = 0;
-    localStorage.setItem('ayu_spam_v9', 0);
-    localStorage.setItem('ayu_ban_time', 0);
-    location.reload();
-}
-
-// ฟังก์ชันสุ่มหลัก (ใช้ตัวนี้ตัวเดียว ห้ามมีซ้ำ!)
-function spinProcess(type) {
-    if (!checkSpamSecurity()) return; // ดักแบนก่อนเริ่ม
-    if (spinning) return;
-
-    let res = ""; let badge = ""; let found = false; let retry = 500;
-    while(!found && retry > 0) {
-        if (type === 'all' || type === 'series') {
-            const isTrueV = Math.random() < 0.3;
-            if(isTrueV) {
-                const seasons = ['s20', 's21', 's22', 's23', 's24', 's25'];
-                const sKey = seasons[Math.floor(Math.random() * seasons.length)];
-                const pool = caseDatabase.trueVisions[sKey];
-                const pick = pool[Math.floor(Math.random() * pool.length)];
-                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep} (TrueVisions)`; badge = "TrueVisions";
-            } else {
-                const pick = caseDatabase.iqiyi[Math.floor(Math.random() * caseDatabase.iqiyi.length)];
-                res = `ซีซั่น ${pick.s} ตอนที่ ${pick.ep}: ${pick.title}`; badge = "iQIYI";
-            }
-        } else if (type === 'movie') {
-            const idx = Math.floor(Math.random() * movieNames.length);
-            res = `The Movie ${idx + 1}: ${movieNames[idx]}`; badge = "Movie";
-        } else if (type === 'lupin') {
-            res = caseDatabase.lupin[Math.floor(Math.random() * caseDatabase.lupin.length)];
-            badge = "Lupin III";
-        } else if (type === 'char') {
-            const char = document.getElementById('charSelect').value;
-            const pool = charCases[char];
-            res = pool[Math.floor(Math.random() * pool.length)];
-            badge = `Target: ${char}`;
-        }
-        if(!history.some(item => item.text === res)) found = true;
-        retry--;
+    if (passCount === 5) {
+        alert("✅ ยินดีด้วย! คุณตอบถูกครบ 5 ข้อ ระบบปลดแบนให้แล้วค่ะ");
+        spamCount = 0;
+        banUntil = 0;
+        localStorage.setItem('ayu_spam_v8', 0);
+        localStorage.setItem('ayu_ban_time', 0);
+        location.reload(); // รีโหลดเพื่อล้างสถานะ
     }
-    executeSpin(res, badge);
 }
+
+// ระบบ Wrapper ดักจับ (แบบที่ Ayu มั่นใจ)
+const originalSpinProcess = window.spinProcess;
+window.spinProcess = function(type) {
+    if (checkSpamSecurity()) {
+        if (typeof originalSpinProcess === 'function') {
+            originalSpinProcess(type);
+        }
+    }
+};
 
 const caseDatabase = {
     iqiyi: [
