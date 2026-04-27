@@ -3,91 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONAN HUB FULL CONTROL V4.0</title>
+    <title>CONAN HUB - AYU EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --conan-gold: #d4af37; --bg-dark: #0a0e14; --card-bg: #151b23; --glass: rgba(255, 255, 255, 0.05); }
-        body { margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg-dark); color: white; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; }
+        :root { --gold: #d4af37; --bg: #0a0e14; --card: #151b23; --danger: #ff4d4d; --success: #4dff88; }
+        body { margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; }
         
-        .header-section { text-align: center; margin-bottom: 20px; }
-        .admin-badge { background: var(--conan-gold); color: #000; padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 600; }
+        .container { width: 100%; max-width: 450px; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
+        .admin-tag { background: var(--gold); color: black; padding: 2px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
 
-        .main-card { background: var(--card-bg); width: 100%; max-width: 450px; border-radius: 24px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* ระบบค้นหา & ตัวนับ */
-        .status-box { background: var(--conan-gold); color: #000; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .search-box { background: var(--glass); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #333; }
-        input { width: 90%; background: transparent; border: none; color: white; outline: none; font-family: 'Kanit'; font-size: 1rem; }
+        /* ระบบตัวนับ */
+        .counter-card { background: var(--gold); color: black; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; }
 
-        /* ระบบสุ่ม */
-        .display-area { min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin: 15px 0; }
-        .ep-title { font-size: 1.8rem; font-weight: 600; color: var(--conan-gold); }
-        .badge-tag { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
+        /* ระบบค้นหา */
+        .search-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        input { width: 100%; background: #000; border: 1px solid #333; color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Kanit'; font-size: 1.1rem; box-sizing: border-box; outline: none; }
+        #searchResult { margin-top: 10px; text-align: center; font-size: 0.9rem; min-height: 20px; }
 
-        .grid-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .btn-gold { background: var(--conan-gold); color: #000; }
-        .btn-dark { background: #212832; color: #fff; border: 1px solid #444; }
-        select { width: 100%; padding: 12px; border-radius: 12px; background: #212832; color: white; border: 1px solid #444; font-family: 'Kanit'; }
+        /* จอแสดงผลการสุ่ม */
+        .display-box { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; margin-bottom: 15px; border: 1px dashed var(--gold); }
+        .ep-name { font-size: 2rem; font-weight: 600; color: var(--gold); margin-bottom: 5px; }
+        .ep-sub { font-size: 0.8rem; opacity: 0.6; }
 
-        /* ประวัติ & รายชื่อคดี */
-        .list-container { margin-top: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; max-height: 300px; overflow-y: auto; }
-        .list-item { padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.85rem; display: flex; justify-content: space-between; }
+        /* ปุ่มกด */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .btn-main { background: var(--gold); color: black; grid-column: span 2; margin-bottom: 5px; }
+        .btn-sub { background: #212832; color: white; border: 1px solid #444; }
+        select { width: 100%; padding: 12px; border-radius: 12px; background: #212832; color: white; border: 1px solid #444; font-family: 'Kanit'; margin-top: 10px; }
 
-        /* Animation */
-        #door { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; display: flex; transition: 0.5s; opacity: 0; }
-        .leaf { width: 50%; height: 100%; background: #000; border: 1px solid var(--conan-gold); }
+        /* รายการ Database */
+        .list-box { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; border: 1px solid #222; }
+        .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
-<div class="header-section">
-    <h1>CONAN HUB <span style="font-weight: 300; font-size: 1rem; opacity: 0.6;">CONTROL</span></h1>
-    <span class="admin-badge">Admin: Ayu</span>
-</div>
-
-<div class="main-card">
-    <div class="status-box">
-        <div>📋 COLLECTION STATUS</div>
-        <div style="font-weight: 600;">Watched: <span id="watchCount">0</span> / 1150</div>
+<div class="container">
+    <div class="header">
+        <h1 style="margin:0; font-size: 1.5rem;">CONAN SYSTEM</h1>
+        <span class="admin-tag">Admin: Ayu</span>
     </div>
 
-    <div class="search-box">
-        <div style="font-size: 0.8rem; margin-bottom: 5px; opacity: 0.6;">🔍 Episode Search</div>
-        <input type="number" id="searchInput" placeholder="พิมพ์เลขตอน..." oninput="searchEP()">
-        <div id="searchResult" style="font-size: 0.8rem; margin-top: 10px; color: var(--conan-gold);"></div>
+    <div class="counter-card">
+        <span>📋 COLLECTION STATUS</span>
+        <span id="watchCount">0 / 1150</span>
     </div>
 
-    <div class="display-area">
-        <div id="epDisplay" class="ep-title">พร้อมแล้วกดสุ่มเลย!</div>
-        <div id="badgeTag" class="badge-tag">รอคำสั่งจากอาวุ...</div>
+    <div class="search-card">
+        <div style="font-size: 0.8rem; margin-bottom: 8px; opacity: 0.7;">🔍 ค้นหาข้อมูลตอน (Episode Search)</div>
+        <input type="number" id="searchInput" placeholder="ใส่เลขตอนเพื่อเช็คสถานะ..." oninput="searchEP()">
+        <div id="searchResult"></div>
     </div>
 
-    <button class="btn btn-gold" onclick="spinAny()">สุ่มทุกอย่างในโลกโคนัน</button>
-    
-    <div class="grid-buttons">
-        <button class="btn btn-dark" onclick="spinMovie()">มูฟวี่ 1-28</button>
-        <button class="btn btn-dark" onclick="spinSpecial()">ปะทะ ลูแปง / พิเศษ</button>
+    <div class="display-box">
+        <div id="epDisplay" class="ep-name">พร้อมลุย!</div>
+        <div id="subDisplay" class="ep-sub">กดปุ่มด้านล่างเพื่อเริ่มสุ่ม</div>
     </div>
 
-    <div style="margin-top: 15px; display: flex; gap: 10px;">
+    <div class="btn-grid">
+        <button class="btn btn-main" onclick="spinAny()">สุ่มทุกอย่างในโลกโคนัน</button>
+        <button class="btn btn-sub" onclick="spinMovie()">มูฟวี่ 1-28</button>
+        <button class="btn btn-sub" onclick="spinSpecial()">ปะทะ ลูแปง</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: center;">
         <select id="charSelect">
             <option value="black_org">กลุ่มชุดดำ ⬛</option>
             <option value="kid">จอมโจรคิด 🃏</option>
-            <option value="shinichi">คุโด้ ชินอิจิ ⚽</option>
+            <option value="shinichi">ชินอิจิ ⚽</option>
         </select>
-        <button class="btn btn-dark" onclick="spinChar()" style="width: 150px;">สุ่มตามตัวละคร</button>
+        <button class="btn btn-sub" onclick="spinChar()" style="margin-top:10px; flex:1;">สุ่มตามตัวละคร</button>
     </div>
 
-    <div class="list-container">
-        <div style="color: var(--conan-gold); font-size: 0.9rem; margin-bottom: 10px;">📂 รายชื่อคดีทั้งหมดในระบบ</div>
-        <div id="fullDatabase"></div>
+    <div class="list-box">
+        <div style="color: var(--gold); margin-bottom: 10px; font-size: 0.9rem;">📂 รายชื่อคดีทั้งหมดในระบบ (Database)</div>
+        <div id="dbList"></div>
     </div>
 </div>
 
 <script>
-    // ข้อมูลจากกระดาษโน้ต
-    const forbiddenEpisodes = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
+    // ข้อมูลจากกระดาษโน้ตของอาวุ
+    const watched = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
     
     const movies = ["คดีปริศนาระเบิดระฟ้า", "คดีฆาตกรรมไพ่ปริศนา", "ปริศนาพ่อมดคนสุดท้ายแห่งศตวรรษ", "คดีฆาตกรรมนัยน์ตาปริศนา", "คดีปริศนาเส้นตายสู่สวรรค์", "ปริศนาบนถนนสายมรณะ", "คดีฆาตกรรมแห่งเมืองปริศนา", "มนตราแห่งรัตติกาลสีเงิน", "ยุทธการเหนือห้วงทะเลลึก", "บทเพลงมรณะแด่เหล่านักสืบ", "ปริศนามหาขุมทรัพย์โจรสลัด", "บทเพลงแห่งความตาย", "ปริศนานักฆ่าทรยศ", "ปริศนามรณะเหนือน่านฟ้า", "15 นาทีเฉียดตาย", "ภาคระทึกขวัญยุทธจักรลูกหนัง", "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "ปริศนาเงามรณะ", "ปริศนาเพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง", "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ"];
 
@@ -97,68 +95,65 @@
         shinichi: [1, 173, 235, 514, 667, 982]
     };
 
+    // ระบบค้นหาอัจฉริยะ
     function searchEP() {
         const val = parseInt(document.getElementById('searchInput').value);
         const res = document.getElementById('searchResult');
         if (!val) { res.innerHTML = ""; return; }
-        if (forbiddenEpisodes.includes(val)) {
-            res.innerHTML = `❌ ตอนที่ ${val}: ดูแล้ว (อยู่ในบันทึก)`;
-            res.style.color = "#ff4d4d";
+        
+        if (watched.includes(val)) {
+            res.innerHTML = `❌ ตอนที่ ${val}: ดูแล้ว (มีในบันทึก)`;
+            res.style.color = "var(--danger)";
         } else if (val > 1150) {
-            res.innerHTML = "❓ ยังไม่มีข้อมูลตอนที่สูงขนาดนี้";
+            res.innerHTML = "❓ เกินขอบเขตฐานข้อมูล";
             res.style.color = "gray";
         } else {
             res.innerHTML = `✅ ตอนที่ ${val}: ยังไม่ได้ดู!`;
-            res.style.color = "#4dff88";
+            res.style.color = "var(--success)";
         }
     }
 
     function spinAny() {
         let ep;
-        do { ep = Math.floor(Math.random() * 1150) + 1; } 
-        while (forbiddenEpisodes.includes(ep));
+        do { ep = Math.floor(Math.random() * 1150) + 1; } while (watched.includes(ep));
         updateDisplay(`ตอนที่ ${ep}`, "สุ่มจาก TV Series ทั้งหมด");
     }
 
     function spinMovie() {
         const idx = Math.floor(Math.random() * movies.length);
-        updateDisplay(`มูฟวี่ ${idx + 1}`, movies[idx]);
+        updateDisplay(`มูฟวี่ที่ ${idx + 1}`, movies[idx]);
     }
 
     function spinSpecial() {
-        const list = ["Lupin III vs Conan (Special)", "Lupin III vs Conan (Movie)", "Episode ONE", "การหายตัวไปของเอโดงาวะ โคนัน"];
-        const res = list[Math.floor(Math.random() * list.length)];
-        updateDisplay("ตอนพิเศษ", res);
+        const specials = ["Lupin III vs Conan (2009)", "Lupin III vs Conan (2013)", "Episode ONE", "อาคาอิ แฟมิลี่"];
+        updateDisplay("ตอนพิเศษ", specials[Math.floor(Math.random() * specials.length)]);
     }
 
     function spinChar() {
         const char = document.getElementById('charSelect').value;
-        const pool = charPool[char].filter(ep => !forbiddenEpisodes.includes(ep));
-        if (pool.length === 0) {
-            updateDisplay("เกลี้ยงตู้!", "อาวุดูตอนสำคัญของตัวละครนี้ครบแล้วครับ");
-            return;
-        }
-        const res = pool[Math.floor(Math.random() * pool.length)];
-        updateDisplay(`ตอนที่ ${res}`, `สุ่มเน้นตัวละคร: ${char}`);
+        const pool = charPool[char].filter(n => !watched.includes(n));
+        if (pool.length === 0) { updateDisplay("หมดสต็อก!", "อาวุดูตอนสำคัญกลุ่มนี้ครบแล้ว"); return; }
+        updateDisplay(`ตอนที่ ${pool[Math.floor(Math.random() * pool.length)]}`, `สุ่มเน้น: ${char}`);
     }
 
-    function updateDisplay(main, sub) {
-        document.getElementById('epDisplay').innerText = main;
-        document.getElementById('badgeTag').innerText = sub;
+    function updateDisplay(m, s) {
+        document.getElementById('epDisplay').innerText = m;
+        document.getElementById('subDisplay').innerText = s;
     }
 
+    // สร้างลิสต์รายการตอน
     function init() {
-        document.getElementById('watchCount').innerText = forbiddenEpisodes.length;
-        const db = document.getElementById('fullDatabase');
+        document.getElementById('watchCount').innerText = `${watched.length} / 1150`;
+        const list = document.getElementById('dbList');
         let html = "";
         for(let i=1; i<=1150; i++) {
-            const isDone = forbiddenEpisodes.includes(i);
-            html += `<div class="list-item">
+            const isDone = watched.includes(i);
+            html += `<div class="item">
                 <span>คดีที่ ${i}</span>
-                <span style="color:${isDone ? '#ff4d4d' : '#4dff88'}">${isDone ? '[ดูแล้ว]' : '[ยัง]'}</span>
+                <span style="color:${isDone ? 'var(--danger)' : 'var(--success)'}">${isDone ? '[ดูแล้ว]' : '[ยัง]'}</span>
             </div>`;
         }
-        db.innerHTML = html;
+        list.innerHTML = html;
     }
 
     init();
