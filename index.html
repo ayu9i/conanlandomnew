@@ -3,144 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conan Tracker - Admin Mode</title>
+    <title>Ayu Enngi - Conan Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1a2a44;
-            --accent: #d4af37;
-            --bg: #f4f4f4;
+            --primary-blue: #0f1c2e;
+            --accent-gold: #d4af37;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.07);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--primary);
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #0f1c2e 0%, #1f3a5f 100%);
+            color: var(--white);
             margin: 0;
-            padding: 20px;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .header {
+        /* Authentication & Recovery Section */
+        .auth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--accent-gold);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            align-self: center;
+        }
+
+        .logo-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #33475b;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn-gold {
+            background: var(--accent-gold);
+            color: var(--primary-blue);
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
+
+        /* Dashboard Section */
+        #main-app { display: none; width: 100%; max-width: 1000px; }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-gold);
+            margin-bottom: 25px;
+        }
+
+        .search-panel {
+            background: white;
+            color: var(--primary-blue);
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .logo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--accent);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            object-fit: cover;
-        }
-
-        h1 { margin-top: 15px; font-size: 1.5rem; color: var(--primary); }
-
-        .stats {
-            background: var(--primary);
-            color: white;
-            padding: 10px 20px;
+        .status-badge {
+            display: inline-block;
+            padding: 8px 15px;
             border-radius: 20px;
-            margin-bottom: 20px;
             font-weight: bold;
+            margin-top: 10px;
         }
+
+        .watched { background: #2ecc71; color: white; }
+        .not-watched { background: #e74c3c; color: white; }
 
         .episode-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            width: 100%;
-            max-width: 800px;
+            gap: 12px;
         }
 
-        .episode-card {
-            background: white;
-            border: 2px solid #ddd;
-            padding: 10px;
+        .ep-node {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
+            border: 1px solid transparent;
             transition: 0.2s;
-            user-select: none;
+        }
+
+        .ep-node.is-done {
+            background: var(--accent-gold);
+            color: var(--primary-blue);
             font-weight: bold;
+            border-color: #fff;
         }
 
-        .episode-card.watched {
-            background: var(--accent);
-            color: white;
-            border-color: #b8860b;
-            text-decoration: line-through;
-        }
-
-        .episode-card:hover { transform: scale(1.05); }
-
-        .footer { margin-top: 40px; font-size: 0.8rem; opacity: 0.7; }
+        .recovery-box { text-align: left; background: white; color: black; padding: 20px; border-radius: 10px; margin-top: 20px; }
+        .recovery-row { border-bottom: 1px solid #eee; padding: 10px 0; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="2315.png" alt="Ayu Enngi Logo" class="logo">
-        <h1>🕵️‍♂️ CONAN TRACKER <br><small>[ADMIN MODE]</small></h1>
+    <div id="login-screen" class="auth-card">
+        <img src="2315.png" class="logo-large" alt="Ayu Enngi">
+        <h2 style="color:var(--accent-gold);">SYSTEM ACCESS</h2>
+        <input type="text" id="user" placeholder="Admin Username">
+        <input type="password" placeholder="Passcode">
+        <button class="btn-gold" onclick="enterSystem()">ENTER DASHBOARD</button>
+        <p onclick="toggleRecovery(true)" style="font-size: 0.8rem; cursor: pointer; margin-top: 15px; opacity: 0.7;">กู้คืนบัญชีสมาขิก</p>
     </div>
 
-    <div class="stats" id="counter">Watched: 0 / 0</div>
+    <div id="recovery-screen" class="auth-card" style="display:none;">
+        <h3 style="text-align: left;">วิธีการกู้คืนบัญชี</h3>
+        <p style="text-align: left; font-size: 0.8rem; opacity: 0.8;">ข้อมูลของคุณจะถูกใช้เพื่อตรวจสอบความเป็นเจ้าของในกรณีที่คุณลืมรหัสผ่าน</p>
+        <div class="recovery-box">
+            <div class="recovery-row">
+                <small>เบอร์โทรศัพท์การกู้คืน (1)</small><br>
+                <strong>09x-xxx-xxxx</strong>
+            </div>
+            <div class="recovery-row">
+                <small>อีเมลการกู้คืน</small><br>
+                <strong>a****@gmail.com</strong>
+            </div>
+            <div class="recovery-row" style="border:none;">
+                <small>คำถามระบบป้องกัน</small><br>
+                <strong>วิทยาลัยเทคนิคอะไร?</strong>
+            </div>
+        </div>
+        <button class="btn-gold" style="margin-top:20px; background:#444; color:white;" onclick="toggleRecovery(false)">กลับไปหน้าล็อคอิน</button>
+    </div>
 
-    <div class="episode-grid" id="grid">
+    <div id="main-app">
+        <div class="dashboard-header">
+            <div>
+                <h1 style="margin:0; font-size: 1.5rem;">CONAN DATABASE</h1>
+                <small>ADMIN: <span id="admin-name">AYU</span></small>
+            </div>
+            <img src="2315.png" style="width:60px; height:60px; border-radius:50%; border:2px solid var(--accent-gold);">
         </div>
 
-    <div class="footer">Created by Ayu Enngi | Technical Tak</div>
+        <div class="search-panel">
+            <h3>CHECK EPISODE STATUS</h3>
+            <input type="number" id="search-input" placeholder="ใส่เลขตอน..." oninput="checkStatus()" style="color:black; border:2px solid var(--primary-blue); width:80%;">
+            <div id="search-result"></div>
+        </div>
+
+        <div class="episode-grid" id="grid"></div>
+    </div>
 
     <script>
-        // ดึงเลขตอนจากกระดาษโน้ตที่คุณถ่ายมา
-        const episodes = [
-            128, 614, 615, 616, 617, 564, 565, 566, 1147,
-            637, 638, 807, 808, 809, 371, 372, 373, 374, 375,
-            376, 377, 378, 379, 380, 381, 382, 383, 386, 
-            387, 388, 733, 734, 735, 750, 982, 983,
-            984, 945, 675, 676, 677, 680, 681, 682, 772,
-            773, 774, 775, 776, 777, 993, 994, 995, 996,
-            301, 302, 303, 300, 311, 312, 288, 289, 290, 291,
-            292, 94, 95, 96, 120, 121, 196, 816, 817,
-            818, 819, 820, 821, 822, 823, 824, 142,
-            143, 144
-        ].sort((a, b) => a - b); // เรียงเลขจากน้อยไปมาก
+        // เลขตอนทั้งหมดจากกระดาษโน้ต
+        const conanData = [128, 614, 615, 616, 617, 564, 565, 566, 1147, 637, 638, 807, 808, 809, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 733, 734, 735, 750, 982, 983, 984, 945, 675, 676, 677, 680, 681, 682, 772, 773, 774, 775, 776, 777, 993, 994, 995, 996, 301, 302, 303, 300, 311, 312, 288, 289, 290, 291, 292, 94, 95, 96, 120, 121, 196, 816, 817, 818, 819, 820, 821, 822, 823, 824, 142, 143, 144].sort((a,b) => a-b);
 
-        const grid = document.getElementById('grid');
-        const counter = document.getElementById('counter');
-        
-        // โหลดข้อมูลที่เคยติ๊กไว้
-        let watchedList = JSON.parse(localStorage.getItem('conan_watched')) || [];
+        let watched = JSON.parse(localStorage.getItem('conan_watched')) || [];
 
-        function updateStats() {
-            counter.innerText = `Watched: ${watchedList.length} / ${episodes.length}`;
+        function enterSystem() {
+            const name = document.getElementById('user').value || 'AYU';
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('admin-name').innerText = name.toUpperCase();
+            renderGrid();
         }
 
-        function toggleEpisode(ep, element) {
-            if (watchedList.includes(ep)) {
-                watchedList = watchedList.filter(item => item !== ep);
-                element.classList.remove('watched');
+        function toggleRecovery(show) {
+            document.getElementById('login-screen').style.display = show ? 'none' : 'block';
+            document.getElementById('recovery-screen').style.display = show ? 'block' : 'none';
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            conanData.forEach(ep => {
+                const isDone = watched.includes(ep);
+                const div = document.createElement('div');
+                div.className = `ep-node ${isDone ? 'is-done' : ''}`;
+                div.innerText = ep;
+                div.onclick = () => toggleWatched(ep);
+                grid.appendChild(div);
+            });
+        }
+
+        function toggleWatched(ep) {
+            if(watched.includes(ep)) {
+                watched = watched.filter(i => i !== ep);
             } else {
-                watchedList.push(ep);
-                element.classList.add('watched');
+                watched.push(ep);
             }
-            localStorage.setItem('conan_watched', JSON.stringify(watchedList));
-            updateStats();
+            localStorage.setItem('conan_watched', JSON.stringify(watched));
+            renderGrid();
+            checkStatus();
         }
 
-        // สร้างปุ่มตอนต่างๆ
-        episodes.forEach(ep => {
-            const div = document.createElement('div');
-            div.className = 'episode-card';
-            if (watchedList.includes(ep)) div.classList.add('watched');
-            div.innerText = ep;
-            div.onclick = () => toggleEpisode(ep, div);
-            grid.appendChild(div);
-        });
+        function checkStatus() {
+            const val = parseInt(document.getElementById('search-input').value);
+            const res = document.getElementById('search-result');
+            if(!val) { res.innerHTML = ''; return; }
 
-        updateStats();
+            if(watched.includes(val)) {
+                res.innerHTML = `<div class="status-badge watched">✓ คุณดูตอนนี้ไปแล้ว</div>`;
+            } else if(conanData.includes(val)) {
+                res.innerHTML = `<div class="status-badge not-watched">✗ ยังไม่ได้ดู (อยู่ในคอลเลกชัน)</div>`;
+            } else {
+                res.innerHTML = `<div class="status-badge" style="background:#888;">? ไม่อยู่ในรายการที่บันทึก</div>`;
+            }
+        }
     </script>
 </body>
 </html>
