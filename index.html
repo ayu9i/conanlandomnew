@@ -3,160 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONAN HUB - AYU EDITION</title>
+    <title>CONAN DATABASE - AYU EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --bg: #0a0e14; --card: #151b23; --danger: #ff4d4d; --success: #4dff88; }
         body { margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; }
-        
         .container { width: 100%; max-width: 450px; }
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
-        .admin-tag { background: var(--gold); color: black; padding: 2px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-
+        
         /* ระบบตัวนับ */
         .counter-card { background: var(--gold); color: black; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; }
 
-        /* ระบบค้นหา */
-        .search-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.2); }
-        input { width: 100%; background: #000; border: 1px solid #333; color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Kanit'; font-size: 1.1rem; box-sizing: border-box; outline: none; }
-        #searchResult { margin-top: 10px; text-align: center; font-size: 0.9rem; min-height: 20px; }
-
-        /* จอแสดงผลการสุ่ม */
-        .display-box { background: var(--card); border-radius: 20px; padding: 30px 20px; text-align: center; margin-bottom: 15px; border: 1px dashed var(--gold); }
-        .ep-name { font-size: 2rem; font-weight: 600; color: var(--gold); margin-bottom: 5px; }
-        .ep-sub { font-size: 0.8rem; opacity: 0.6; }
-
-        /* ปุ่มกด */
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-        .btn-main { background: var(--gold); color: black; grid-column: span 2; margin-bottom: 5px; }
-        .btn-sub { background: #212832; color: white; border: 1px solid #444; }
-        select { width: 100%; padding: 12px; border-radius: 12px; background: #212832; color: white; border: 1px solid #444; font-family: 'Kanit'; margin-top: 10px; }
+        /* ระบบบันทึกและค้นหา */
+        .input-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.3); }
+        label { display: block; font-size: 0.8rem; margin-bottom: 8px; opacity: 0.7; }
+        input { width: 100%; background: #000; border: 1px solid #333; color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Kanit'; font-size: 1.1rem; box-sizing: border-box; outline: none; margin-bottom: 10px; }
+        .btn-add { width: 100%; background: var(--gold); color: black; padding: 12px; border-radius: 10px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; }
+        #statusMsg { margin-top: 10px; text-align: center; font-size: 0.9rem; min-height: 25px; }
 
         /* รายการ Database */
-        .list-box { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; border: 1px solid #222; }
-        .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; font-size: 0.85rem; }
+        .list-box { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 20px; max-height: 500px; overflow-y: auto; border: 1px solid #222; }
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
+        .tag-done { color: var(--danger); font-weight: 600; }
+        .tag-not { color: var(--success); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0; font-size: 1.5rem;">CONAN SYSTEM</h1>
-        <span class="admin-tag">Admin: Ayu</span>
+        <h1 style="margin:0; font-size: 1.5rem;">CONAN MEMORY SYSTEM</h1>
+        <div style="font-size: 0.8rem; color: var(--gold);">Admin Control: Ayu</div>
     </div>
 
     <div class="counter-card">
-        <span>📋 COLLECTION STATUS</span>
+        <span>📋 ดูไปแล้วทั้งหมด</span>
         <span id="watchCount">0 / 1150</span>
     </div>
 
-    <div class="search-card">
-        <div style="font-size: 0.8rem; margin-bottom: 8px; opacity: 0.7;">🔍 ค้นหาข้อมูลตอน (Episode Search)</div>
-        <input type="number" id="searchInput" placeholder="ใส่เลขตอนเพื่อเช็คสถานะ..." oninput="searchEP()">
-        <div id="searchResult"></div>
-    </div>
-
-    <div class="display-box">
-        <div id="epDisplay" class="ep-name">พร้อมลุย!</div>
-        <div id="subDisplay" class="ep-sub">กดปุ่มด้านล่างเพื่อเริ่มสุ่ม</div>
-    </div>
-
-    <div class="btn-grid">
-        <button class="btn btn-main" onclick="spinAny()">สุ่มทุกอย่างในโลกโคนัน</button>
-        <button class="btn btn-sub" onclick="spinMovie()">มูฟวี่ 1-28</button>
-        <button class="btn btn-sub" onclick="spinSpecial()">ปะทะ ลูแปง</button>
-    </div>
-
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <select id="charSelect">
-            <option value="black_org">กลุ่มชุดดำ ⬛</option>
-            <option value="kid">จอมโจรคิด 🃏</option>
-            <option value="shinichi">ชินอิจิ ⚽</option>
-        </select>
-        <button class="btn btn-sub" onclick="spinChar()" style="margin-top:10px; flex:1;">สุ่มตามตัวละคร</button>
+    <div class="input-card">
+        <label>🔢 ใส่เลขตอนที่ดูจบแล้ว</label>
+        <input type="number" id="epInput" placeholder="ตัวอย่าง: 144" onkeypress="if(event.key==='Enter') addMemory()">
+        <button class="btn-add" onclick="addMemory()">บันทึกว่าดูแล้ว ✅</button>
+        <div id="statusMsg"></div>
     </div>
 
     <div class="list-box">
-        <div style="color: var(--gold); margin-bottom: 10px; font-size: 0.9rem;">📂 รายชื่อคดีทั้งหมดในระบบ (Database)</div>
+        <div style="color: var(--gold); margin-bottom: 15px; font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--gold); padding-bottom: 5px;">📂 รายชื่อคดีทั้งหมด (1-1150)</div>
         <div id="dbList"></div>
     </div>
 </div>
 
 <script>
-    // ข้อมูลจากกระดาษโน้ตของอาวุ
-    const watched = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
-    
-    const movies = ["คดีปริศนาระเบิดระฟ้า", "คดีฆาตกรรมไพ่ปริศนา", "ปริศนาพ่อมดคนสุดท้ายแห่งศตวรรษ", "คดีฆาตกรรมนัยน์ตาปริศนา", "คดีปริศนาเส้นตายสู่สวรรค์", "ปริศนาบนถนนสายมรณะ", "คดีฆาตกรรมแห่งเมืองปริศนา", "มนตราแห่งรัตติกาลสีเงิน", "ยุทธการเหนือห้วงทะเลลึก", "บทเพลงมรณะแด่เหล่านักสืบ", "ปริศนามหาขุมทรัพย์โจรสลัด", "บทเพลงแห่งความตาย", "ปริศนานักฆ่าทรยศ", "ปริศนามรณะเหนือน่านฟ้า", "15 นาทีเฉียดตาย", "ภาคระทึกขวัญยุทธจักรลูกหนัง", "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "ปริศนาเงามรณะ", "ปริศนาเพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง", "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ"];
+    // ฐานข้อมูลเดิมของอาวุจากรูปกระดาษ
+    let watched = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
 
-    const charPool = {
-        black_org: [1, 56, 135, 181, 190, 249, 334, 459, 753, 832, 1011],
-        kid: [78, 142, 235, 386, 512, 562, 678, 776],
-        shinichi: [1, 173, 235, 514, 667, 982]
-    };
+    function addMemory() {
+        const input = document.getElementById('epInput');
+        const val = parseInt(input.value);
+        const msg = document.getElementById('statusMsg');
 
-    // ระบบค้นหาอัจฉริยะ
-    function searchEP() {
-        const val = parseInt(document.getElementById('searchInput').value);
-        const res = document.getElementById('searchResult');
-        if (!val) { res.innerHTML = ""; return; }
-        
-        if (watched.includes(val)) {
-            res.innerHTML = `❌ ตอนที่ ${val}: ดูแล้ว (มีในบันทึก)`;
-            res.style.color = "var(--danger)";
-        } else if (val > 1150) {
-            res.innerHTML = "❓ เกินขอบเขตฐานข้อมูล";
-            res.style.color = "gray";
-        } else {
-            res.innerHTML = `✅ ตอนที่ ${val}: ยังไม่ได้ดู!`;
-            res.style.color = "var(--success)";
+        if (!val || val < 1 || val > 1150) {
+            msg.innerText = "❌ กรุณาใส่เลขตอน 1-1150 นะอาวุ";
+            msg.style.color = "var(--danger)";
+            return;
         }
+
+        if (watched.includes(val)) {
+            msg.innerText = `⚠️ ตอนที่ ${val} มีในระบบอยู่แล้วครับ!`;
+            msg.style.color = "orange";
+        } else {
+            watched.push(val);
+            watched.sort((a, b) => a - b); // เรียงเลขใหม่
+            msg.innerText = `✅ เพิ่มตอนที่ ${val} เข้าสู่ระบบสำเร็จ!`;
+            msg.style.color = "var(--success)";
+            updateAll();
+        }
+        input.value = "";
     }
 
-    function spinAny() {
-        let ep;
-        do { ep = Math.floor(Math.random() * 1150) + 1; } while (watched.includes(ep));
-        updateDisplay(`ตอนที่ ${ep}`, "สุ่มจาก TV Series ทั้งหมด");
-    }
-
-    function spinMovie() {
-        const idx = Math.floor(Math.random() * movies.length);
-        updateDisplay(`มูฟวี่ที่ ${idx + 1}`, movies[idx]);
-    }
-
-    function spinSpecial() {
-        const specials = ["Lupin III vs Conan (2009)", "Lupin III vs Conan (2013)", "Episode ONE", "อาคาอิ แฟมิลี่"];
-        updateDisplay("ตอนพิเศษ", specials[Math.floor(Math.random() * specials.length)]);
-    }
-
-    function spinChar() {
-        const char = document.getElementById('charSelect').value;
-        const pool = charPool[char].filter(n => !watched.includes(n));
-        if (pool.length === 0) { updateDisplay("หมดสต็อก!", "อาวุดูตอนสำคัญกลุ่มนี้ครบแล้ว"); return; }
-        updateDisplay(`ตอนที่ ${pool[Math.floor(Math.random() * pool.length)]}`, `สุ่มเน้น: ${char}`);
-    }
-
-    function updateDisplay(m, s) {
-        document.getElementById('epDisplay').innerText = m;
-        document.getElementById('subDisplay').innerText = s;
-    }
-
-    // สร้างลิสต์รายการตอน
-    function init() {
+    function updateAll() {
+        // อัปเดตตัวนับ
         document.getElementById('watchCount').innerText = `${watched.length} / 1150`;
+        
+        // อัปเดตรายการ
         const list = document.getElementById('dbList');
         let html = "";
         for(let i=1; i<=1150; i++) {
             const isDone = watched.includes(i);
-            html += `<div class="item">
+            html += `<div class="item" id="ep-${i}">
                 <span>คดีที่ ${i}</span>
-                <span style="color:${isDone ? 'var(--danger)' : 'var(--success)'}">${isDone ? '[ดูแล้ว]' : '[ยัง]'}</span>
+                <span class="${isDone ? 'tag-done' : 'tag-not'}">${isDone ? '[ดูแล้ว]' : '[ยังไม่ได้ดู]'}</span>
             </div>`;
         }
         list.innerHTML = html;
+        
+        // ถ้ามีการเพิ่มตอน ให้เลื่อนไปดูภาวะล่าสุด
+        const lastInput = parseInt(document.getElementById('epInput').value);
+        if(lastInput) {
+            const el = document.getElementById(`ep-${lastInput}`);
+            if(el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     }
 
-    init();
+    // เริ่มทำงานครั้งแรก
+    updateAll();
 </script>
 </body>
 </html>
