@@ -3,160 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYSTEM UPDATE | APTX-4869</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Kanit:wght@300;600&display=swap" rel="stylesheet">
+    <title>Conan Tracker - Admin Mode</title>
     <style>
         :root {
-            --hacker-green: #00ff41;
-            --conan-red: #ff0000;
-            --bg-black: #0a0a0a;
+            --primary: #1a2a44;
+            --accent: #d4af37;
+            --bg: #f4f4f4;
         }
 
         body {
-            background-color: var(--bg-black);
-            color: var(--hacker-green);
-            font-family: 'Fira Code', 'Kanit', monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
             margin: 0;
-            height: 100vh;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow: hidden;
+        }
+
+        .header {
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        /* Matrix Rain Background (จำลอง) */
-        .matrix-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            font-size: 10px;
-            color: rgba(0, 255, 65, 0.05);
-            z-index: -1;
-            overflow: hidden;
-            user-select: none;
+        .logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--accent);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            object-fit: cover;
         }
 
-        .container {
-            border: 2px solid var(--hacker-green);
-            padding: 40px;
-            background: rgba(0, 0, 0, 0.8);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-            max-width: 90%;
-            position: relative;
-        }
+        h1 { margin-top: 15px; font-size: 1.5rem; color: var(--primary); }
 
-        .warning-label {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--conan-red);
+        .stats {
+            background: var(--primary);
             color: white;
-            padding: 2px 20px;
-            font-size: 0.8rem;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
             font-weight: bold;
-            letter-spacing: 3px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: #fff;
-            text-shadow: 0 0 10px var(--hacker-green);
-        }
-
-        .glitch {
-            color: var(--conan-red);
-            font-weight: bold;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        .status-text {
-            font-size: 1.1rem;
-            margin: 20px 0;
-            line-height: 1.6;
-        }
-
-        .loading-bar {
+        .episode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
             width: 100%;
-            height: 4px;
-            background: #222;
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
+            max-width: 800px;
         }
 
-        .loading-progress {
-            width: 40%;
-            height: 100%;
-            background: var(--hacker-green);
-            box-shadow: 0 0 10px var(--hacker-green);
-            animation: load 3s infinite ease-in-out;
+        .episode-card {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+            font-weight: bold;
         }
 
-        @keyframes load {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(300%); }
+        .episode-card.watched {
+            background: var(--accent);
+            color: white;
+            border-color: #b8860b;
+            text-decoration: line-through;
         }
 
-        .footer-code {
-            margin-top: 30px;
-            font-size: 0.7rem;
-            opacity: 0.5;
-        }
+        .episode-card:hover { transform: scale(1.05); }
+
+        .footer { margin-top: 40px; font-size: 0.8rem; opacity: 0.7; }
     </style>
 </head>
 <body>
 
-<div class="matrix-bg" id="matrix"></div>
-
-<div class="container">
-    <div class="warning-label">CRITICAL UPDATE</div>
-    <h1>SYSTEM <span class="glitch">OFFLINE</span></h1>
-    
-    <div class="status-text">
-        > กำลังระงับระบบสุ่มตอน...<br>
-        <span style="color: #fff;">[ เว็บสุ่มตอนจะเปลี่ยนเป็นเว็บจำชื่อเลขตอนเร็วๆ นี้ ]</span><br>
-        > กำลังเตรียมฐานข้อมูล APTX-4869...
+    <div class="header">
+        <img src="2315.png" alt="Ayu Enngi Logo" class="logo">
+        <h1>🕵️‍♂️ CONAN TRACKER <br><small>[ADMIN MODE]</small></h1>
     </div>
 
-    <div class="loading-bar">
-        <div class="loading-progress"></div>
-    </div>
+    <div class="stats" id="counter">Watched: 0 / 0</div>
 
-    <div class="footer-code">
-        ERROR_CODE: BYPASS_CONAN_HUB_V4 // ACCESS_BY: AYU_HACKER
-    </div>
-</div>
+    <div class="episode-grid" id="grid">
+        </div>
 
-<script>
-    // สร้างเลขสุ่มพื้นหลังให้ดูเหมือน Hacker
-    const matrix = document.getElementById('matrix');
-    let content = "";
-    for(let i=0; i<2000; i++) {
-        content += Math.floor(Math.random() * 2);
-        if(i % 50 === 0) content += "<br>";
-    }
-    matrix.innerHTML = content;
+    <div class="footer">Created by Ayu Enngi | Technical Tak</div>
 
-    // เปลี่ยนเลขไปเรื่อยๆ
-    setInterval(() => {
-        let newContent = "";
-        for(let i=0; i<2000; i++) {
-            newContent += Math.floor(Math.random() * 2);
-            if(i % 50 === 0) newContent += "<br>";
+    <script>
+        // ดึงเลขตอนจากกระดาษโน้ตที่คุณถ่ายมา
+        const episodes = [
+            128, 614, 615, 616, 617, 564, 565, 566, 1147,
+            637, 638, 807, 808, 809, 371, 372, 373, 374, 375,
+            376, 377, 378, 379, 380, 381, 382, 383, 386, 
+            387, 388, 733, 734, 735, 750, 982, 983,
+            984, 945, 675, 676, 677, 680, 681, 682, 772,
+            773, 774, 775, 776, 777, 993, 994, 995, 996,
+            301, 302, 303, 300, 311, 312, 288, 289, 290, 291,
+            292, 94, 95, 96, 120, 121, 196, 816, 817,
+            818, 819, 820, 821, 822, 823, 824, 142,
+            143, 144
+        ].sort((a, b) => a - b); // เรียงเลขจากน้อยไปมาก
+
+        const grid = document.getElementById('grid');
+        const counter = document.getElementById('counter');
+        
+        // โหลดข้อมูลที่เคยติ๊กไว้
+        let watchedList = JSON.parse(localStorage.getItem('conan_watched')) || [];
+
+        function updateStats() {
+            counter.innerText = `Watched: ${watchedList.length} / ${episodes.length}`;
         }
-        matrix.innerHTML = newContent;
-    }, 100);
-</script>
 
+        function toggleEpisode(ep, element) {
+            if (watchedList.includes(ep)) {
+                watchedList = watchedList.filter(item => item !== ep);
+                element.classList.remove('watched');
+            } else {
+                watchedList.push(ep);
+                element.classList.add('watched');
+            }
+            localStorage.setItem('conan_watched', JSON.stringify(watchedList));
+            updateStats();
+        }
+
+        // สร้างปุ่มตอนต่างๆ
+        episodes.forEach(ep => {
+            const div = document.createElement('div');
+            div.className = 'episode-card';
+            if (watchedList.includes(ep)) div.classList.add('watched');
+            div.innerText = ep;
+            div.onclick = () => toggleEpisode(ep, div);
+            grid.appendChild(div);
+        });
+
+        updateStats();
+    </script>
 </body>
 </html>
 
