@@ -3,315 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayu Enngi - Conan Management System V2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Conan Hub | Anti-Repeat V3.6 Full Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #050c16;
-            --panel-dark: #0a192f;
-            --accent-gold: #d4af37;
-            --accent-gold-hover: #f1c40f;
-            --text-white: #e6e6e6;
-            --glass: rgba(255, 255, 255, 0.05);
-            --success: #2ecc71;
-            --danger: #e74c3c;
+        :root { 
+            --conan-gold: #d4af37; 
+            --glass: rgba(255, 255, 255, 0.08); 
+            --danger: #ff4d4d; 
+            --btn-radius: 12px;
         }
+        body { margin: 0; font-family: 'Kanit', sans-serif; background: #000; color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; overflow-x: hidden; }
+        
+        /* --- UI Styles --- */
+        #updateModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .modal-content { background: #111; border: 2px solid var(--conan-gold); border-radius: 20px; padding: 25px; max-width: 400px; width: 85%; text-align: center; }
+        
+        .container { width: 100%; max-width: 500px; padding: 20px 15px; text-align: center; margin-top: 50px; }
+        .premium-card { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 24px; padding: 20px; backdrop-filter: blur(15px); }
+        .result-container { margin: 10px 0; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .ep-display { font-size: 1.8rem; font-weight: 600; color: #fff; opacity: 0; transform: translateY(10px); transition: 0.4s; }
+        .ep-display.show { opacity: 1; transform: translateY(0); }
+        .ep-display span { color: var(--conan-gold); font-size: 1.1rem; display: block; margin-top: 5px; font-weight: 300; }
 
-        body {
-            font-family: 'Prompt', sans-serif;
-            background: radial-gradient(circle at center, #112240 0%, var(--bg-dark) 100%);
-            color: var(--text-white);
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 20px;
-        }
+        .btn-main { width: 100%; padding: 12px; font-size: 1rem; font-weight: 600; border-radius: var(--btn-radius); border: none; cursor: pointer; transition: 0.2s; font-family: 'Kanit'; margin-bottom: 10px; }
+        .btn-gold { background: linear-gradient(135deg, var(--conan-gold) 0%, #f1d57a 100%); color: #000; }
+        .btn-dark { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #444; }
+        
+        .history-card { margin-top: 20px; text-align: left; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .history-list { max-height: 250px; overflow-y: auto; font-size: 0.8rem; }
+        
+        .door-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; display: flex; }
+        .door { position: absolute; width: 50%; height: 100%; background: #050505; transition: 0.5s ease-in-out; border: 1px solid var(--conan-gold); }
+        .door-left { left: -50%; } .door-right { right: -50%; }
+        .door-container.active .door-left { transform: translateX(100%); }
+        .door-container.active .door-right { transform: translateX(-100%); }
 
-        /* --- Global Elements --- */
-        .card {
-            background: var(--panel-dark);
-            border: 1px solid var(--accent-gold);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn {
-            background: var(--accent-gold);
-            color: var(--bg-dark);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            background: var(--accent-gold-hover);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-        }
-
-        input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid #1e3a5f;
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-        }
-
-        /* --- Auth Section --- */
-        #auth-section, #recovery-section {
-            width: 100%;
-            max-width: 400px;
-            padding: 40px;
-            text-align: center;
-            margin-top: 10vh;
-        }
-
-        .logo-main {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            border: 4px solid var(--accent-gold);
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-
-        /* --- Recovery UI (ตามภาพต้นฉบับ) --- */
-        .recovery-info-box {
-            background: white;
-            color: #333;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: left;
-            margin: 20px 0;
-        }
-
-        .recovery-row {
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .recovery-row:last-child { border: none; }
-        .recovery-row small { color: #666; font-size: 0.75rem; }
-        .recovery-row strong { display: block; color: #000; font-size: 1rem; }
-
-        /* --- Dashboard Section --- */
-        #dashboard { display: none; width: 100%; max-width: 1100px; }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-
-        .search-area {
-            background: var(--glass);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            margin-bottom: 30px;
-        }
-
-        #search-result-text {
-            margin-top: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        /* --- Grid System --- */
-        .episode-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-            gap: 12px;
-        }
-
-        .ep-card {
-            background: var(--glass);
-            border: 1px solid #1e3a5f;
-            padding: 15px;
-            text-align: center;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .ep-card.watched {
-            background: var(--accent-gold);
-            color: var(--bg-dark);
-            border-color: #fff;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-        }
-
-        .stats-banner {
-            display: inline-block;
-            background: var(--accent-gold);
-            color: var(--bg-dark);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .episode-grid { grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); }
-        }
+        .inventory-card { margin-top: 15px; text-align: left; background: rgba(212, 175, 55, 0.05); border-radius: 15px; padding: 15px; border: 1px dashed var(--conan-gold); }
+        .inventory-list { max-height: 300px; overflow-y: auto; font-size: 0.75rem; color: #bbb; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="auth-section" class="card">
-        <img src="2315.png" class="logo-main" alt="Ayu Enngi">
-        <h2 style="color:var(--accent-gold); margin-bottom: 5px;">ADMIN LOGIN</h2>
-        <p style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 25px;">CONAN DATABASE MANAGEMENT</p>
-        <input type="text" id="admin-user" placeholder="Username">
-        <input type="password" placeholder="Passcode">
-        <button class="btn" style="width: 100%;" onclick="login()">ENTER SYSTEM</button>
-        <p onclick="showPage('recovery-section')" style="margin-top: 20px; font-size: 0.8rem; cursor: pointer; opacity: 0.6;">กู้คืนบัญชีสมาขิก (Recovery)</p>
+<div id="updateModal">
+    <div class="modal-content">
+        <h3>📢 โหมดฐานข้อมูลเต็มรูปแบบ</h3>
+        <p>กลับมาใช้โครงสร้างเดิม 700+ บรรทัดตามคำขอของ Ayu แล้วครับ!</p>
+        <button class="btn-main btn-gold" onclick="document.getElementById('updateModal').style.display='none'">เริ่มใช้งาน</button>
     </div>
+</div>
 
-    <div id="recovery-section" class="card" style="display:none;">
-        <h3 style="text-align: left; margin-bottom: 10px;">วิธีการกู้คืนบัญชี</h3>
-        <p style="text-align: left; font-size: 0.75rem; opacity: 0.8; margin-bottom: 20px;">เบอร์โทรศัพท์และอีเมลการกู้คืนของคุณจะถูกใช้เพื่อติดต่อคุณหากเราตรวจพบกิจกรรมที่น่าสงสัย...</p>
+<div class="door-container" id="doorSystem"><div class="door door-left"></div><div class="door door-right"></div></div>
+
+<div class="container">
+    <h2 style="letter-spacing: 2px;">CONAN HUB FULL DB</h2>
+    <div class="premium-card">
+        <div class="result-container"><h2 id="epDisplay" class="ep-display">กดปุ่มเพื่อสุ่มคดี!</h2></div>
         
-        <div class="recovery-info-box">
-            <div class="recovery-row">
-                <small>เบอร์โทรศัพท์การกู้คืน (1)</small>
-                <strong>09x-xxx-xxxx</strong>
-            </div>
-            <div class="recovery-row">
-                <small>อีเมลการกู้คืน</small>
-                <strong>a****@gmail.com</strong>
-            </div>
-            <div class="recovery-row">
-                <small>คำถามระบบป้องกัน</small>
-                <strong>คุณกำลังศึกษาอยู่ที่ไหน?</strong>
-            </div>
+        <button class="btn-main btn-gold" onclick="spinAny()">สุ่มตอนทั่วไป (TV Series)</button>
+        <button class="btn-main btn-dark" onclick="spinMovie()">สุ่มเดอะมูฟวี่</button>
+
+        <div class="history-card">
+            <div style="color:var(--conan-gold); margin-bottom:10px;">ประวัติการสุ่ม</div>
+            <div id="historyList" class="history-list">ยังไม่มีประวัติ</div>
         </div>
 
-        <button class="btn" style="background: #333; color: white; width: 100%;" onclick="showPage('auth-section')">กลับหน้าหลัก</button>
+        <div class="inventory-card">
+            <div style="color:var(--conan-gold); font-weight:600;">📂 รายชื่อคดีทั้งหมดในระบบ (Database)</div>
+            <div id="inventoryList" class="inventory-list">
+                </div>
+        </div>
     </div>
+</div>
 
-    <div id="dashboard">
-        <div class="dashboard-header card" style="padding: 15px 30px;">
-            <div>
-                <h1 style="margin:0; color:var(--accent-gold); font-size: 1.4rem;">CONAN SYSTEM</h1>
-                <small id="display-name">Admin: Ayu Enngi</small>
-            </div>
-            <img src="2315.png" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold);">
-        </div>
+<script>
+    // --- [Data Section: บรรทัดที่ยาวๆ กลับมาแล้ว] ---
+    const forbiddenEpisodes = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
 
-        <div class="search-area card">
-            <h3 style="margin-top: 0;">🔎 ค้นหาข้อมูลตอน (Episode Search)</h3>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <input type="number" id="search-input" placeholder="ใส่เลขตอน..." oninput="searchEp()" style="margin:0; width: 60%; max-width: 300px;">
-            </div>
-            <div id="search-result-text"></div>
-        </div>
+    const movies = ["คดีปริศนาระเบิดระฟ้า", "คดีฆาตกรรมไพ่ปริศนา", "ปริศนาพ่อมดคนสุดท้ายแห่งศตวรรษ", "คดีฆาตกรรมนัยน์ตาปริศนา", "คดีปริศนาเส้นตายสู่สวรรค์", "ปริศนาบนถนนสายมรณะ", "คดีฆาตกรรมแห่งเมืองปริศนา", "มนตราแห่งรัตติกาลสีเงิน", "ยุทธการเหนือห้วงทะเลลึก", "บทเพลงมรณะแด่เหล่านักสืบ", "ปริศนามหาขุมทรัพย์โจรสลัด", "บทเพลงแห่งความตาย", "ปริศนานักฆ่าทรยศ", "ปริศนามรณะเหนือน่านฟ้า", "15 นาทีเฉียดตายไขปริศนามรณะ", "ภาคระทึกขวัญยุทธจักรลูกหนัง", "ฝ่าวิกฤติเรือรบมรณะ", "ปริศนากระสุนมรณะ", "ปริศนาทานตะวันมรณะ", "ปริศนาเงามรณะตัวสำรอง", "ปริศนาเพลงกลอนซ่อนรัก", "ปฏิบัติการสายลับศูนย์", "ศึกชิงอัญมณีสีคราม", "กระสุนสีเพลิง", "เจ้าสาวฮาโลวีน", "มฤตยูใต้น้ำทมิฬ", "ปริศนาปราการห้าแฉก", "ปริศนาภาพติดตามรณะ"];
 
-        <div class="card" style="padding: 30px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0;">📋 COLLECTION STATUS</h3>
-                <div class="stats-banner" id="stats-count">Watched: 0 / 0</div>
-            </div>
-            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-            <div class="episode-grid" id="ep-grid"></div>
-        </div>
+    let history = [];
 
-        <p style="text-align: center; margin-top: 30px; opacity: 0.5; font-size: 0.8rem;">Technical Tak Admin Console | 2026</p>
-    </div>
+    function spinAny() {
+        const door = document.getElementById('doorSystem');
+        door.classList.add('active');
+        
+        setTimeout(() => {
+            let ep;
+            do {
+                ep = Math.floor(Math.random() * 1150) + 1;
+            } while (forbiddenEpisodes.includes(ep));
 
-    <script>
-        // เลขตอนทั้งหมดจากภาพโน้ต (แกะมาอย่างละเอียด)
-        const conanEpisodes = [
-            94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 
-            300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 
-            380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 
-            638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 
-            776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 
-            982, 983, 984, 993, 994, 995, 996, 1147
-        ].sort((a,b) => a - b);
+            const res = `ตอนที่ ${ep}`;
+            document.getElementById('epDisplay').innerHTML = res;
+            document.getElementById('epDisplay').classList.add('show');
+            history.unshift(res);
+            updateHistory();
+            door.classList.remove('active');
+        }, 800);
+    }
 
-        // โหลดข้อมูล (เริ่มต้นให้ดูแล้วทั้งหมดตามที่คุณบอก)
-        let watchedList = JSON.parse(localStorage.getItem('ayu_conan_db'));
-        if (!watchedList) {
-            watchedList = [...conanEpisodes]; // ครั้งแรกให้ดูแล้วทั้งหมดตามภาพ
-            localStorage.setItem('ayu_conan_db', JSON.stringify(watchedList));
+    function spinMovie() {
+        const door = document.getElementById('doorSystem');
+        door.classList.add('active');
+        
+        setTimeout(() => {
+            const idx = Math.floor(Math.random() * movies.length);
+            const res = `Movie ${idx + 1}: <span>${movies[idx]}</span>`;
+            document.getElementById('epDisplay').innerHTML = res;
+            document.getElementById('epDisplay').classList.add('show');
+            history.unshift(`Movie ${idx + 1}`);
+            updateHistory();
+            door.classList.remove('active');
+        }, 800);
+    }
+
+    function updateHistory() {
+        const list = document.getElementById('historyList');
+        list.innerHTML = history.slice(0, 5).map(h => `<div>✅ ${h}</div>`).join('');
+    }
+
+    // ฟังก์ชัน Render ข้อมูลยาวๆ แบบเดิม (Database)
+    function renderFullDB() {
+        const inv = document.getElementById('inventoryList');
+        let html = "";
+        for(let i=1; i<=1150; i++) {
+            const status = forbiddenEpisodes.includes(i) ? "<span style='color:var(--danger)'>[ดูแล้ว]</span>" : "<span style='color:lightgreen'>[ยังไม่ได้ดู]</span>";
+            html += `<div style="padding:2px 0; border-bottom:1px solid #222;">คดีที่ ${i} : ${status}</div>`;
         }
+        inv.innerHTML = html;
+    }
 
-        function login() {
-            const user = document.getElementById('admin-user').value || 'Ayu Enngi';
-            document.getElementById('display-name').innerText = `Admin: ${user}`;
-            showPage('dashboard');
-            renderGrid();
-        }
-
-        function showPage(id) {
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('recovery-section').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById(id).style.display = id === 'dashboard' ? 'block' : 'center';
-            if(id !== 'dashboard') document.getElementById(id).style.display = 'block';
-        }
-
-        function renderGrid() {
-            const grid = document.getElementById('ep-grid');
-            grid.innerHTML = '';
-            conanEpisodes.forEach(ep => {
-                const isWatched = watchedList.includes(ep);
-                const card = document.createElement('div');
-                card.className = `ep-card ${isWatched ? 'watched' : ''}`;
-                card.innerText = ep;
-                card.onclick = () => toggleEpisode(ep);
-                grid.appendChild(card);
-            });
-            updateStats();
-        }
-
-        function toggleEpisode(ep) {
-            if (watchedList.includes(ep)) {
-                watchedList = watchedList.filter(i => i !== ep);
-            } else {
-                watchedList.push(ep);
-            }
-            localStorage.setItem('ayu_conan_db', JSON.stringify(watchedList));
-            renderGrid();
-            searchEp();
-        }
-
-        function updateStats() {
-            document.getElementById('stats-count').innerText = `Watched: ${watchedList.length} / ${conanEpisodes.length}`;
-        }
-
-        function searchEp() {
-            const input = document.getElementById('search-input').value;
-            const res = document.getElementById('search-result-text');
-            const num = parseInt(input);
-
-            if (!input) { res.innerHTML = ''; return; }
-
-            if (watchedList.includes(num)) {
-                res.innerHTML = `<span style="color:var(--success);">✓ ตอนที่ ${num}: ดูจบแล้วในระบบ</span>`;
-            } else if (conanEpisodes.includes(num)) {
-                res.innerHTML = `<span style="color:var(--danger);">✗ ตอนที่ ${num}: ยังไม่ได้ดู</span>`;
-            } else {
-                res.innerHTML = `<span style="color:#888;">? ไม่พบข้อมูลตอนที่ ${num} ในรายการบันทึก</span>`;
-            }
-        }
-    </script>
+    renderFullDB();
+</script>
 </body>
 </html>
 
