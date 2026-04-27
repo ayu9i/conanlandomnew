@@ -3,37 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONAN DATABASE - AYU EDITION</title>
+    <title>CONAN DATABASE - PERMANENT SAVE</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #d4af37; --bg: #0a0e14; --card: #151b23; --danger: #ff4d4d; --success: #4dff88; }
         body { margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; padding: 20px 10px; }
         .container { width: 100%; max-width: 450px; }
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
-        
-        /* ระบบตัวนับ */
         .counter-card { background: var(--gold); color: black; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; }
-
-        /* ระบบบันทึกและค้นหา */
         .input-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.3); }
         label { display: block; font-size: 0.8rem; margin-bottom: 8px; opacity: 0.7; }
         input { width: 100%; background: #000; border: 1px solid #333; color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Kanit'; font-size: 1.1rem; box-sizing: border-box; outline: none; margin-bottom: 10px; }
         .btn-add { width: 100%; background: var(--gold); color: black; padding: 12px; border-radius: 10px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; }
         #statusMsg { margin-top: 10px; text-align: center; font-size: 0.9rem; min-height: 25px; }
-
-        /* รายการ Database */
         .list-box { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 20px; max-height: 500px; overflow-y: auto; border: 1px solid #222; }
         .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
         .tag-done { color: var(--danger); font-weight: 600; }
         .tag-not { color: var(--success); }
+        .btn-reset { margin-top: 15px; background: none; border: 1px solid #444; color: #666; font-size: 0.7rem; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1 style="margin:0; font-size: 1.5rem;">CONAN MEMORY SYSTEM</h1>
-        <div style="font-size: 0.8rem; color: var(--gold);">Admin Control: Ayu</div>
+        <h1 style="margin:0; font-size: 1.5rem;">CONAN PERMANENT DB</h1>
+        <div style="font-size: 0.8rem; color: var(--gold);">⚡ ระบบบันทึกข้อมูลถาวร</div>
     </div>
 
     <div class="counter-card">
@@ -42,21 +37,42 @@
     </div>
 
     <div class="input-card">
-        <label>🔢 ใส่เลขตอนที่ดูจบแล้ว</label>
-        <input type="number" id="epInput" placeholder="ตัวอย่าง: 144" onkeypress="if(event.key==='Enter') addMemory()">
-        <button class="btn-add" onclick="addMemory()">บันทึกว่าดูแล้ว ✅</button>
+        <label>🔢 ใส่เลขตอนที่ดูจบแล้ว (บันทึกอัตโนมัติ)</label>
+        <input type="number" id="epInput" placeholder="ตัวอย่าง: 145" onkeypress="if(event.key==='Enter') addMemory()">
+        <button class="btn-add" onclick="addMemory()">บันทึกลงคลังถาวร ✅</button>
         <div id="statusMsg"></div>
     </div>
 
     <div class="list-box">
-        <div style="color: var(--gold); margin-bottom: 15px; font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--gold); padding-bottom: 5px;">📂 รายชื่อคดีทั้งหมด (1-1150)</div>
+        <div style="color: var(--gold); margin-bottom: 15px; font-size: 1rem; font-weight: 600; border-bottom: 1px solid var(--gold); padding-bottom: 5px;">📂 คลังคดีทั้งหมด (1-1150)</div>
         <div id="dbList"></div>
     </div>
+
+    <button class="btn-reset" onclick="resetData()">ล้างข้อมูลทั้งหมด (Reset)</button>
 </div>
 
 <script>
-    // ฐานข้อมูลเดิมของอาวุจากรูปกระดาษ
-    let watched = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
+    // ฐานข้อมูลเริ่มต้น (Default) จากรูปกระดาษของอาวุ
+    const defaultData = [94, 95, 96, 120, 121, 128, 142, 143, 144, 196, 233, 288, 289, 290, 291, 292, 300, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
+    
+    let watched = [];
+
+    // ฟังก์ชันโหลดข้อมูลจากหน่วยความจำบราวเซอร์ [cite: 2026-03-19]
+    function loadData() {
+        const saved = localStorage.getItem('ayuConanDB');
+        if (saved) {
+            watched = JSON.parse(saved);
+        } else {
+            watched = [...defaultData];
+            saveData();
+        }
+        updateAll();
+    }
+
+    // ฟังก์ชันเซฟข้อมูลลงหน่วยความจำบราวเซอร์ [cite: 2026-03-19]
+    function saveData() {
+        localStorage.setItem('ayuConanDB', JSON.stringify(watched));
+    }
 
     function addMemory() {
         const input = document.getElementById('epInput');
@@ -70,23 +86,27 @@
         }
 
         if (watched.includes(val)) {
-            msg.innerText = `⚠️ ตอนที่ ${val} มีในระบบอยู่แล้วครับ!`;
+            msg.innerText = `⚠️ ตอนที่ ${val} มีในระบบแล้ว!`;
             msg.style.color = "orange";
         } else {
             watched.push(val);
-            watched.sort((a, b) => a - b); // เรียงเลขใหม่
-            msg.innerText = `✅ เพิ่มตอนที่ ${val} เข้าสู่ระบบสำเร็จ!`;
+            watched.sort((a, b) => a - b);
+            saveData(); // เซฟทันทีที่เพิ่ม [cite: 2026-03-19]
+            msg.innerText = `✅ เพิ่มตอนที่ ${val} สำเร็จ! (เซฟแล้ว)`;
             msg.style.color = "var(--success)";
             updateAll();
+            
+            // เลื่อนไปดูตอนที่เพิ่งเพิ่ม
+            setTimeout(() => {
+                const el = document.getElementById(`ep-${val}`);
+                if(el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 100);
         }
         input.value = "";
     }
 
     function updateAll() {
-        // อัปเดตตัวนับ
         document.getElementById('watchCount').innerText = `${watched.length} / 1150`;
-        
-        // อัปเดตรายการ
         const list = document.getElementById('dbList');
         let html = "";
         for(let i=1; i<=1150; i++) {
@@ -97,17 +117,17 @@
             </div>`;
         }
         list.innerHTML = html;
-        
-        // ถ้ามีการเพิ่มตอน ให้เลื่อนไปดูภาวะล่าสุด
-        const lastInput = parseInt(document.getElementById('epInput').value);
-        if(lastInput) {
-            const el = document.getElementById(`ep-${lastInput}`);
-            if(el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function resetData() {
+        if(confirm("อาวุแน่ใจนะว่าจะล้างข้อมูลทั้งหมด? (จะกลับไปเป็นค่าเริ่มต้น)")) {
+            localStorage.removeItem('ayuConanDB');
+            loadData();
         }
     }
 
-    // เริ่มทำงานครั้งแรก
-    updateAll();
+    // เริ่มทำงาน
+    loadData();
 </script>
 </body>
 </html>
