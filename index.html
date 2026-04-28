@@ -3,399 +3,610 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CONAN SUPREME DB - OMEGA V.2 [ULTRA SECURITY]</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <title>CONAN SUPREME DB - V2026.7 [OMEGA HYBRID]</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
+        /* --- Root Variables & Theme Control --- */
         :root { 
-            --gold: #d4af37; --bg: #05070a; --card: #111821; 
-            --danger: #ff4d4d; --success: #4dff88; --info: #4da6ff; 
-            --white: #ffffff; --gray: #888; --dark-gold: #a68a2d;
-            --glass: rgba(255, 255, 255, 0.05);
+            --gold: #d4af37;
+            --bg: #05070a;
+            --card: #111821; 
+            --danger: #ff4d4d;
+            --success: #4dff88;
+            --info: #4da6ff; 
+            --white: #ffffff;
+            --gray: #888;
+            --dark-gold: #a68a2d;
+            --accent: #1a1f2b;
+            --transition-smooth: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* --- Global Base --- */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* --- Global Reset --- */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Scrollbar Styling (Custom Desktop Look) --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
         body { 
-            margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: var(--white); 
-            display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #1a1f2b 0%, #05070a 100%);
-            min-height: 100vh; padding-bottom: 50px;
+            font-family: 'Kanit', sans-serif;
+            background: var(--bg);
+            color: var(--white); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, var(--accent) 0%, var(--bg) 100%);
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) 10px 20px;
+            line-height: 1.6;
         }
 
-        /* --- WePlay Style Profile Header --- */
+        /* --- Profile Header (WePlay Inspired) --- */
         .profile-header {
-            width: 100%; max-width: 500px; background: linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, var(--card) 100%);
-            border-radius: 0 0 45px 45px; padding: 40px 20px; text-align: center; margin-bottom: 25px;
-            border-bottom: 2px solid var(--gold); box-shadow: 0 15px 30px rgba(0,0,0,0.5); position: relative;
+            width: 100%;
+            max-width: 480px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, var(--card) 100%);
+            border-radius: 0 0 45px 45px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideDown 0.8s ease-out;
         }
-        .avatar-container { position: relative; display: inline-block; margin-bottom: 15px; }
-        .avatar-frame { 
-            width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--gold); 
-            padding: 5px; background: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-            overflow: hidden;
-        }
-        .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .level-tag { 
-            position: absolute; bottom: 5px; right: 5px; background: var(--gold); color: #000; 
-            font-family: 'Orbitron'; font-weight: 800; font-size: 0.8rem; padding: 3px 10px; 
-            border-radius: 12px; border: 2px solid #000;
-        }
-        .profile-name { font-size: 1.8rem; font-weight: 600; color: var(--white); margin: 5px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .profile-id { font-family: 'Orbitron'; font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; opacity: 0.8; }
 
-        .lang-bar { position: absolute; top: 15px; right: 15px; display: flex; gap: 8px; }
-        .lang-chip { 
-            background: rgba(0,0,0,0.6); border: 1px solid #444; color: #fff; padding: 5px 10px; 
-            border-radius: 10px; font-size: 0.7rem; cursor: pointer; transition: 0.3s;
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .lang-chip.active { border-color: var(--gold); color: var(--gold); background: rgba(212, 175, 55, 0.1); }
 
-        /* --- Container Logic --- */
-        .app-content { width: 100%; max-width: 480px; padding: 0 15px; opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
-        .app-content.active { opacity: 1; transform: translateY(0); }
+        .avatar-wrap {
+            position: relative;
+            display: inline-block;
+            transition: var(--transition-smooth);
+        }
 
+        .avatar-wrap:hover { transform: scale(1.1) rotate(5deg); }
+
+        .avatar-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--gold);
+            padding: 5px;
+            background: #000;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .level-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            background: var(--gold);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-family: 'Orbitron';
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .user-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 15px 0 2px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .user-id {
+            color: var(--gray);
+            font-size: 0.85rem;
+            font-family: 'Orbitron';
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        /* --- Language Switcher --- */
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* --- UI Container & Layout --- */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 1s ease-out;
+        }
+
+        .container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
         @media (min-width: 992px) {
-            .app-content { max-width: 1200px; display: grid; grid-template-columns: 400px 1fr; gap: 30px; }
-            .profile-header { grid-column: span 2; max-width: 100%; }
+            .container {
+                max-width: 1200px;
+                display: grid;
+                grid-template-columns: 380px 1fr;
+                gap: 40px;
+            }
+            .sidebar {
+                position: sticky;
+                top: 20px;
+                height: fit-content;
+            }
         }
 
-        /* --- Modern Cards --- */
-        .glass-card { 
-            background: var(--card); border-radius: 30px; padding: 25px; margin-bottom: 25px; 
-            border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;
+        /* --- Karma System Visuals --- */
+        .card {
+            background: var(--card);
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
         }
-        .glass-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            transition: 0.5s;
+
+        .card:hover { border-color: rgba(212, 175, 55, 0.2); }
+
+        .karma-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
         }
-        .glass-card:hover::before { left: 100%; }
 
-        /* --- Statistics Wheel --- */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-item { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #222; }
-        .stat-val { font-family: 'Orbitron'; font-size: 1.5rem; color: var(--gold); display: block; }
-        .stat-lbl { font-size: 0.7rem; color: var(--gray); text-transform: uppercase; }
+        #txt-karma {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: 1px;
+        }
 
-        /* --- Inputs & Buttons --- */
-        .input-group { margin-bottom: 20px; }
-        .input-label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--gold); margin-bottom: 8px; margin-left: 10px; }
+        #karmaDisplay {
+            font-family: 'Orbitron';
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .karma-bg {
+            background: #000;
+            height: 14px;
+            border-radius: 7px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #karmaFill {
+            height: 100%;
+            width: 100%;
+            transition: 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+            background: var(--success);
+        }
+
+        /* --- Form Elements --- */
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--info);
+            text-transform: uppercase;
+        }
+
         input { 
-            width: 100%; background: #000; border: 2px solid #222; color: #fff; 
-            padding: 18px; border-radius: 20px; font-family: 'Kanit'; outline: none; transition: 0.3s;
+            width: 100%;
+            background: #000;
+            border: 2px solid #222;
+            color: var(--gold);
+            padding: 16px; 
+            border-radius: 18px;
+            font-family: 'Kanit';
+            margin-bottom: 15px;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s;
         }
-        input:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
 
-        .btn-prime { 
-            width: 100%; background: var(--gold); color: #000; padding: 18px; border-radius: 20px; 
-            border: none; font-weight: 700; cursor: pointer; transition: 0.3s; 
-            font-family: 'Kanit'; box-shadow: 0 6px 0 var(--dark-gold);
+        input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+
+        .btn-action { 
+            width: 100%;
+            background: var(--gold);
+            color: #000;
+            padding: 16px;
+            border-radius: 18px; 
+            border: none;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 5px 0 var(--dark-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn-prime:hover { filter: brightness(1.1); transform: translateY(-2px); }
-        .btn-prime:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--dark-gold); }
-        .btn-prime:disabled { background: #333; box-shadow: none; color: #666; cursor: not-allowed; }
 
-        /* --- Karma Progress --- */
-        .karma-box { background: #000; border-radius: 20px; padding: 15px; border: 1px solid #333; margin: 15px 0; }
-        .karma-bar-bg { background: #111; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 10px; border: 1px solid #222; }
-        #karmaFill { height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
+        .btn-action:hover { filter: brightness(1.1); }
+        .btn-action:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--dark-gold); }
 
-        /* --- Episode Directory --- */
-        .list-container { background: rgba(0,0,0,0.2); border-radius: 35px; border: 1px solid #222; padding: 20px; }
-        .list-scroll { max-height: 600px; overflow-y: auto; padding-right: 10px; }
-        .list-scroll::-webkit-scrollbar { width: 4px; }
-        .list-scroll::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
-
-        .item-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 18px; border-bottom: 1px solid rgba(255,255,255,0.03); 
-            transition: 0.3s; border-radius: 15px;
+        /* --- Directory List --- */
+        .list-box {
+            max-height: 550px;
+            overflow-y: auto;
+            padding-right: 10px;
         }
-        .item-row:hover { background: rgba(212, 175, 55, 0.05); }
-        .status-pill { padding: 5px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
-        .is-done { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-        .is-wait { background: rgba(77, 255, 136, 0.1); color: var(--success); border: 1px solid var(--success); }
+
+        .ep-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            border-radius: 15px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+        }
+
+        .ep-item:hover { background: rgba(255,255,255,0.02); }
+
+        .ep-info { display: flex; align-items: center; gap: 15px; }
+        .ep-num { font-family: 'Orbitron'; color: var(--gray); font-size: 0.8rem; }
+        .ep-title { font-weight: 600; font-size: 1rem; }
+
+        .badge {
+            font-size: 0.7rem;
+            font-weight: 900;
+            padding: 6px 12px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge-done { background: rgba(255, 77, 77, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-none { background: rgba(77, 255, 136, 0.1); color: var(--success); border: 1px solid var(--success); }
+
+        /* --- Full Reset UI --- */
+        .btn-reset {
+            margin-top: 10px;
+            background: #1a1a1a;
+            color: var(--danger);
+            border: 1px solid #333;
+            box-shadow: none;
+        }
 
         /* --- Auth Overlay --- */
-        .full-overlay { 
-            position: fixed; inset: 0; background: var(--bg); z-index: 10000; 
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        .auth-card { 
-            background: var(--card); border: 2px solid var(--gold); width: 100%; max-width: 400px; 
-            border-radius: 40px; padding: 40px; text-align: center;
-            box-shadow: 0 0 50px rgba(212,175,55,0.2);
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.98);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(15px);
         }
 
-        /* --- Utilities --- */
+        .modal {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 35px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
         .hidden { display: none !important; }
-        .locked { filter: grayscale(1) blur(2px); opacity: 0.5; pointer-events: none; }
-        .danger-zone { border: 1px dashed var(--danger); padding: 15px; border-radius: 20px; margin-top: 20px; }
+        .is-restricted { filter: grayscale(1); opacity: 0.4; pointer-events: none; }
     </style>
 </head>
 <body>
 
-<div id="authScreen" class="full-overlay">
-    <div class="auth-card">
-        <h2 id="authLabel" style="font-family: 'Orbitron'; color: var(--gold); margin-bottom: 5px;">SYSTEM LOGIN</h2>
-        <p id="authHint" style="font-size: 0.8rem; color: var(--gray); margin-bottom: 30px;">Access restricted to Ayu only.</p>
-        
-        <div class="input-group" style="text-align: left;">
-            <label class="input-label">USERNAME</label>
-            <input type="text" id="uIn" placeholder="Enter username...">
+<div id="authOverlay" class="overlay">
+    <div class="modal">
+        <h2 id="authTitle" style="font-family: 'Orbitron'; color: var(--gold); margin-bottom: 10px;">CONAN ACCESS</h2>
+        <p id="authSub" style="font-size: 0.85rem; color: var(--gray); margin-bottom: 25px;">กรุณายืนยันตัวตนเพื่อเข้าถึงไฟล์คดี</p>
+        <div>
+            <input type="text" id="userInput" placeholder="ชื่อนักสืบ (Username)">
+            <input type="password" id="passInput" placeholder="รหัสผ่าน (8 ตัวขึ้นไป)">
+            <button class="btn-action" onclick="handleAuth()" id="authBtn">LOGIN</button>
+            <p id="toggleMode" style="font-size: 0.8rem; margin-top: 20px; color: var(--info); cursor: pointer;" onclick="toggleAuthMode()">ยังไม่มีไอดี? ลงทะเบียนตรงนี้อาวุ!</p>
         </div>
-        <div class="input-group" style="text-align: left;">
-            <label class="input-label">PASSWORD</label>
-            <input type="password" id="pIn" placeholder="Min. 8 characters...">
-            <p id="passRule" style="font-size: 0.65rem; color: var(--gray); margin-top: 8px;">* ต้องมีตัวใหญ่, ตัวเล็ก และตัวเลข</p>
-        </div>
-        
-        <button class="btn-prime" onclick="processAuth()" id="authBtn">LOGIN ACCESS</button>
-        <p id="modeToggle" style="margin-top: 20px; font-size: 0.8rem; color: var(--info); cursor: pointer;" onclick="switchAuth()">Create New Account?</p>
     </div>
 </div>
 
-<header class="profile-header hidden" id="headUI">
-    <div class="lang-bar">
-        <div class="lang-chip active" onclick="changeLang('th')">TH</div>
-        <div class="lang-chip" onclick="changeLang('en')">EN</div>
-        <div class="lang-chip" onclick="changeLang('jp')">JP</div>
+<header class="profile-header">
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('th')">TH</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('jp')">JP</button>
     </div>
-    <div class="avatar-container">
-        <div class="avatar-frame">
-            <img src="https://i.pinimg.com/736x/88/ef/34/88ef348f3286df9c2642542a98f480f2.jpg" class="avatar-img">
-        </div>
-        <div class="level-tag">LV.80</div>
+    <div class="avatar-wrap">
+        <img src="https://i.pinimg.com/736x/88/ef/34/88ef348f3286df9c2642542a98f480f2.jpg" class="avatar-img" alt="Ayu Avatar">
+        <div class="level-badge">LV.80</div>
     </div>
-    <h1 class="profile-name">Ayu ✿</h1>
-    <p class="profile-id">CID-2026-OMEGA</p>
+    <h2 class="user-name">Ayu ✿</h2>
+    <p class="user-id">CID: ayu_6i-OMEGA</p>
 </header>
 
-<div class="app-content hidden" id="mainUI">
-    <div class="side-panel">
-        <div class="glass-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span id="lbl-karma" style="font-weight: bold; font-size: 0.8rem;">KARMA XP</span>
-                <span id="karmaVal" style="font-family: 'Orbitron'; color: var(--gold);">100</span>
+<div class="container" id="mainApp">
+    <div class="sidebar">
+        <div class="card">
+            <div class="karma-header">
+                <span id="txt-karma">KARMA POINT</span>
+                <span id="karmaDisplay">100</span>
             </div>
-            <div class="karma-bar-bg"><div id="karmaFill"></div></div>
-            <p id="rankTxt" style="font-size: 0.75rem; color: var(--success); margin-top: 10px; font-weight: 600;">RANK: ยอดนักสืบ</p>
+            <div class="karma-bg"><div id="karmaFill"></div></div>
+            <p id="txt-rank" style="font-size: 0.8rem; color: var(--gold); margin-top: 15px; font-weight: 700;">RANK: ยอดนักสืบระดับอาวุ</p>
         </div>
 
-        <div class="glass-card">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span id="statDone" class="stat-val">0</span>
-                    <span id="lbl-stat1" class="stat-lbl">Watched</span>
-                </div>
-                <div class="stat-item">
-                    <span id="statPerc" class="stat-val">0%</span>
-                    <span id="lbl-stat2" class="stat-lbl">Total</span>
-                </div>
+        <div class="card" style="background: linear-gradient(135deg, var(--gold) 0%, var(--dark-gold) 100%); color: #000;">
+            <div style="display: flex; justify-content: space-around; text-align: center;">
+                <div><small style="font-weight: 800; font-size: 0.65rem;">WATCHED</small><div id="statDone" style="font-size: 1.6rem; font-weight: 900;">0</div></div>
+                <div><small style="font-weight: 800; font-size: 0.65rem;">PROGRESS</small><div id="statPerc" style="font-size: 1.6rem; font-weight: 900;">0%</div></div>
             </div>
         </div>
 
-        <div class="glass-card" id="searchWrap">
-            <label id="lbl-search" class="input-label">🔍 QUICK FIND (REQ. 50 XP)</label>
-            <input type="number" id="sBox" placeholder="Episode No." oninput="liveSearch()">
+        <div class="card">
+            <label id="txt-add">➕ บันทึกความคืบหน้าคดี</label>
+            <input type="number" id="epInput" placeholder="ระบุเลขตอน (1 - 1150)" min="1" max="1150">
+            <button class="btn-action" id="btn-save" onclick="saveEpisode()">บันทึกข้อมูล ✅</button>
         </div>
 
-        <div class="glass-card">
-            <label id="lbl-add" class="input-label">➕ RECORD CASE</label>
-            <input type="number" id="epIn" placeholder="1 - 1150">
-            <button id="btn-save" class="btn-prime" style="margin-top: 15px;" onclick="addEpisode()">SAVE TO DATABASE</button>
-        </div>
-
-        <div class="glass-card danger-zone">
-            <p id="sec-warn" style="font-size: 0.7rem; color: var(--danger); margin-bottom: 15px;">
-                ⚠️ [ADMIN LOCK] ต้องมี Karma 80+ ถึงจะลบบัญชีได้ เพื่อป้องกันการเกรียน
-            </p>
-            <button id="btn-reset" class="btn-prime" style="background: #1a1a1a; color: var(--danger); box-shadow: none; border: 1px solid #333;" onclick="masterReset()">MASTER RESET</button>
+        <div class="card">
+            <label id="txt-search">🔍 ค้นหาคดี (ใช้ 50 Karma)</label>
+            <input type="number" id="searchBox" placeholder="Episode No..." oninput="doSearch()">
+            <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
+            <button class="btn-action btn-reset" onclick="fullReset()">ลบบัญชีถาวร (Delete Account)</button>
         </div>
     </div>
 
-    <div class="main-panel">
-        <div class="list-container">
-            <div style="display: flex; justify-content: space-between; padding-bottom: 15px; border-bottom: 2px solid #222; margin-bottom: 15px;">
-                <span id="lbl-dir" style="font-weight: 600; color: var(--gold);">DIRECTORY: CASE LOGS</span>
-                <span style="font-size: 0.7rem; color: var(--gray);">MAX: 1150 EPISODES</span>
+    <div class="main-content">
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 20px 25px; background: rgba(255,255,255,0.02); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="txt-dir" style="color: var(--gold); font-size: 1.1rem; letter-spacing: 1px;">CASE DIRECTORY</h3>
+                <span style="font-size: 0.75rem; color: var(--gray);" id="statLimit">LIMIT: 1150 CASES</span>
             </div>
-            <div class="list-scroll" id="drawList"></div>
+            <div class="list-box" id="mainList"></div>
         </div>
     </div>
 </div>
 
 <script>
-    /* --- CONFIG & DATA --- */
-    const TOTAL_EP = 1150;
-    let currLang = 'th';
-    let authMode = 'LOGIN';
-    let karma = parseInt(localStorage.getItem('v2_karma')) || 100;
-    let watched = JSON.parse(localStorage.getItem('v2_watched')) || [];
+    /* --- 1. การกำหนดค่าและข้อมูลเริ่มต้น --- */
+    const MAX_EP = 1150;
+    
+    // ข้อมูลจากสมุดโน้ต (EA59) จาก V2 OMEGA
+    const noteData = [
+        128, 614, 615, 616, 617, 564, 565, 566, 1147, 637, 638, 807, 808, 809, 371, 372, 373, 
+        374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 233, 734, 735, 750, 
+        982, 983, 984, 945, 675, 676, 677, 680, 681, 682, 272, 773, 774, 775, 776, 777, 993, 
+        994, 995, 996, 301, 302, 303, 360, 311, 312, 288, 289, 290, 291, 292, 94, 95, 96, 
+        120, 121, 196, 816, 817, 818, 819, 820, 821, 822, 823, 824, 142, 143, 144, 145, 146, 
+        147, 402, 403
+    ];
 
-    const langSet = {
+    let currentLang = 'th';
+    let authMode = 'LOGIN';
+    
+    // โหลดข้อมูลจาก LocalStorage
+    let karma = parseInt(localStorage.getItem('ayu_karma_vfinal')) || 100;
+    let watched = JSON.parse(localStorage.getItem('ayu_watched_vfinal')) || [...new Set(noteData)];
+    watched.sort((a,b) => a-b);
+
+    // พจนานุกรมภาษา (i18n)
+    const i18n = {
         th: {
-            authL: "เข้าสู่ระบบ", authR: "ลงทะเบียนสมาชิกใหม่",
-            authH: "ยืนยันตัวตนเพื่อเข้าถึงข้อมูลอาวุ", btnA: "ยืนยัน",
-            karma: "คะแนนความดี", rank: "ระดับ: ", search: "🔍 ค้นหา (ล็อคถ้า Karma < 50)",
-            add: "➕ บันทึกคดีใหม่", save: "บันทึกข้อมูล", dir: "สมุดบันทึกคดีทั้งหมด",
-            stat1: "ดูจบแล้ว", stat2: "ความคืบหน้า",
-            errP: "รหัสไม่ลัดกุม! ต้องมี 8 ตัวขึ้นไป และมีตัวพิมพ์ใหญ่/เล็ก/ตัวเลข",
-            errK: "ล็อคระบบ! ต้องมี Karma 80+ ถึงจะลบข้อมูลได้ (กันเกรียนจ้า)"
+            authLogin: "เข้าสู่ระบบโคนัน", authReg: "ลงทะเบียนนักสืบใหม่",
+            authSub: "กรุณายืนยันตัวตนก่อนเข้าฐานข้อมูล", authBtn: "ยืนยันการเข้าถึง",
+            karma: "คะแนนความดี (Karma)", rank: "ระดับ: ยอดนักสืบ", search: "🔍 ค้นหา (ต้องการ 50 Karma)",
+            add: "➕ บันทึกความคืบหน้าคดี", save: "บันทึกข้อมูล ✅",
+            dir: "รายชื่อคดีทั้งหมด", reset: "ลบบัญชีถาวร",
+            seen: "ดูแล้ว", yet: "ยัง"
         },
         en: {
-            authL: "SYSTEM LOGIN", authR: "NEW REGISTRATION",
-            authH: "Verify identity to access database", btnA: "ACCESS",
-            karma: "KARMA XP", rank: "RANK: ", search: "🔍 SEARCH (LOCKED < 50 XP)",
-            add: "➕ RECORD CASE", save: "SAVE TO DB", dir: "DIRECTORY: CASE LOGS",
-            stat1: "WATCHED", stat2: "PROGRESS",
-            errP: "Weak Password! Must be 8+ chars with A-z & 0-9",
-            errK: "ACCESS DENIED! Karma 80+ required to reset database."
+            authLogin: "CONAN ACCESS", authReg: "NEW RECRUIT",
+            authSub: "Please verify identity to access files", authBtn: "LOGIN",
+            karma: "KARMA POINTS", rank: "RANK: Master Detective", search: "🔍 SEARCH (Req 50 Karma)",
+            add: "➕ RECORD PROGRESS", save: "SAVE CASE ✅",
+            dir: "CASE DIRECTORY", reset: "DELETE ACCOUNT",
+            seen: "WATCHED", yet: "YET"
         },
         jp: {
-            authL: "システムログイン", authR: "新規会員登録",
-            authH: "本人確認を行ってください", btnA: "アクセス",
-            karma: "カルマポイント", rank: "ランク: ", search: "🔍 検索 (50XP未満は不可)",
-            add: "➕ 新規記録", save: "保存する", dir: "事件目録: 全記録",
-            stat1: "完了", stat2: "進行状況",
-            errP: "パスワードが弱すぎます！8文字以上、英数字を含めてください",
-            errK: "エラー！アカウント削除には80以上のカルマが必要です。"
+            authLogin: "コナン ログイン", authReg: "新規登録",
+            authSub: "本人確認をしてください", authBtn: "確認",
+            karma: "カルマポイント", rank: "ランク: 名探偵", search: "🔍 検索 (50カルマ必要)",
+            add: "➕ 事件記録", save: "保存する ✅",
+            dir: "事件目録", reset: "アカウント削除",
+            seen: "見た", yet: "未"
         }
     };
 
-    /* --- CORE SYSTEM --- */
+    /* --- 2. ระบบการจัดการแอพ --- */
     window.onload = () => {
-        if(localStorage.getItem('v2_is_logged') === 'true') {
-            document.getElementById('authScreen').classList.add('hidden');
+        if(localStorage.getItem('ayu_is_logged') === 'true') {
+            document.getElementById('authOverlay').classList.add('hidden');
             startApp();
         }
     };
 
-    function switchAuth() {
-        authMode = authMode === 'LOGIN' ? 'REG' : 'LOGIN';
-        document.getElementById('modeToggle').innerText = authMode === 'LOGIN' ? "Create New Account?" : "Have Account? Login";
-        updateText();
+    function startApp() {
+        document.getElementById('mainApp').classList.add('show');
+        updateKarma();
+        updateUI();
     }
 
-    function processAuth() {
-        const u = document.getElementById('uIn').value;
-        const p = document.getElementById('pIn').value;
+    /* --- 3. ระบบยืนยันตัวตน --- */
+    function toggleAuthMode() {
+        authMode = authMode === 'LOGIN' ? 'REG' : 'LOGIN';
+        const t = i18n[currentLang];
+        document.getElementById('authTitle').innerText = authMode === 'LOGIN' ? t.authLogin : t.authReg;
+        document.getElementById('toggleMode').innerText = authMode === 'LOGIN' ? "ยังไม่มีไอดี? ลงทะเบียนตรงนี้อาวุ!" : "มีไอดีแล้ว? เข้าสู่ระบบตรงนี้";
+    }
+
+    function handleAuth() {
+        const u = document.getElementById('userInput').value;
+        const p = document.getElementById('passInput').value;
+        
+        if(!u || !p) return alert("กรุณากรอกข้อมูลให้ครบถ้วนนะอาวุ!");
 
         if(authMode === 'REG') {
-            // Strong Password Logic
-            const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-            if(!strongRegex.test(p)) return alert(langSet[currLang].errP);
-            
-            localStorage.setItem(`v2_user_${u}`, p);
-            alert("Registration Complete! Logging in...");
-            authMode = 'LOGIN';
-            processAuth();
+            // เช็ครหัสผ่าน 8 ตัวขึ้นไป
+            if(p.length < 8) return alert("รหัสต้องมี 8 ตัวขึ้นไปนะ! ปลอดภัยไว้ก่อน");
+            localStorage.setItem(`ayu_user_${u}`, p);
+            alert("ลงทะเบียนสำเร็จแล้ว! ลองเข้าสู่ระบบดูนะ");
+            toggleAuthMode();
         } else {
-            if(localStorage.getItem(`v2_user_${u}`) === p) {
-                localStorage.setItem('v2_is_logged', 'true');
+            if(localStorage.getItem(`ayu_user_${u}`) === p) {
+                localStorage.setItem('ayu_is_logged', 'true');
                 location.reload();
             } else {
-                alert("Access Denied!");
-                karma -= 10;
-                localStorage.setItem('v2_karma', karma);
+                alert("ข้อมูลไม่ถูกต้อง! ลองใหม่อีกทีนะ");
+                karma -= 5; // พลาดลด Karma
+                updateKarma();
             }
         }
     }
 
-    function startApp() {
-        document.getElementById('headUI').classList.remove('hidden');
-        document.getElementById('mainUI').classList.remove('hidden');
-        setTimeout(() => document.getElementById('mainUI').classList.add('active'), 100);
-        updateKarma();
-        updateText();
-    }
-
-    function changeLang(l) {
-        currLang = l;
-        document.querySelectorAll('.lang-chip').forEach(c => c.classList.remove('active'));
+    /* --- 4. การจัดการ UI และภาษา --- */
+    function setLang(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
-        updateText();
+        updateUI();
     }
 
-    function updateText() {
-        const t = langSet[currLang];
-        document.getElementById('authLabel').innerText = authMode === 'LOGIN' ? t.authL : t.authR;
-        document.getElementById('authBtn').innerText = t.btnA;
-        document.getElementById('lbl-karma').innerText = t.karma;
-        document.getElementById('lbl-search').innerText = t.search;
-        document.getElementById('lbl-add').innerText = t.add;
+    function updateUI() {
+        const t = i18n[currentLang];
+        document.getElementById('txt-karma').innerText = t.karma;
+        document.getElementById('txt-search').parentNode.querySelector('label').innerText = t.search;
+        document.getElementById('txt-add').innerText = t.add;
         document.getElementById('btn-save').innerText = t.save;
-        document.getElementById('lbl-dir').innerText = t.dir;
-        document.getElementById('lbl-stat1').innerText = t.stat1;
-        document.getElementById('lbl-stat2').innerText = t.stat2;
+        document.getElementById('txt-dir').innerText = t.dir;
+        
+        document.getElementById('statDone').innerText = watched.length;
+        document.getElementById('statPerc').innerText = ((watched.length / MAX_EP) * 100).toFixed(1) + "%";
+        
         renderList();
     }
 
-    /* --- DATABASE LOGIC --- */
+    /* --- 5. ระบบ Karma --- */
     function updateKarma() {
         if(karma < 0) karma = 0;
         if(karma > 100) karma = 100;
-        document.getElementById('karmaVal').innerText = karma;
-        const bar = document.getElementById('karmaFill');
-        bar.style.width = karma + "%";
-        bar.style.background = karma > 75 ? "var(--success)" : (karma > 45 ? "var(--gold)" : "var(--danger)");
+        localStorage.setItem('ayu_karma_vfinal', karma);
         
-        // Anti-Troll Features
-        document.getElementById('searchWrap').classList.toggle('locked', karma < 50);
-        document.getElementById('btn-reset').disabled = (karma < 80);
+        document.getElementById('karmaDisplay').innerText = karma;
+        const fill = document.getElementById('karmaFill');
+        fill.style.width = karma + "%";
         
-        const rank = document.getElementById('rankTxt');
-        if(karma >= 80) rank.innerText = "RANK: ยอดนักสืบ";
-        else if(karma >= 50) rank.innerText = "RANK: หมวดหมู่ตำรวจ";
-        else rank.innerText = "RANK: ผู้ต้องสงสัย";
+        // สีตามระดับ Karma
+        if(karma >= 70) fill.style.background = "var(--success)";
+        else if(karma >= 40) fill.style.background = "var(--gold)";
+        else fill.style.background = "var(--danger)";
+
+        // ข้อจำกัดตาม Karma
+        document.getElementById('searchBox').classList.toggle('is-restricted', karma < 50);
     }
 
+    /* --- 6. ฟังก์ชันหลัก (Save, Render, Search) --- */
     function renderList() {
-        const box = document.getElementById('drawList');
+        const box = document.getElementById('mainList');
+        const t = i18n[currentLang];
         let html = "";
-        watched.sort((a,b) => a-b);
         
-        for(let i=1; i<=TOTAL_EP; i++) {
-            const seen = watched.includes(i);
+        for(let i=1; i<=MAX_EP; i++) {
+            const isSeen = watched.includes(i);
+            const labelEp = currentLang === 'jp' ? '話' : (currentLang === 'en' ? 'EP' : 'ตอนที่');
+            
             html += `
-                <div class="item-row" id="row-${i}">
-                    <span style="font-weight:600;">EP ${i} ${currLang === 'jp' ? '話' : ''}</span>
-                    <span class="status-pill ${seen ? 'is-done' : 'is-wait'}">
-                        ${seen ? (currLang === 'th' ? 'ดูแล้ว' : 'DONE') : (currLang === 'th' ? 'รอก่อน' : 'WAIT')}
-                    </span>
+                <div class="ep-item" id="ep-${i}">
+                    <div class="ep-info">
+                        <span class="ep-num">#${i.toString().padStart(4, '0')}</span>
+                        <span class="ep-title">${labelEp} ${i}</span>
+                    </div>
+                    <span class="badge ${isSeen ? 'badge-done' : 'badge-none'}">${isSeen ? t.seen : t.yet}</span>
                 </div>
             `;
         }
         box.innerHTML = html;
-        document.getElementById('statDone').innerText = watched.length;
-        document.getElementById('statPerc').innerText = Math.round((watched.length / TOTAL_EP) * 100) + "%";
+        localStorage.setItem('ayu_watched_vfinal', JSON.stringify(watched));
     }
 
-    function addEpisode() {
-        const val = parseInt(document.getElementById('epIn').value);
-        if(!val || val < 1 || val > TOTAL_EP) return alert("1-1150 Only!");
-        if(watched.includes(val)) return alert("Already Saved!");
+    function saveEpisode() {
+        const val = parseInt(document.getElementById('epInput').value);
+        if(!val || val < 1 || val > MAX_EP) return alert("ระบุตัวเลข 1 - 1150 เท่านั้นนะอาวุ!");
         
-        watched.push(val);
-        localStorage.setItem('v2_watched', JSON.stringify(watched));
-        document.getElementById('epIn').value = "";
-        renderList();
-        document.getElementById(`row-${val}`).scrollIntoView({behavior:'smooth', block:'center'});
-        document.getElementById(`row-${val}`).style.background = "rgba(212, 175, 55, 0.2)";
-    }
-
-    function liveSearch() {
-        const v = parseInt(document.getElementById('sBox').value);
-        if(v >= 1 && v <= TOTAL_EP) {
-            document.getElementById(`row-${v}`).scrollIntoView({behavior:'smooth', block:'center'});
-            document.querySelectorAll('.item-row').forEach(r => r.style.border = "none");
-            document.getElementById(`row-${v}`).style.border = "1px solid var(--info)";
+        if(watched.includes(val)) {
+            alert("คดีนี้เคยบันทึกไปแล้วนะ!");
+        } else {
+            watched.push(val);
+            watched.sort((a,b) => a-b);
+            updateUI();
+            document.getElementById(`ep-${val}`).scrollIntoView({behavior:'smooth', block:'center'});
+            // เพิ่มเอฟเฟกต์สีทองชั่วคราว
+            document.getElementById(`ep-${val}`).style.background = "rgba(212, 175, 55, 0.2)";
+            setTimeout(() => { document.getElementById(`ep-${val}`).style.background = "transparent"; }, 2000);
+            document.getElementById('epInput').value = "";
         }
     }
 
-    function masterReset() {
-        if(karma < 80) return alert(langSet[currLang].errK);
-        if(confirm("DANGER! ALL DATA WILL BE WIPED. PROCEED?")) {
+    function doSearch() {
+        if(karma < 50) return;
+        const val = parseInt(document.getElementById('searchBox').value);
+        if(val >= 1 && val <= MAX_EP) {
+            const el = document.getElementById(`ep-${val}`);
+            if(el) {
+                el.scrollIntoView({behavior:'smooth', block:'center'});
+                document.querySelectorAll('.ep-item').forEach(i => i.style.border = "none");
+                el.style.border = "1px solid var(--info)";
+            }
+        }
+    }
+
+    function fullReset() {
+        if(confirm("คำเตือนอาวุ! ข้อมูลทั้งหมดจะหายไปกู้คืนไม่ได้นะ ยืนยันไหม?")) {
             localStorage.clear();
             location.reload();
         }
