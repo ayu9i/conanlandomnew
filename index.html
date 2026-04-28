@@ -3,79 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONAN HUB - FULL DATABASE V10.0</title>
+    <title>CONAN HUB - FULL DATABASE V12.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --bg: #0a0e14; --card: #151b23; --danger: #ff4d4d; --success: #4dff88; --info: #4da6ff; }
-        body { margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; padding: 10px; }
-        .container { width: 100%; max-width: 450px; }
+        :root { 
+            --gold: #d4af37; --bg: #0a0e14; --card: #151b23; 
+            --danger: #ff4d4d; --success: #4dff88; --info: #4da6ff; 
+            --dark-blue: #001529;
+        }
+
+        /* --- UI แยกคอม/มือถือ (Responsive) --- */
+        body { 
+            margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: white; 
+            display: flex; flex-direction: column; align-items: center; padding: 20px 10px;
+        }
+        @media (min-width: 768px) {
+            body { background: radial-gradient(circle at top, #1a1a2e 0%, #0a0e14 100%); }
+            .container { max-width: 800px !important; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .header-box { grid-column: span 2; }
+            .list-box { max-height: 700px !important; }
+        }
+
+        .container { width: 100%; max-width: 450px; transition: 0.3s; }
+        
+        /* --- ระบบ Auth & Overlay --- */
+        #authOverlay, #penaltyOverlay, #updateModal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); display: flex; align-items: center; 
+            justify-content: center; z-index: 10000; backdrop-filter: blur(10px);
+        }
+        .modal-card { 
+            background: var(--card); padding: 30px; border-radius: 25px; 
+            border: 2px solid var(--gold); text-align: center; width: 85%; max-width: 380px; 
+        }
+
+        /* --- ระบบความดี (Karma Bar) --- */
+        .karma-container { background: #222; height: 8px; border-radius: 4px; margin: 10px 0; overflow: hidden; }
+        #karmaBar { height: 100%; width: 100%; transition: 0.5s ease; background: var(--success); }
+        .karma-label { font-size: 0.75rem; display: flex; justify-content: space-between; }
+
+        /* --- UI หลัก --- */
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
-        .karma-bar { width: 100%; background: #333; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-        #karmaProgress { height: 100%; width: 100%; transition: 0.5s; }
-        .counter-card { background: var(--gold); color: black; border-radius: 15px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; }
-        .input-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(212, 175, 55, 0.3); }
-        input { width: 100%; background: #000; border: 1px solid #333; color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Kanit'; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-add { width: 100%; background: var(--gold); color: black; padding: 12px; border-radius: 10px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; margin-bottom: 5px; }
-        .list-box { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; border: 1px solid #222; }
-        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
-        #quizOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10001; padding: 20px; box-sizing: border-box; }
-        .quiz-card { background: var(--card); padding: 25px; border-radius: 20px; border: 2px solid var(--gold); text-align: center; width: 100%; max-width: 350px; }
+        .counter-card { 
+            background: var(--gold); color: black; border-radius: 15px; padding: 15px; 
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; 
+        }
+        .input-card { 
+            background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; 
+            border: 1px solid rgba(212, 175, 55, 0.3); position: relative;
+        }
+        input { 
+            width: 100%; background: #000; border: 1px solid #333; color: var(--gold); 
+            padding: 12px; border-radius: 10px; font-family: 'Kanit'; margin-bottom: 10px; box-sizing: border-box; 
+        }
+        .btn-add { 
+            width: 100%; background: var(--gold); color: black; padding: 12px; 
+            border-radius: 10px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; 
+        }
+        .list-box { 
+            background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; 
+            max-height: 450px; overflow-y: auto; border: 1px solid #222; 
+        }
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.85rem; }
+        .highlight { background: rgba(212, 175, 55, 0.1); }
+        
+        /* --- Notification --- */
+        .update-badge { background: var(--danger); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; margin-left: 5px; }
+        
+        /* --- Restricted Mode --- */
+        .restricted { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
     </style>
 </head>
 <body>
 
-<div id="quizOverlay">
-    <div class="quiz-card">
-        <h3 style="color: var(--info);">❓ กู้คะแนนความดี (+1 แต้ม)</h3>
-        <p id="questionText" style="margin: 20px 0;"></p>
-        <div id="quizOptions"></div>
-        <button onclick="closeQuiz()" style="background:none; border:none; color:#666; margin-top:15px; cursor:pointer;">ปิดหน้าต่างนี้</button>
+<div id="updateModal" style="display: none;">
+    <div class="modal-card">
+        <h3 style="color: var(--info);">📢 การแจ้งเตือนอัปเดต V12.0</h3>
+        <p style="font-size: 0.85rem; text-align: left;">
+            - เพิ่มระบบความดี (Karma)<br>
+            - เพิ่มระบบสมาชิก Member 1.0<br>
+            - ปรับปรุงการแสดงผลคอมพิวเตอร์<br>
+            - ระบบควิซกู้สถานะกรณีทำผิดกฎ
+        </p>
+        <button class="btn-add" onclick="closeUpdate()">รับทราบครับ/ค่ะ</button>
+    </div>
+</div>
+
+<div id="authOverlay">
+    <div class="modal-card" id="authBox">
+        <h2 style="color: var(--gold);">CONAN MEMBER</h2>
+        <div id="authInputs">
+            <input type="text" id="userIn" placeholder="ชื่อผู้ใช้งาน...">
+            <input type="password" id="passIn" placeholder="รหัสผ่าน...">
+            <button class="btn-add" id="mainAuthBtn" onclick="handleAuth()">เข้าสู่ระบบ 🔑</button>
+            <p style="font-size: 0.8rem; margin-top: 15px; cursor: pointer;" onclick="toggleAuthMode()" id="toggleText">ไม่มีบัญชี? สมัครสมาชิกที่นี่</p>
+        </div>
+    </div>
+</div>
+
+<div id="penaltyOverlay" style="display: none;">
+    <div class="modal-card">
+        <h2 style="color: var(--danger);">🚫 ถูกระงับการใช้งาน</h2>
+        <p id="penaltyMsg" style="font-size: 0.85rem;">แต้มความดีต่ำกว่า 20! ต้องตอบคำถามกู้สถานะ</p>
+        <div id="quizBox" style="background: #000; padding: 15px; border-radius: 10px; margin-top: 10px;">
+            <p id="qText" style="font-size: 0.9rem; margin-bottom: 15px;"></p>
+            <div id="qOptions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+        </div>
     </div>
 </div>
 
 <div class="container">
-    <div class="header">
-        <h1 style="margin:0; font-size: 1.5rem;">CONAN PERMANENT DB</h1>
-        <div style="margin-top: 10px; font-size: 0.85rem;">
-            <div style="display: flex; justify-content: space-between;">
-                <span>คะแนนความดี: <span id="karmaText">100</span></span>
+    <div class="header-box">
+        <div class="header">
+            <h1 style="margin:0; font-size: 1.5rem;">CONAN PERMANENT DB <span class="update-badge">NEW</span></h1>
+            <div class="karma-container"><div id="karmaBar"></div></div>
+            <div class="karma-label">
+                <span>ความดี: <b id="karmaScore">100</b></span>
                 <span id="karmaStatus" style="color: var(--success);">ดีมาก</span>
             </div>
-            <div class="karma-bar"><div id="karmaProgress" style="background: var(--success);"></div></div>
         </div>
-        <button class="btn-add" style="font-size: 0.7rem; padding: 5px; margin-top: 5px;" onclick="openQuiz()">ทำควิซปั๊มคะแนนความดี 🚀</button>
     </div>
 
-    <div class="counter-card">
-        <span>📋 ดูไปแล้วทั้งหมด</span>
-        <span id="watchCount">0 / 1150</span>
+    <div class="main-left">
+        <div class="counter-card">
+            <span>📋 บันทึกแล้ว</span>
+            <span id="watchCount">0 / 1150</span>
+        </div>
+
+        <div class="input-card" id="searchSection">
+            <label style="color: var(--info);">🔍 ค้นหาคดี (เฉพาะแต้มความดี > 50)</label>
+            <input type="number" id="searchInput" placeholder="ใส่เลขตอน..." oninput="searchEp()">
+        </div>
+
+        <div class="input-card">
+            <label>🔢 บันทึกคดีใหม่</label>
+            <input type="number" id="epInput" placeholder="เลขตอน..." oninput="liveCheck()">
+            <span id="liveStatus" style="font-size: 0.7rem; display: block; text-align: right;"></span>
+            <button class="btn-add" style="margin-top: 10px;" onclick="addEp()">บันทึกลงคลัง ✅</button>
+        </div>
     </div>
 
-    <div class="input-card">
-        <label>🔢 ใส่เลขตอนที่ดูจบแล้ว</label>
-        <input type="number" id="epInput" placeholder="ตัวอย่าง: 145" oninput="liveCheck()">
-        <span id="liveStatus" style="font-size: 0.8rem; display: block; text-align: right; margin-bottom: 5px;"></span>
-        <button class="btn-add" id="btnAdd" onclick="addEpisode()">บันทึกลงคลังถาวร ✅</button>
-    </div>
-
-    <div class="list-box">
-        <div id="dbList"></div>
+    <div class="main-right">
+        <div class="list-box">
+            <div style="color: var(--gold); margin-bottom: 10px; font-weight: 600;">📂 รายการคดีทั้งหมด</div>
+            <div id="dbList"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    // 🛡️ คำถาม 100 ข้อ [cite: 2026-03-19]
-    const conanQuiz = [
-        { q: "ชินอิจิถูกวางยาชื่ออะไร?", a: ["APTX4869", "ATX100", "RX78", "CONAN48"], c: 0 },
-        { q: "ใครเป็นคนวางยาชินอิจิ?", a: ["วอดก้า", "ยิน", "เบลม็อธ", "เบอร์บอน"], c: 1 },
-        { q: "รันเป็นแชมป์กีฬาอะไร?", a: ["ยูโด", "เคนโด้", "คาราเต้", "เทควันโด"], c: 2 },
-        { q: "ใครคือเบอร์บอน?", a: ["อามุโร่", "สึบารุ", "เซระ", "วากิตะ"], c: 0 },
-        { q: "ไฮบาระ เคยมีโค้ดเนมว่า?", a: ["เชอร์รี่", "ไวน์", "เตกีล่า", "คีร์"], c: 0 },
-        { q: "พ่อชินอิจิทำงานอะไร?", a: ["นักสืบ", "ตำรวจ", "นักเขียนนิยาย", "หมอ"], c: 2 },
-        { q: "ยิน ขับรถยี่ห้ออะไร?", a: ["Porsche 356A", "Ferrari", "BMW", "Audi"], c: 0 },
-        { q: "เบอร์ 2 ขององค์กรชุดดำคือใคร?", a: ["ยิน", "รำ (Rum)", "เบลม็อธ", "เตกีล่า"], c: 1 },
-        { q: "วันเกิดชินอิจิคือ?", a: ["4 พ.ค.", "14 ก.พ.", "1 เม.ย.", "10 ต.ค."], c: 0 },
-        { q: "จอมโจรคิดกลัวอะไรที่สุด?", a: ["ตำรวจ", "โคนัน", "ปลา", "ความมืด"], c: 2 }
+    // --- ตั้งค่าระบบ (ห้ามลบ) ---
+    let isLogin = false;
+    let authMode = "LOGIN"; 
+    let karma = parseInt(localStorage.getItem('ayu_karma')) || 100;
+    const defaultData = [94, 95, 96, 120, 121, 128, 142, 143, 144, 145, 146, 147, 196, 233, 272, 288, 289, 290, 291, 292, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
+    let watched = JSON.parse(localStorage.getItem('ayu_conan_db')) || [...defaultData];
+
+    // --- ระบบสมาชิก ---
+    function toggleAuthMode() {
+        authMode = (authMode === "LOGIN") ? "REGISTER" : "LOGIN";
+        document.getElementById('mainAuthBtn').innerText = (authMode === "LOGIN") ? "เข้าสู่ระบบ 🔑" : "สมัครสมาชิก ✨";
+        document.getElementById('toggleText').innerText = (authMode === "LOGIN") ? "ไม่มีบัญชี? สมัครสมาชิกที่นี่" : "มีบัญชีแล้ว? เข้าสู่ระบบที่นี่";
+    }
+
+    function handleAuth() {
+        const u = document.getElementById('userIn').value;
+        const p = document.getElementById('passIn').value;
+        if(!u || !p) return alert("กรุณากรอกข้อมูลให้ครบนะอาวุ!");
+
+        if(authMode === "REGISTER") {
+            localStorage.setItem(`user_${u}`, p);
+            alert("สมัครสมาชิกสำเร็จ! ลองเข้าสู่ระบบดูนะ");
+            toggleAuthMode();
+        } else {
+            if(localStorage.getItem(`user_${u}`) === p) {
+                isLogin = true;
+                document.getElementById('authOverlay').style.display = 'none';
+                checkUpdates();
+                init();
+            } else {
+                alert("ชื่อหรือรหัสผ่านไม่ถูกนะอาวุ ❌");
+                karma -= 5; updateKarmaUI();
+            }
+        }
+    }
+
+    // --- ระบบความดี & ควิซ ---
+    function updateKarmaUI() {
+        localStorage.setItem('ayu_karma', karma);
+        document.getElementById('karmaScore').innerText = karma;
+        const bar = document.getElementById('karmaBar');
+        const status = document.getElementById('karmaStatus');
+        bar.style.width = karma + "%";
+
+        if(karma >= 80) { status.innerText = "ดีมาก"; status.style.color = "var(--success)"; bar.style.background = "var(--success)"; }
+        else if(karma >= 60) { status.innerText = "ปกติ"; status.style.color = "var(--gold)"; bar.style.background = "var(--gold)"; }
+        else if(karma >= 50) { status.innerText = "โอเค"; status.style.color = "#ffa500"; }
+        else { status.innerText = "อันตราย!"; status.style.color = "var(--danger)"; bar.style.background = "var(--danger)"; }
+
+        // Penalty Logic
+        document.getElementById('searchSection').classList.toggle('restricted', karma < 50);
+        if(karma < 20) {
+            document.getElementById('penaltyOverlay').style.display = 'flex';
+            loadQuiz();
+        } else {
+            document.getElementById('penaltyOverlay').style.display = 'none';
+        }
+    }
+
+    const quizzes = [
+        { q: "ใครเป็นคนวางยาชินอิจิ?", o: ["ยิน", "วอดก้า", "รัน", "ดร.อากาสะ"], a: 0 },
+        { q: "ชินอิจิกลายเป็นโคนันเพราะยาชื่อ?", o: ["APTX4869", "ATX100", "RX78", "CONAN48"], a: 0 },
+        { q: "รันเป็นแชมป์กีฬาอะไร?", o: ["ยูโด", "คาราเต้", "เทควันโด", "เคนโด้"], a: 1 }
     { q: "ชินอิจิถูกวางยาชื่ออะไร?", a: ["APTX4869", "ATX100", "RX78", "CONAN48"], c: 0 },
     { q: "ใครเป็นคนวางยาชินอิจิ?", a: ["วอดก้า", "ยิน", "เบลม็อธ", "เบอร์บอน"], c: 1 },
     { q: "ชื่อโคนัน มาจากนักเขียนชื่อดังท่านใด?", a: ["เอโดงาวะ รัมโป", "อาเธอร์ โคนัน ดอยล์", "ถูกทั้ง ก และ ข", "อกาธา คริสตี้"], c: 2 },
@@ -186,79 +325,84 @@
     { q: "คติประจำใจของโคนันคือ?", a: ["ความจริงมีเพียงหนึ่งเดียวเท่านั้น!", "ปริศนาถูกไขกระจ่างแล้ว", "ไม่มีคดีไหนที่ไขไม่ได้", "ฉันคือนักสืบ"], c: 0 }
 ];
 
-        // (เค้าย่อไว้เพื่อประหยัดพื้นที่ แต่อาวุสามารถก๊อบจากชุดที่เค้าให้ 100 ข้อมาใส่เพิ่มตรงนี้ได้เลย!) [cite: 2026-03-19]
     ];
-    for(let i=11; i<=100; i++) conanQuiz.push({ q: `คำถามที่ ${i}: 1+1 ได้เท่าไหร่? (ข้อสอบวัดความดี)`, a: ["1", "2", "3", "4"], c: 1 });
 
-    // 📊 ข้อมูลตอนที่อาวุจดไว้ (89 ตอน)
-    let watched = JSON.parse(localStorage.getItem('ayuConanDB')) || [
-        25, 94, 95, 96, 120, 121, 128, 140, 141, 142, 143, 144, 145, 146, 147, 196,
-        223, 233, 272, 288, 289, 290, 291, 292, 301, 302, 303, 311, 312, 334, 
-        371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388,
-        402, 403, 564, 565, 566, 614, 615, 616, 617, 637, 638, 642, 675, 676, 677, 
-        680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777,
-        807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824,
-        945, 982, 983, 984, 993, 994, 995, 996, 1147
-    ];
-    let karma = parseInt(localStorage.getItem('ayuKarma')) || 100;
-    let currentQuiz = 0;
-
-    function updateUI() {
-        document.getElementById('watchCount').innerText = `${watched.length} / 1150`;
-        document.getElementById('karmaText').innerText = karma;
-        const prog = document.getElementById('karmaProgress');
-        prog.style.width = karma + '%';
-        
-        const list = document.getElementById('dbList');
-        list.innerHTML = watched.sort((a,b)=>a-b).map(ep => 
-            `<div class="item"><span>คดีที่ ${ep}</span><span style="color:var(--danger)">[ดูแล้ว]</span></div>`
+    function loadQuiz() {
+        const quiz = quizzes[Math.floor(Math.random()*quizzes.length)];
+        document.getElementById('qText').innerText = quiz.q;
+        document.getElementById('qOptions').innerHTML = quiz.o.map((txt, i) => 
+            `<button class="btn-add" style="font-size:0.7rem;" onclick="checkQuiz(${i}, ${quiz.a})">${txt}</button>`
         ).join('');
-        
-        localStorage.setItem('ayuConanDB', JSON.stringify(watched));
-        localStorage.setItem('ayuKarma', karma);
+    }
+
+    function checkQuiz(idx, ans) {
+        if(idx === ans) {
+            karma += 30; alert("ถูกต้อง! แต้มความดีพุ่ง 🚀");
+        } else {
+            alert("ผิด! แฟนพันธุ์แท้โคนันปลอมปะเนี่ย");
+        }
+        updateKarmaUI();
+    }
+
+    // --- ระบบจัดการข้อมูล ---
+    function init() {
+        renderList();
+        updateKarmaUI();
+        checkUpdates();
+    }
+
+    function renderList() {
+        document.getElementById('watchCount').innerText = `${watched.length} / 1150`;
+        const list = document.getElementById('dbList');
+        let html = "";
+        for(let i=1; i<=1150; i++) {
+            const done = watched.includes(i);
+            html += `<div class="item" id="ep-${i}">
+                <span>คดีที่ ${i}</span>
+                <span style="color:${done?'var(--danger)':'var(--success)'}">${done?'[ดูแล้ว]':'[ยัง]'}</span>
+            </div>`;
+        }
+        list.innerHTML = html;
+        localStorage.setItem('ayu_conan_db', JSON.stringify(watched));
     }
 
     function liveCheck() {
-        const val = parseInt(document.getElementById('epInput').value);
-        const status = document.getElementById('liveStatus');
-        if(!val) { status.innerText = ""; return; }
-        status.innerText = watched.includes(val) ? "🚩 ซ้ำแล้วนะ" : "✨ ยังไม่เคยดู";
-        status.style.color = watched.includes(val) ? "var(--danger)" : "var(--success)";
+        const v = parseInt(document.getElementById('epInput').value);
+        const s = document.getElementById('liveStatus');
+        if(!v) return s.innerText = "";
+        s.innerText = watched.includes(v) ? "🚩 ดูแล้วนะอาวุ" : "✨ ยังไม่เคยดู";
+        s.style.color = watched.includes(v) ? "var(--danger)" : "var(--success)";
     }
 
-    function addEpisode() {
-        const val = parseInt(document.getElementById('epInput').value);
-        if(!val || watched.includes(val)) return;
-        watched.push(val);
-        updateUI();
+    function addEp() {
+        const v = parseInt(document.getElementById('epInput').value);
+        if(!v || v < 1 || v > 1150) return alert("ใส่เลข 1-1150 นะอาวุ");
+        if(watched.includes(v)) return alert("ซ้ำแล้วนะ!");
+        
+        watched.push(v);
+        watched.sort((a,b) => a-b);
+        renderList();
         document.getElementById('epInput').value = "";
+        document.getElementById(`ep-${v}`).scrollIntoView({behavior:'smooth', block:'center'});
+        document.getElementById(`ep-${v}`).classList.add('highlight');
     }
 
-    function openQuiz() {
-        currentQuiz = Math.floor(Math.random() * conanQuiz.length);
-        const q = conanQuiz[currentQuiz];
-        document.getElementById('questionText').innerText = q.q;
-        const optDiv = document.getElementById('quizOptions');
-        optDiv.innerHTML = q.a.map((opt, i) => 
-            `<button class="btn-add" style="background:#333; color:white;" onclick="checkAns(${i})">${opt}</button>`
-        ).join('');
-        document.getElementById('quizOverlay').style.display = 'flex';
+    function searchEp() {
+        const v = parseInt(document.getElementById('searchInput').value);
+        const el = document.getElementById(`ep-${v}`);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
     }
 
-    function checkAns(idx) {
-        if(idx === conanQuiz[currentQuiz].c) {
-            karma = Math.min(100, karma + 1);
-            alert("ถูกต้อง! +1 คะแนนความดี [cite: 2026-03-19]");
-        } else {
-            alert("ผิด! ไม่ได้รับคะแนน [cite: 2026-03-19]");
+    function checkUpdates() {
+        if(localStorage.getItem('last_ver') !== '12.0') {
+            document.getElementById('updateModal').style.display = 'flex';
         }
-        updateUI();
-        closeQuiz();
     }
 
-    function closeQuiz() { document.getElementById('quizOverlay').style.display = 'none'; }
-
-    updateUI();
+    function closeUpdate() {
+        localStorage.setItem('last_ver', '12.0');
+        document.getElementById('updateModal').style.display = 'none';
+    }
 </script>
 </body>
 </html>
