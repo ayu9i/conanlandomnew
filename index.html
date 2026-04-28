@@ -3,278 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONAN HUB - EXTREME KARMA V12.5</title>
+    <title>CONAN SUPREME DB - V2026.4 [ULTRA]</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --gold: #d4af37; --bg: #0a0e14; --card: #151b23; 
+            --gold: #d4af37; --bg: #05070a; --card: #111821; 
             --danger: #ff4d4d; --success: #4dff88; --info: #4da6ff; 
+            --white: #ffffff; --gray: #888;
         }
 
+        /* --- Global Style --- */
         body { 
-            margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: white; 
-            display: flex; flex-direction: column; align-items: center; padding: 20px 10px;
+            margin: 0; font-family: 'Kanit', sans-serif; background: var(--bg); color: var(--white); 
+            display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1a1f2b 0%, #05070a 100%);
+            min-height: 100vh; padding: 20px 10px;
         }
 
-        /* --- UI Responsive (PC vs Mobile) --- */
-        @media (min-width: 768px) {
-            .container { max-width: 850px !important; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-            .header-box { grid-column: span 2; }
-            .list-box { max-height: 750px !important; }
-            .counter-card { height: 80px; }
-        }
-
-        .container { width: 100%; max-width: 450px; transition: 0.3s; }
+        /* --- UI Responsive (แยกคอม/มือถือชัดเจน) --- */
+        .container { width: 100%; max-width: 480px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
-        /* --- Overlays --- */
-        #authOverlay, #penaltyOverlay, #updateModal { 
+        @media (min-width: 992px) {
+            .container { max-width: 1100px; display: grid; grid-template-columns: 350px 1fr; gap: 30px; }
+            .header-section { grid-column: span 2; }
+            .sidebar { position: sticky; top: 20px; height: fit-content; }
+            .main-content { background: rgba(255,255,255,0.02); border-radius: 30px; padding: 20px; }
+            .list-box { max-height: 80vh !important; }
+        }
+
+        /* --- Animations --- */
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); } }
+        .shake { animation: shake 0.2s ease-in-out 0s 2; }
+
+        /* --- Custom Overlays --- */
+        .overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); display: flex; align-items: center; 
-            justify-content: center; z-index: 10000; backdrop-filter: blur(15px);
+            background: rgba(0,0,0,0.92); display: flex; align-items: center; 
+            justify-content: center; z-index: 9999; backdrop-filter: blur(15px);
         }
-        .modal-card { 
-            background: var(--card); padding: 30px; border-radius: 25px; 
-            border: 2px solid var(--gold); text-align: center; width: 85%; max-width: 380px; 
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-        }
-
-        /* --- Karma System --- */
-        .karma-container { background: #222; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; border: 1px solid #333; }
-        #karmaBar { height: 100%; width: 100%; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1); background: var(--success); }
-        .karma-label { font-size: 0.8rem; display: flex; justify-content: space-between; font-weight: 600; }
-
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--gold); padding-bottom: 15px; }
-        .counter-card { 
-            background: var(--gold); color: black; border-radius: 20px; padding: 15px; 
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 600;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        .modal { 
+            background: var(--card); padding: 40px; border-radius: 30px; 
+            border: 2px solid var(--gold); text-align: center; width: 90%; max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;
         }
 
-        .input-card { 
-            background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; 
-            border: 1px solid rgba(212, 175, 55, 0.2); transition: 0.3s;
+        /* --- Karma Progress --- */
+        .karma-wrapper { margin: 20px 0; }
+        .karma-bg { background: #222; height: 12px; border-radius: 6px; overflow: hidden; border: 1px solid #333; }
+        #karmaFill { height: 100%; width: 100%; transition: width 1s ease-in-out, background 0.3s; background: var(--success); }
+        .karma-info { display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: 8px; font-weight: 600; }
+
+        /* --- Header & Cards --- */
+        .header-section { text-align: center; margin-bottom: 30px; }
+        .title-glitch { font-size: 2rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+        
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { 
+            background: var(--gold); color: #000; padding: 15px; border-radius: 20px; 
+            text-align: center; font-weight: 600; display: flex; flex-direction: column;
         }
+
+        .action-card { 
+            background: var(--card); border-radius: 25px; padding: 25px; margin-bottom: 20px; 
+            border: 1px solid rgba(212, 175, 55, 0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        label { display: block; font-size: 0.8rem; margin-bottom: 10px; color: var(--gray); text-transform: uppercase; }
+        
         input { 
             width: 100%; background: #000; border: 1px solid #333; color: var(--gold); 
-            padding: 15px; border-radius: 12px; font-family: 'Kanit'; margin-bottom: 10px; box-sizing: border-box; outline: none;
+            padding: 18px; border-radius: 15px; font-family: 'Kanit'; font-size: 1.1rem;
+            margin-bottom: 15px; box-sizing: border-box; outline: none; transition: 0.3s;
         }
-        input:focus { border-color: var(--gold); }
-        
-        .btn-add { 
-            width: 100%; background: var(--gold); color: black; padding: 14px; 
-            border-radius: 12px; border: none; font-family: 'Kanit'; font-weight: 600; cursor: pointer; transition: 0.2s;
-        }
-        .btn-add:active { transform: scale(0.95); }
+        input:focus { border-color: var(--gold); background: #050505; }
 
-        .list-box { 
-            background: rgba(0,0,0,0.5); border-radius: 20px; padding: 20px; 
-            max-height: 400px; overflow-y: auto; border: 1px solid #222; 
+        .btn-prime { 
+            width: 100%; background: var(--gold); color: #000; padding: 18px; 
+            border-radius: 15px; border: none; font-family: 'Kanit'; font-weight: 600; 
+            cursor: pointer; transition: 0.3s; font-size: 1rem;
         }
-        .item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #222; font-size: 0.9rem; }
-        
-        /* Restricted Mode */
-        .restricted { opacity: 0.2; pointer-events: none; filter: blur(2px); }
-        .update-tag { background: var(--danger); font-size: 10px; padding: 2px 8px; border-radius: 5px; margin-left: 5px; }
+        .btn-prime:hover { filter: brightness(1.2); transform: translateY(-2px); }
+        .btn-prime:active { transform: translateY(0); }
+
+        /* --- List Section --- */
+        .list-container { background: rgba(0,0,0,0.4); border-radius: 25px; border: 1px solid #222; padding: 15px; }
+        .list-header { 
+            padding: 10px 5px; color: var(--gold); font-weight: 600; 
+            border-bottom: 1px solid #333; margin-bottom: 10px; display: flex; justify-content: space-between;
+        }
+        .list-box { max-height: 500px; overflow-y: auto; padding-right: 5px; }
+        .list-box::-webkit-scrollbar { width: 4px; }
+        .list-box::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        .item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; border-bottom: 1px dotted #222; font-size: 0.95rem; transition: 0.2s;
+        }
+        .item:hover { background: rgba(212, 175, 55, 0.05); }
+        .tag { padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; }
+        .tag-done { background: rgba(255, 77, 77, 0.15); color: var(--danger); }
+        .tag-yet { background: rgba(77, 255, 136, 0.15); color: var(--success); }
+
+        /* --- Special UI --- */
+        .restricted { opacity: 0.15; pointer-events: none; filter: grayscale(1) blur(3px); }
+        .update-banner { 
+            background: linear-gradient(90deg, var(--gold), #f39c12); color: #000;
+            padding: 5px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: 600;
+            display: inline-block; margin-bottom: 10px;
+        }
+        .quiz-option { 
+            background: #1a222d; color: white; border: 1px solid #333; padding: 15px;
+            border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; text-align: left;
+        }
+        .quiz-option:hover { border-color: var(--gold); background: #252e3a; }
     </style>
 </head>
 <body>
 
-<div id="updateModal" style="display: none;">
-    <div class="modal-card">
-        <h3 style="color: var(--gold);">🚀 UPDATE V12.5</h3>
-        <p style="font-size: 0.85rem; text-align: left; line-height: 1.6;">
-            - <b>Extreme Penalty:</b> ทำผิดกฎหักแต้มโหดขึ้น 2 เท่า!<br>
-            - <b>PC Support:</b> รองรับหน้าจอคอมพิวเตอร์แบบ Side-by-Side<br>
-            - <b>Auto Karma:</b> ระบบหักแต้มอัตโนมัติเมื่อใส่ข้อมูลผิด
-        </p>
-        <button class="btn-add" onclick="closeUpdate()">รับทราบครับผม!</button>
+<div id="authOverlay" class="overlay">
+    <div class="modal">
+        <div class="update-banner">MEMBER SYSTEM V1.0</div>
+        <h2 style="color: var(--gold); margin: 10px 0;">CONAN ACCESS</h2>
+        <div id="authForm">
+            <input type="text" id="uIn" placeholder="Username...">
+            <input type="password" id="pIn" placeholder="Password...">
+            <button class="btn-prime" onclick="processAuth()">GO TO DATABASE 🚀</button>
+            <p id="authToggle" style="font-size: 0.8rem; margin-top: 20px; cursor: pointer; color: var(--gray);" onclick="swapAuth()">ยังไม่มีบัญชี? สมัครที่นี่นะอาวุ</p>
+        </div>
     </div>
 </div>
 
-<div id="authOverlay">
-    <div class="modal-card">
-        <h2 style="color: var(--gold);">CONAN MEMBER</h2>
-        <input type="text" id="userIn" placeholder="ชื่อผู้ใช้งาน...">
-        <input type="password" id="passIn" placeholder="รหัสผ่าน...">
-        <button class="btn-add" id="mainAuthBtn" onclick="handleAuth()">เข้าสู่ระบบ 🔑</button>
-        <p style="font-size: 0.8rem; margin-top: 15px; cursor: pointer;" onclick="toggleAuthMode()" id="toggleText">สมัครสมาชิกใหม่</p>
+<div id="newsOverlay" class="overlay" style="display: none;">
+    <div class="modal">
+        <h3 style="color: var(--info);">📢 UPDATE LOG V2026.4</h3>
+        <ul style="text-align: left; font-size: 0.85rem; line-height: 1.8; color: #ccc;">
+            <li>เพิ่มระบบ <b>Extreme Karma</b> หักแต้มจริงจัง</li>
+            <li>เพิ่มระบบ <b>Auto-Sync</b> บันทึกข้อมูลแบบ Real-time</li>
+            <li>ปรับปรุง <b>Desktop Layout</b> เพื่อการใช้งานบนคอม</li>
+            <li>ระบบความปลอดภัยขั้นสูง (Member Only)</li>
+        </ul>
+        <button class="btn-prime" onclick="closeNews()">รับทราบครับ/ค่ะ</button>
     </div>
 </div>
 
-<div id="penaltyOverlay" style="display: none;">
-    <div class="modal-card">
-        <h2 style="color: var(--danger);">🛑 คุกความดี!</h2>
-        <p style="font-size: 0.8rem; margin-bottom: 15px;">แต้มต่ำกว่า 20! ตอบคำถามเพื่อปลดล็อค</p>
-        <div id="quizBox">
-            <p id="qText" style="margin-bottom: 15px; font-weight: 600;"></p>
-            <div id="qOptions" style="display: grid; grid-template-columns: 1fr; gap: 8px;"></div>
+<div id="jailOverlay" class="overlay" style="display: none;">
+    <div class="modal">
+        <h2 style="color: var(--danger); margin: 0;">🛑 KARMA PRISON</h2>
+        <p style="font-size: 0.8rem; color: var(--gray); margin: 10px 0 25px;">แต้มความดีต่ำเกินไป! ต้องตอบคำถามโคนันเพื่อออกไป</p>
+        <div id="quizContainer">
+            <p id="quizQuestion" style="font-weight: 600; margin-bottom: 20px;"></p>
+            <div id="quizOptions"></div>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <div class="header-box">
-        <div class="header">
-            <h1 style="margin:0;">CONAN DB <span class="update-tag">V12.5</span></h1>
-            <div class="karma-container"><div id="karmaBar"></div></div>
-            <div class="karma-label">
-                <span>Karma: <b id="karmaScore">100</b></span>
-                <span id="karmaStatus">Loading...</span>
+    <div class="header-section">
+        <h1 class="title-glitch">Conan Supreme DB</h1>
+        <div class="karma-wrapper">
+            <div class="karma-info">
+                <span>ความดีสะสม (Karma)</span>
+                <span id="karmaTxt">100 / 100</span>
+            </div>
+            <div class="karma-bg"><div id="karmaFill"></div></div>
+            <div style="font-size: 0.7rem; text-align: right; margin-top: 5px; color: var(--gray);" id="statusLabel">RANK: จอมโจรคิด</div>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="stat-grid">
+            <div class="stat-card">
+                <span style="font-size: 0.7rem; opacity: 0.8;">ดูจบแล้ว</span>
+                <span id="countDone" style="font-size: 1.5rem;">0</span>
+            </div>
+            <div class="stat-card" style="background: #333; color: var(--gold);">
+                <span style="font-size: 0.7rem; opacity: 0.8;">เปอร์เซ็นต์</span>
+                <span id="countPerc" style="font-size: 1.5rem;">0%</span>
             </div>
         </div>
-    </div>
 
-    <div class="main-left">
-        <div class="counter-card">
-            <span>📊 สถิติการดู</span>
-            <span id="watchCount" style="font-size: 1.2rem;">0 / 1150</span>
+        <div class="action-card" id="searchPanel">
+            <label>🔍 ค้นหาคดีด่วน (Locked < 50)</label>
+            <input type="number" id="searchIn" placeholder="ใส่เลขตอน..." oninput="handleSearch()">
         </div>
 
-        <div class="input-card" id="searchBox">
-            <label style="color: var(--info);">🔍 ค้นหา (ล็อคถ้าแต้ม < 50)</label>
-            <input type="number" id="searchInput" placeholder="ใส่เลขคดี..." oninput="searchEp()">
+        <div class="action-card">
+            <label>➕ บันทึกความจำใหม่</label>
+            <input type="number" id="epIn" placeholder="เลขตอนที่ดูจบ..." oninput="checkLiveStatus()">
+            <div id="liveFeedback" style="font-size: 0.75rem; min-height: 20px; margin-bottom: 10px; text-align: right;"></div>
+            <button class="btn-prime" onclick="submitEntry()">บันทึกข้อมูลถาวร ✅</button>
         </div>
+    </aside>
 
-        <div class="input-card">
-            <label>🔢 บันทึกคดีจบการศึกษา</label>
-            <input type="number" id="epInput" placeholder="ตัวอย่าง 147" oninput="liveCheck()">
-            <span id="liveStatus" style="font-size: 0.75rem; display: block; text-align: right; margin-bottom: 10px;"></span>
-            <button class="btn-add" onclick="addEp()">บันทึกถาวร ✅</button>
+    <main class="main-content">
+        <div class="list-container">
+            <div class="list-header">
+                <span>📂 บันทึกคดีทั้งหมด (1 - 1150)</span>
+                <span id="totalEp" style="color: var(--white); opacity: 0.5;">1150 ตอน</span>
+            </div>
+            <div class="list-box" id="mainList">
+                </div>
         </div>
-    </div>
-
-    <div class="main-right">
-        <div class="list-box" id="listScroll">
-            <div id="dbList"></div>
-        </div>
-    </div>
+        <button onclick="resetAllData()" style="background: none; border: none; color: #333; font-size: 0.7rem; width: 100%; margin-top: 20px; cursor: pointer;">ล้างข้อมูลและเริ่มต้นใหม่ (Reset)</button>
+    </main>
 </div>
 
 <script>
-    let authMode = "LOGIN";
-    let karma = parseInt(localStorage.getItem('ayu_karma')) || 100;
-    const defaultData = [94, 95, 96, 120, 121, 128, 142, 143, 144, 145, 146, 147, 196, 233, 272, 288, 289, 290, 291, 292, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
-    let watched = JSON.parse(localStorage.getItem('ayu_conan_db')) || [...defaultData];
+    // --- Configuration & Global Variables ---
+    let currentAuthMode = "LOGIN";
+    let karmaPoints = parseInt(localStorage.getItem('ayu_karma_supreme')) || 100;
+    const conanMax = 1150;
+    const defaultWatched = [94, 95, 96, 120, 121, 128, 142, 143, 144, 145, 146, 147, 196, 233, 272, 288, 289, 290, 291, 292, 301, 302, 303, 311, 312, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 386, 387, 388, 564, 565, 566, 614, 615, 616, 617, 637, 638, 675, 676, 677, 680, 681, 682, 733, 734, 735, 750, 772, 773, 774, 775, 776, 777, 807, 808, 809, 816, 817, 818, 819, 820, 821, 822, 823, 824, 945, 982, 983, 984, 993, 994, 995, 996, 1147];
+    let watchedList = JSON.parse(localStorage.getItem('ayu_conan_supreme_db')) || [...defaultWatched];
 
-    function toggleAuthMode() {
-        authMode = (authMode === "LOGIN") ? "REGISTER" : "LOGIN";
-        document.getElementById('mainAuthBtn').innerText = (authMode === "LOGIN") ? "เข้าสู่ระบบ 🔑" : "สมัครสมาชิก ✨";
-        document.getElementById('toggleText').innerText = (authMode === "LOGIN") ? "สมัครสมาชิกใหม่" : "มีบัญชีแล้ว? ล็อกอิน";
+    // --- Authentication Logic ---
+    function swapAuth() {
+        currentAuthMode = (currentAuthMode === "LOGIN") ? "REGISTER" : "LOGIN";
+        document.querySelector('#authOverlay h2').innerText = (currentAuthMode === "LOGIN") ? "CONAN ACCESS" : "JOIN THE TEAM";
+        document.getElementById('authToggle').innerText = (currentAuthMode === "LOGIN") ? "ยังไม่มีบัญชี? สมัครที่นี่นะอาวุ" : "มีบัญชีแล้ว? เข้าสู่ระบบ";
     }
 
-    function handleAuth() {
-        const u = document.getElementById('userIn').value;
-        const p = document.getElementById('passIn').value;
+    function processAuth() {
+        const u = document.getElementById('uIn').value;
+        const p = document.getElementById('pIn').value;
         if(!u || !p) return;
 
-        if(authMode === "REGISTER") {
-            localStorage.setItem(`user_${u}`, p);
-            alert("สมัครเรียบร้อย! ล็อกอินเลย"); toggleAuthMode();
+        if(currentAuthMode === "REGISTER") {
+            localStorage.setItem(`member_${u}`, p);
+            alert("สมัครสมาชิกสำเร็จ! ลองล็อกอินดูนะอาวุ");
+            swapAuth();
         } else {
-            if(localStorage.getItem(`user_${u}`) === p) {
+            if(localStorage.getItem(`member_${u}`) === p) {
                 document.getElementById('authOverlay').style.display = 'none';
-                init();
+                initApp();
             } else {
-                karma -= 5; updateKarmaUI();
-                alert("รหัสผิด! ความดีลดลงนะจ๊ะ");
+                applyKarmaLoss(10, "รหัสผ่านไม่ถูก! ความดีลดลงนะ");
+                document.getElementById('authForm').classList.add('shake');
+                setTimeout(() => document.getElementById('authForm').classList.remove('shake'), 300);
             }
         }
     }
 
-    function updateKarmaUI() {
-        localStorage.setItem('ayu_karma', karma);
-        document.getElementById('karmaScore').innerText = karma;
-        const bar = document.getElementById('karmaBar');
-        const status = document.getElementById('karmaStatus');
-        bar.style.width = karma + "%";
-
-        if(karma >= 80) { status.innerText = "ดีเยี่ยม ✨"; status.style.color = "var(--success)"; }
-        else if(karma >= 50) { status.innerText = "ปกติ 👍"; status.style.color = "var(--gold)"; }
-        else { status.innerText = "อันตราย ⚠️"; status.style.color = "var(--danger)"; }
-
-        document.getElementById('searchBox').classList.toggle('restricted', karma < 50);
-        if(karma < 20) {
-            document.getElementById('penaltyOverlay').style.display = 'flex';
-            loadQuiz();
-        } else {
-            document.getElementById('penaltyOverlay').style.display = 'none';
-        }
-    }
-
-    function addEp() {
-        const v = parseInt(document.getElementById('epInput').value);
-        
-        // --- ระบบหักแต้มโหด ---
-        if(!v || v < 1 || v > 1150) {
-            karma -= 20; updateKarmaUI();
-            return alert("หัก 20 แต้ม! ใส่เลขคดีมั่วซั่ว (1-1150 เท่านั้น)");
-        }
-        if(watched.includes(v)) {
-            karma -= 10; updateKarmaUI();
-            return alert("หัก 10 แต้ม! บันทึกซ้ำทำไมอาวุ?");
-        }
-
-        watched.push(v);
-        watched.sort((a,b) => a-b);
+    // --- Core Logic ---
+    function initApp() {
         renderList();
-        document.getElementById('epInput').value = "";
-        const target = document.getElementById(`ep-${v}`);
-        target.scrollIntoView({behavior:'smooth', block:'center'});
-        target.style.background = "rgba(77, 255, 136, 0.2)";
+        updateUI();
+        if(localStorage.getItem('ver_2026') !== '4.0') {
+            document.getElementById('newsOverlay').style.display = 'flex';
+        }
     }
 
-    function loadQuiz() {
-        const qs = [
-            {q:"ชินอิจิถูกวางยาชื่อ?", a:["APTX4869","ATX44","RX78"], c:0},
-            {q:"ยินขับรถยี่ห้อ?", a:["Porsche","BMW","Audi"], c:0},
-            {q:"ใครคือจอมโจรคิด?", a:["คุโรบะ ไคโตะ","ฮัตโตริ","ชินอิจิ"], c:0}
-        ];
-        const q = qs[Math.floor(Math.random()*qs.length)];
-        document.getElementById('qText').innerText = q.q;
-        document.getElementById('qOptions').innerHTML = q.a.map((t,i) => 
-            `<button class="btn-add" onclick="checkQuiz(${i},${q.c})">${t}</button>`
-        ).join('');
+    function closeNews() {
+        localStorage.setItem('ver_2026', '4.0');
+        document.getElementById('newsOverlay').style.display = 'none';
     }
 
-    function checkQuiz(i,c) {
-        if(i===c) { karma += 35; alert("รอดตัวไป! แต้มคืนให้แล้ว"); }
-        else { alert("ผิด! ติดคุกต่อไปนะ"); }
-        updateKarmaUI();
-    }
+    function updateUI() {
+        localStorage.setItem('ayu_karma_supreme', karmaPoints);
+        document.getElementById('karmaTxt').innerText = `${karmaPoints} / 100`;
+        const fill = document.getElementById('karmaFill');
+        fill.style.width = `${Math.max(0, karmaPoints)}%`;
 
-    function init() {
-        renderList(); updateKarmaUI();
-        if(localStorage.getItem('ver') !== '12.5') document.getElementById('updateModal').style.display = 'flex';
-    }
+        // สีของหลอด Karma
+        if(karmaPoints >= 70) fill.style.background = "var(--success)";
+        else if(karmaPoints >= 40) fill.style.background = "var(--gold)";
+        else fill.style.background = "var(--danger)";
 
-    function closeUpdate() {
-        localStorage.setItem('ver', '12.5');
-        document.getElementById('updateModal').style.display = 'none';
+        // Rank Label
+        const rank = document.getElementById('statusLabel');
+        if(karmaPoints >= 90) rank.innerText = "RANK: ยอดนักสืบ";
+        else if(karmaPoints >= 50) rank.innerText = "RANK: ตำรวจนครบาล";
+        else rank.innerText = "RANK: ผู้ต้องสงสัย";
+
+        // Restricted Mode
+        document.getElementById('searchPanel').classList.toggle('restricted', karmaPoints < 50);
+
+        // Jail Check
+        if(karmaPoints < 20) {
+            document.getElementById('jailOverlay').style.display = 'flex';
+            startQuiz();
+        } else {
+            document.getElementById('jailOverlay').style.display = 'none';
+        }
+
+        // Stats
+        document.getElementById('countDone').innerText = watchedList.length;
+        document.getElementById('countPerc').innerText = ((watchedList.length/conanMax)*100).toFixed(1) + "%";
     }
 
     function renderList() {
-        document.getElementById('watchCount').innerText = `${watched.length} / 1150`;
-        let h = "";
-        for(let i=1; i<=1150; i++){
-            const d = watched.includes(i);
-            h += `<div class="item" id="ep-${i}"><span>คดีที่ ${i}</span><span style="color:${d?'var(--danger)':'var(--success)'}">${d?'ดูแล้ว':'ยัง'}</span></div>`;
+        const box = document.getElementById('mainList');
+        let html = "";
+        for(let i=1; i<=conanMax; i++) {
+            const isDone = watchedList.includes(i);
+            html += `
+            <div class="item" id="ep-${i}">
+                <div style="display:flex; align-items:center;">
+                    <span style="color:var(--gray); font-size: 0.7rem; margin-right: 10px;">#${i.toString().padStart(4,'0')}</span>
+                    <span style="font-weight: 600;">คดีที่ ${i}</span>
+                </div>
+                <span class="tag ${isDone ? 'tag-done' : 'tag-yet'}">${isDone ? 'ดูแล้ว' : 'ยังไม่ได้ดู'}</span>
+            </div>`;
         }
-        document.getElementById('dbList').innerHTML = h;
-        localStorage.setItem('ayu_conan_db', JSON.stringify(watched));
+        box.innerHTML = html;
+        localStorage.setItem('ayu_conan_supreme_db', JSON.stringify(watchedList));
     }
 
-    function searchEp() {
-        const v = document.getElementById('searchInput').value;
-        const el = document.getElementById(`ep-${v}`);
-        if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+    function applyKarmaLoss(amt, msg) {
+        karmaPoints -= amt;
+        alert(`💢 ${msg} (-${amt} Karma)`);
+        updateUI();
     }
 
-    function liveCheck() {
-        const v = parseInt(document.getElementById('epInput').value);
-        const s = document.getElementById('liveStatus');
-        if(!v) return s.innerText = "";
-        s.innerText = watched.includes(v) ? "🚩 ดูแล้ว (ระวังโดนหักแต้ม)" : "✨ ยังไม่เคยบันทึก";
-        s.style.color = watched.includes(v) ? "var(--danger)" : "var(--success)";
+    function submitEntry() {
+        const input = document.getElementById('epIn');
+        const val = parseInt(input.value);
+
+        if(!val || val < 1 || val > conanMax) {
+            applyKarmaLoss(20, "ใส่เลขมั่วเหรออาวุ! ต้อง 1-1150 เท่านั้น");
+            return;
+        }
+
+        if(watchedList.includes(val)) {
+            applyKarmaLoss(10, "บันทึกซ้ำทำไม! ลืมเหรอว่าดูแล้ว");
+            return;
+        }
+
+        watchedList.push(val);
+        watchedList.sort((a,b) => a-b);
+        renderList();
+        updateUI();
+        input.value = "";
+        document.getElementById(`ep-${val}`).scrollIntoView({behavior:'smooth', block:'center'});
+        document.getElementById(`ep-${val}`).style.background = "rgba(212, 175, 55, 0.2)";
+    }
+
+    function checkLiveStatus() {
+        const val = parseInt(document.getElementById('epIn').value);
+        const fb = document.getElementById('liveFeedback');
+        if(!val) { fb.innerText = ""; return; }
+        
+        if(watchedList.includes(val)) {
+            fb.innerText = "🚩 ตอนนี้บันทึกไปแล้ว!";
+            fb.style.color = "var(--danger)";
+        } else {
+            fb.innerText = "✨ ยังไม่เคยดู ลุยเลย!";
+            fb.style.color = "var(--success)";
+        }
+    }
+
+    function handleSearch() {
+        const val = parseInt(document.getElementById('searchIn').value);
+        if(val >= 1 && val <= conanMax) {
+            const el = document.getElementById(`ep-${val}`);
+            el.scrollIntoView({behavior:'smooth', block:'center'});
+            document.querySelectorAll('.item').forEach(i => i.style.background = "none");
+            el.style.background = "rgba(77, 166, 255, 0.2)";
+        }
+    }
+
+    // --- Quiz System ---
+    const questions = [
+        { q: "ใครคือเบอร์ 2 ขององค์กรชุดดำ (RUM)?", a: ["วากิตะ คาเนะโนริ", "อามุโร่ โทโอรุ", "ยิน"], c: 0 },
+        { q: "ชินอิจิ ถนัดทักษะอะไรมากที่สุด?", a: ["ยิงปืน", "ฟุตบอล", "ขับเครื่องบิน"], c: 1 },
+        { q: "ยาที่ทำให้ตัวหดเล็กลงชื่อว่า?", a: ["APTX 4869", "APTX 9999", "ATX 4869"], c: 0 }
+    ];
+
+    function startQuiz() {
+        const q = questions[Math.floor(Math.random()*questions.length)];
+        document.getElementById('quizQuestion').innerText = q.q;
+        document.getElementById('quizOptions').innerHTML = q.a.map((opt, i) => 
+            `<div class="quiz-option" onclick="checkAnswer(${i}, ${q.c})">${i+1}. ${opt}</div>`
+        ).join('');
+    }
+
+    function checkAnswer(chosen, correct) {
+        if(chosen === correct) {
+            karmaPoints += 40;
+            alert("ถูกต้อง! คืนอิสรภาพให้ชั่วคราว");
+        } else {
+            alert("ผิด! อยู่ในคุกต่อไปนะ");
+        }
+        updateUI();
+    }
+
+    function resetAllData() {
+        if(confirm("แน่ใจนะอาวุ? ข้อมูลที่บันทึกมาทั้งหมดจะหายไปเลยนะ!")) {
+            localStorage.removeItem('ayu_conan_supreme_db');
+            location.reload();
+        }
     }
 </script>
 </body>
